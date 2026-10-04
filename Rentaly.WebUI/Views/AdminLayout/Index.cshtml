@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RentCar Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+@await RenderSectionAsync("Styles", required: false)
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <a href="admin-layout.html" class="sidebar-logo">
+            <div class="logo-icon"><i class="fa-solid fa-car-side"></i></div>
+            <div class="logo-text">
+                <strong>RentCar</strong>
+                <span>Admin Panel</span>
+            </div>
+        </a>
+
+        <nav class="sidebar-nav" id="sidebarNav">
+            <div class="menu-label">Ana Menü</div>
+            <a href="admin-layout.html" class="nav-link active">
+                <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                <span class="link-text">Dashboard</span>
+            </a>
+
+            <div class="menu-label">Araç Yönetimi</div>
+            <div class="has-submenu" id="vehicleMenu">
+                <div class="nav-link" onclick="toggleSubmenu('vehicleSubmenu', 'vehicleMenu')">
+                    <span class="nav-icon"><i class="fa-solid fa-cars"></i></span>
+                    <span class="link-text">Araç Yönetimi</span>
+                    <i class="fa-solid fa-chevron-right submenu-arrow ms-auto"></i>
+                </div>
+                <div class="submenu open" id="vehicleSubmenu">
+                    <a href="vehicle-list.html" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-list"></i></span>
+                        <span class="link-text">Araç Listesi</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-plus"></i></span>
+                        <span class="link-text">Yeni Araç Ekle</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-trademark"></i></span>
+                        <span class="link-text">Marka Yönetimi</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-cube"></i></span>
+                        <span class="link-text">Model Yönetimi</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-tags"></i></span>
+                        <span class="link-text">Kategori Yönetimi</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="menu-label">Operasyon</div>
+            <a href="#" class="nav-link">
+                <span class="nav-icon"><i class="fa-solid fa-building"></i></span>
+                <span class="link-text">Şube Yönetimi</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                <span class="link-text">Müşteri Yönetimi</span>
+                <span class="menu-badge">12</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon"><i class="fa-solid fa-calendar-check"></i></span>
+                <span class="link-text">Rezervasyon Yönetimi</span>
+                <span class="menu-badge">5</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon"><i class="fa-solid fa-credit-card"></i></span>
+                <span class="link-text">Ödeme Yönetimi</span>
+            </a>
+
+            <div class="menu-label">Sistem</div>
+            <a href="#" class="nav-link">
+                <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                <span class="link-text">Raporlar</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                <span class="link-text">Ayarlar</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=1a56db&color=fff&size=80" alt="Admin" />
+                <div class="user-info">
+                    <div class="user-name">Admin User</div>
+                    <div class="user-role">Süper Yönetici</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebarMobile()"></div>
+
+    <div class="main-wrapper" id="mainWrapper">
+
+        <nav class="navbar-top" id="navbarTop">
+            <button class="toggle-btn" id="toggleBtn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="navbar-breadcrumb d-none d-sm-block">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="admin-layout.html">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item"><a href="#">Araç Yönetimi</a></li>
+                    <li class="breadcrumb-item active">Araç Listesi</li>
+                </ol>
+            </div>
+            <div class="navbar-actions ms-auto">
+                <div class="dropdown notif-dropdown">
+                    <button class="action-btn" data-bs-toggle="dropdown">
+                        <i class="fa-regular fa-bell"></i><span class="badge-dot"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <div class="notif-header"><h6>Bildirimler</h6><a href="#">Tümünü Gör</a></div>
+                        <div class="notif-list">
+                            <div class="notif-item"><div class="notif-icon" style="background:#e8efff;color:#1a56db;"><i class="fa-solid fa-calendar-check"></i></div><div class="notif-text"><p>Yeni rezervasyon talebi alındı</p><small>2 dakika önce</small></div></div>
+                            <div class="notif-item"><div class="notif-icon" style="background:#f0fdf4;color:#10b981;"><i class="fa-solid fa-credit-card"></i></div><div class="notif-text"><p>₺4.200 ödeme alındı</p><small>3 saat önce</small></div></div>
+                        </div>
+                    </ul>
+                </div>
+                <button class="action-btn"><i class="fa-regular fa-envelope"></i></button>
+                <div class="navbar-divider d-none d-sm-block"></div>
+                <div class="dropdown admin-dropdown">
+                    <a href="#" class="dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=1a56db&color=fff&size=80" alt="Admin">
+                        <div class="admin-info d-none d-lg-flex">
+                            <span class="admin-name">Admin User</span><span class="admin-role">Süper Yönetici</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down" style="font-size:11px;color:var(--text-muted);"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fa-regular fa-user"></i> Profil</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-gear"></i> Ayarlar</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="page-content">
+            @RenderBody()
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-text">© 2026 <span>RentCar</span> Yönetim Paneli — Tüm Hakları Saklıdır</div>
+            <div class="footer-links">
+                <a href="#">Gizlilik Politikası</a><a href="#">Kullanım Koşulları</a><a href="#">Destek</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/script.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
