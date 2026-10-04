@@ -1,0 +1,788 @@
+﻿@model Rentaly.EntityLayer.Entities.Branch
+
+@{
+    ViewData["Title"] = "CreateBranch";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    /* ── Branch Create Page ── */
+
+    .create-layout {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    /* ── Form Card ── */
+    .form-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
+
+    .form-card-header {
+        padding: 20px 24px 18px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: linear-gradient(135deg, #f8faff 0%, #fff 60%);
+    }
+
+    .form-card-header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: var(--primary);
+        flex-shrink: 0;
+    }
+
+    .form-card-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--text-main);
+        line-height: 1.2;
+    }
+
+    .form-card-subtitle {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+
+    .form-card-body {
+        padding: 28px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+    }
+
+    /* ── Form Group ── */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-label i {
+        font-size: 12px;
+        color: var(--primary);
+        width: 16px;
+        text-align: center;
+    }
+
+    .form-label .required-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--danger);
+        border-radius: 50%;
+        display: inline-block;
+        margin-left: 2px;
+        flex-shrink: 0;
+    }
+
+    .form-input {
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 11px 14px;
+        font-size: 13.5px;
+        font-family: 'DM Sans', sans-serif;
+        color: var(--text-main);
+        background: var(--body-bg);
+        outline: none;
+        transition: var(--transition);
+        width: 100%;
+    }
+
+    .form-input:focus {
+        border-color: var(--primary);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+    }
+
+    .form-input.is-invalid {
+        border-color: var(--danger);
+        background: #fff8f8;
+    }
+
+    .form-input.is-invalid:focus {
+        box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+    }
+
+    textarea.form-input {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.6;
+    }
+
+    /* Input with left icon */
+    .input-icon-wrap {
+        position: relative;
+    }
+
+    .input-icon-wrap .input-icon {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 13px;
+        pointer-events: none;
+        transition: var(--transition);
+    }
+
+    .input-icon-wrap textarea ~ .input-icon,
+    .input-icon-wrap .form-input[rows] ~ .input-icon {
+        top: 14px;
+        transform: none;
+    }
+
+    .input-icon-wrap .form-input {
+        padding-left: 38px;
+    }
+
+    .input-icon-wrap .form-input:focus ~ .input-icon,
+    .input-icon-wrap:focus-within .input-icon {
+        color: var(--primary);
+    }
+
+    /* Validation text */
+    .field-error {
+        font-size: 12px;
+        color: var(--danger);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 2px;
+    }
+
+    .field-hint {
+        font-size: 12px;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 1px;
+    }
+
+    /* ── Divider ── */
+    .form-divider {
+        border: none;
+        border-top: 1px dashed var(--border);
+        margin: 2px 0;
+    }
+
+    .form-section-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: -10px;
+    }
+
+    .form-section-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+
+    /* ── Form Footer ── */
+    .form-card-footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--border);
+        background: #fafbfc;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-submit {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-sm);
+        padding: 11px 26px;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-submit::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(255,255,255,0);
+        transition: background 0.2s;
+    }
+
+    .btn-submit:hover::after {
+        background: rgba(255,255,255,0.12);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(26,86,219,0.35);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    .btn-cancel-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        border-radius: var(--radius-sm);
+        padding: 10px 16px;
+        border: 1px solid var(--border);
+        background: #fff;
+        transition: var(--transition);
+    }
+
+    .btn-cancel-link:hover {
+        border-color: var(--text-muted);
+        color: var(--text-main);
+        background: var(--body-bg);
+    }
+
+    /* ── Sağ Panel: Info Card ── */
+    .info-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        position: sticky;
+        top: 24px;
+    }
+
+    .info-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
+
+    .info-card-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--body-bg);
+    }
+
+    .info-card-header i {
+        font-size: 14px;
+        color: var(--primary);
+    }
+
+    .info-card-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--text-main);
+    }
+
+    .info-card-body {
+        padding: 16px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    /* Tips listesi */
+    .tip-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .tip-dot {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    .tip-dot.blue  { background: #e8efff; color: var(--primary); }
+    .tip-dot.green { background: #d1fae5; color: #059669; }
+    .tip-dot.amber { background: #fef3c7; color: #d97706; }
+
+    .tip-text {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        line-height: 1.5;
+    }
+
+    .tip-text strong {
+        color: var(--text-main);
+        font-weight: 700;
+    }
+
+    /* Preview card */
+    .preview-card {
+        background: linear-gradient(135deg, #f0f4ff 0%, #e8efff 100%);
+        border: 1.5px dashed #c7d7fc;
+        border-radius: var(--radius);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: var(--transition);
+    }
+
+    .preview-card-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .preview-card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        color: var(--primary);
+        flex-shrink: 0;
+        border: 1px solid #c7d7fc;
+    }
+
+    .preview-name {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--text-main);
+        min-height: 20px;
+    }
+
+    .preview-name.placeholder {
+        color: #b0bec5;
+        font-weight: 500;
+        font-style: italic;
+    }
+
+    .preview-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .preview-meta-row {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .preview-meta-row i {
+        font-size: 11px;
+        color: var(--primary);
+        width: 14px;
+        text-align: center;
+    }
+
+    .preview-meta-row span {
+        font-style: italic;
+        color: #b0bec5;
+    }
+
+    .preview-meta-row span.filled {
+        font-style: normal;
+        color: var(--text-main);
+        font-weight: 500;
+    }
+
+    /* Char counter */
+    .char-counter {
+        font-size: 11.5px;
+        color: var(--text-muted);
+        text-align: right;
+        margin-top: -4px;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .char-counter.warn { color: var(--warning); }
+    .char-counter.danger { color: var(--danger); }
+
+    @@media (max-width: 900px) {
+        .create-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .info-panel {
+            position: static;
+        }
+    }
+</style>
+
+<!-- ═══ Page Header ═══ -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Yeni Şube Ekle</h1>
+        <p class="page-subtitle">Sisteme yeni bir şube kaydı oluşturun.</p>
+    </div>
+    <a href="/Branch/Index" class="btn-cancel-link">
+        <i class="fa-solid fa-arrow-left"></i> Şube Listesi
+    </a>
+</div>
+
+<!-- ═══ Ana Layout ═══ -->
+<div class="create-layout">
+
+    <!-- Sol: Form -->
+    <div>
+        <form method="post" id="branchForm" novalidate>
+            @Html.AntiForgeryToken()
+
+            <div class="form-card">
+
+                <!-- Başlık -->
+                <div class="form-card-header">
+                    <div class="form-card-header-icon">
+                        <i class="fa-solid fa-building-circle-arrow-right"></i>
+                    </div>
+                    <div>
+                        <div class="form-card-title">Şube Bilgileri</div>
+                        <div class="form-card-subtitle">Aşağıdaki alanları eksiksiz doldurun.</div>
+                    </div>
+                </div>
+
+                <!-- Alanlar -->
+                <div class="form-card-body">
+
+                    <!-- TEMEL BİLGİLER -->
+                    <div class="form-section-label">
+                        <i class="fa-solid fa-circle-info" style="font-size:10px;color:var(--primary);"></i>
+                        Temel Bilgiler
+                    </div>
+
+                    <!-- Şube Adı -->
+                    <div class="form-group">
+                        <label class="form-label" for="BranchName">
+                            <i class="fa-solid fa-building"></i>
+                            Şube Adı
+                            <span class="required-dot"></span>
+                        </label>
+                        <div class="input-icon-wrap">
+                            <input asp-for="BranchName"
+                                   id="BranchName"
+                                   class="form-input"
+                                   placeholder="ör. İstanbul Havalimanı Şubesi"
+                                   maxlength="100"
+                                   oninput="updatePreview(); countChars(this, 'nameCounter', 100)"
+                                   autocomplete="off" />
+                            <i class="input-icon fa-solid fa-building"></i>
+                        </div>
+                        <div class="char-counter" id="nameCounter">0 / 100</div>
+                        <span asp-validation-for="BranchName" class="field-error">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </span>
+                        <span class="field-hint">
+                            <i class="fa-solid fa-circle-info"></i>
+                            Şubeyi tanımlayan açık ve anlaşılır bir isim girin.
+                        </span>
+                    </div>
+
+                    <hr class="form-divider" />
+
+                    <!-- KONUM BİLGİLERİ -->
+                    <div class="form-section-label">
+                        <i class="fa-solid fa-location-dot" style="font-size:10px;color:var(--primary);"></i>
+                        Konum Bilgileri
+                    </div>
+
+                    <!-- Şehir -->
+                    <div class="form-group">
+                        <label class="form-label" for="City">
+                            <i class="fa-solid fa-city"></i>
+                            Şehir
+                            <span class="required-dot"></span>
+                        </label>
+                        <div class="input-icon-wrap">
+                            <input asp-for="City"
+                                   id="City"
+                                   class="form-input"
+                                   placeholder="ör. İstanbul"
+                                   maxlength="60"
+                                   list="cityList"
+                                   oninput="updatePreview(); countChars(this, 'cityCounter', 60)"
+                                   autocomplete="off" />
+                            <i class="input-icon fa-solid fa-city"></i>
+                        </div>
+                        <!-- Popüler şehir önerileri -->
+                        <datalist id="cityList">
+                            <option value="Adana" />
+                            <option value="Ankara" />
+                            <option value="Antalya" />
+                            <option value="Bursa" />
+                            <option value="Diyarbakır" />
+                            <option value="Eskişehir" />
+                            <option value="Gaziantep" />
+                            <option value="İstanbul" />
+                            <option value="İzmir" />
+                            <option value="Kayseri" />
+                            <option value="Konya" />
+                            <option value="Mersin" />
+                            <option value="Samsun" />
+                            <option value="Trabzon" />
+                        </datalist>
+                        <div class="char-counter" id="cityCounter">0 / 60</div>
+                        <span asp-validation-for="City" class="field-error">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </span>
+                    </div>
+
+                    <!-- Adres -->
+                    <div class="form-group">
+                        <label class="form-label" for="Address">
+                            <i class="fa-solid fa-location-dot"></i>
+                            Adres
+                        </label>
+                        <div class="input-icon-wrap" style="position:relative;">
+                            <textarea asp-for="Address"
+                                      id="Address"
+                                      class="form-input"
+                                      rows="3"
+                                      placeholder="ör. Atatürk Mah. Havalimanı Cad. No:1 Arnavutköy, İstanbul"
+                                      maxlength="300"
+                                      oninput="updatePreview(); countChars(this, 'addrCounter', 300)"
+                                      style="padding-left:38px;padding-top:11px;"></textarea>
+                            <i class="input-icon fa-solid fa-location-dot" style="top:14px;transform:none;"></i>
+                        </div>
+                        <div class="char-counter" id="addrCounter">0 / 300</div>
+                        <span asp-validation-for="Address" class="field-error">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </span>
+                        <span class="field-hint">
+                            <i class="fa-solid fa-circle-info"></i>
+                            İlçe ve mahalle bilgisi dahil tam adresi girin.
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="form-card-footer">
+                    <a href="/Branch/Index" class="btn-cancel-link">
+                        <i class="fa-solid fa-xmark"></i> Vazgeç
+                    </a>
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fa-solid fa-floppy-disk"></i> Şubeyi Kaydet
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <!-- Sağ: Bilgi Paneli -->
+    <div class="info-panel">
+
+        <!-- Canlı Önizleme -->
+        <div class="info-card">
+            <div class="info-card-header">
+                <i class="fa-solid fa-eye"></i>
+                <div class="info-card-title">Canlı Önizleme</div>
+            </div>
+            <div class="info-card-body">
+                <div class="preview-card" id="previewCard">
+                    <div class="preview-card-top">
+                        <div class="preview-card-icon">
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                        <div id="previewName" class="preview-name placeholder">Şube adı girilmedi…</div>
+                    </div>
+                    <div class="preview-meta">
+                        <div class="preview-meta-row">
+                            <i class="fa-solid fa-city"></i>
+                            <span id="previewCity">Şehir girilmedi</span>
+                        </div>
+                        <div class="preview-meta-row">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span id="previewAddress">Adres girilmedi</span>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size:11.5px;color:var(--text-muted);text-align:center;margin:0;">
+                    Formu doldurdukça önizleme güncellenir.
+                </p>
+            </div>
+        </div>
+
+        <!-- İpuçları -->
+        <div class="info-card">
+            <div class="info-card-header">
+                <i class="fa-solid fa-lightbulb"></i>
+                <div class="info-card-title">İpuçları</div>
+            </div>
+            <div class="info-card-body">
+                <div class="tip-item">
+                    <div class="tip-dot blue">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <div class="tip-text">
+                        <strong>Şube Adı</strong> benzersiz ve tanımlayıcı olmalıdır. "İstanbul Havalimanı Şubesi" gibi konum içeren isimler tercih edilir.
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-dot green">
+                        <i class="fa-solid fa-city"></i>
+                    </div>
+                    <div class="tip-text">
+                        <strong>Şehir</strong> alanında Türkçe karakter kullanın. Sistem şehre göre filtreleme yapar.
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-dot amber">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div class="tip-text">
+                        <strong>Adres</strong> opsiyoneldir ancak müşteri iletişimi için tam adres girilmesi önerilir.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zorunlu Alan Hatırlatması -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;font-size:12.5px;color:var(--text-muted);display:flex;align-items:center;gap:8px;">
+            <span style="width:6px;height:6px;background:var(--danger);border-radius:50%;flex-shrink:0;display:inline-block;"></span>
+            işaretli alanlar zorunludur.
+        </div>
+
+    </div>
+</div>
+
+<script>
+    /* ══════════════════════════════════════════
+       Branch Create Page Scripts
+    ══════════════════════════════════════════ */
+
+    // ── Canlı önizleme ──
+    function updatePreview() {
+        const name    = document.getElementById('BranchName').value.trim();
+        const city    = document.getElementById('City').value.trim();
+        const address = document.getElementById('Address').value.trim();
+
+        const previewName = document.getElementById('previewName');
+        const previewCity = document.getElementById('previewCity');
+        const previewAddr = document.getElementById('previewAddress');
+
+        if (name) {
+            previewName.textContent = name;
+            previewName.classList.remove('placeholder');
+        } else {
+            previewName.textContent = 'Şube adı girilmedi…';
+            previewName.classList.add('placeholder');
+        }
+
+        if (city) {
+            previewCity.textContent = city;
+            previewCity.classList.add('filled');
+        } else {
+            previewCity.textContent = 'Şehir girilmedi';
+            previewCity.classList.remove('filled');
+        }
+
+        if (address) {
+            previewAddr.textContent = address.length > 60 ? address.substring(0, 57) + '…' : address;
+            previewAddr.classList.add('filled');
+        } else {
+            previewAddr.textContent = 'Adres girilmedi';
+            previewAddr.classList.remove('filled');
+        }
+    }
+
+    // ── Karakter sayacı ──
+    function countChars(el, counterId, max) {
+        const len     = el.value.length;
+        const counter = document.getElementById(counterId);
+        counter.textContent = `${len} / ${max}`;
+        counter.className   = 'char-counter';
+        if (len > max * 0.85) counter.classList.add('warn');
+        if (len > max * 0.95) counter.classList.add('danger');
+    }
+
+    // ── Form submit: loading durumu ──
+    document.getElementById('branchForm').addEventListener('submit', function (e) {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Kaydediliyor…';
+    });
+
+    // ── Input focus animasyonu ──
+    document.querySelectorAll('.form-input').forEach(input => {
+        input.addEventListener('focus', () => {
+            input.closest('.form-group')?.querySelector('.form-label')
+                ?.querySelector('i')?.style && (
+                input.closest('.form-group').querySelector('.form-label i').style.color = 'var(--primary)'
+            );
+        });
+        input.addEventListener('blur', () => {
+            const icon = input.closest('.form-group')?.querySelector('.form-label i');
+            if (icon) icon.style.color = '';
+        });
+    });
+
+    // ── İlk yükleme ──
+    document.addEventListener('DOMContentLoaded', () => {
+        updatePreview();
+        // Varsa mevcut değerler için sayaç başlat
+        const nameEl = document.getElementById('BranchName');
+        const cityEl = document.getElementById('City');
+        const addrEl = document.getElementById('Address');
+        if (nameEl.value) countChars(nameEl, 'nameCounter', 100);
+        if (cityEl.value) countChars(cityEl, 'cityCounter', 60);
+        if (addrEl.value) countChars(addrEl, 'addrCounter', 300);
+    });
+</script>
+
+

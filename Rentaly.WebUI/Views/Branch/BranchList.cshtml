@@ -1,0 +1,1018 @@
+﻿@model List<Rentaly.EntityLayer.Entities.Branch>
+
+@{
+    ViewData["Title"] = "BranchList";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    /* ── Branch List Page ── */
+
+    /* ── Mini Stat Cards (aynı Car List stili) ── */
+    .mini-stat {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        transition: var(--transition);
+    }
+
+        .mini-stat:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+    .mini-stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .mini-stat-val {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--text-main);
+        line-height: 1;
+    }
+
+    .mini-stat-label {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        margin-top: 3px;
+    }
+
+    /* ── Toolbar ── */
+    .branch-toolbar {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 20px;
+    }
+
+    .branch-search-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 200px;
+    }
+
+        .branch-search-wrap i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .branch-search-wrap input {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 9px 12px 9px 36px;
+            font-size: 13.5px;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-main);
+            background: var(--body-bg);
+            outline: none;
+            transition: var(--transition);
+        }
+
+            .branch-search-wrap input:focus {
+                border-color: var(--primary);
+                background: #fff;
+                box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+            }
+
+    /* ── Branch Cards Grid ── */
+    .branches-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 18px;
+        margin-bottom: 20px;
+    }
+
+    .branch-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+        .branch-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+
+    /* Üst şerit (accent bar) */
+    .branch-card-accent {
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary) 0%, #60a5fa 100%);
+        flex-shrink: 0;
+    }
+
+    /* Şehir ikonlu header */
+    .branch-card-header {
+        padding: 18px 18px 14px;
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .branch-icon-wrap {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: var(--primary);
+        flex-shrink: 0;
+    }
+
+    .branch-card-title-block {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .branch-card-name {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--text-main);
+        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .branch-card-id {
+        display: inline-block;
+        margin-top: 4px;
+        background: #f1f5f9;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 5px;
+        letter-spacing: .5px;
+    }
+
+    /* Kart gövde */
+    .branch-card-body {
+        padding: 16px 18px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .branch-info-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .branch-info-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+        .branch-info-icon.city {
+            background: #eff6ff;
+            color: #3b82f6;
+        }
+
+        .branch-info-icon.address {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+    .branch-info-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .branch-info-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        line-height: 1;
+        margin-bottom: 2px;
+    }
+
+    .branch-info-value {
+        font-size: 13.5px;
+        color: var(--text-main);
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    /* Kart footer */
+    .branch-card-footer {
+        padding: 12px 16px;
+        border-top: 1px solid var(--border);
+        background: #fafbfc;
+        display: flex;
+        gap: 8px;
+    }
+
+    /* ── Liste Görünümü ── */
+    .branches-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .branch-list-item {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 18px;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .branch-list-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary) 0%, #60a5fa 100%);
+            border-radius: 4px 0 0 4px;
+        }
+
+        .branch-list-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+            border-color: var(--primary);
+        }
+
+    .branch-list-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: var(--primary);
+        flex-shrink: 0;
+    }
+
+    .branch-list-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .branch-list-name {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14.5px;
+        font-weight: 800;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .branch-list-id-badge {
+        background: #f1f5f9;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 4px;
+        letter-spacing: .5px;
+    }
+
+    .branch-list-sub {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 5px;
+        flex-wrap: wrap;
+    }
+
+    .branch-list-meta {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12.5px;
+        color: var(--text-muted);
+    }
+
+        .branch-list-meta i {
+            font-size: 11px;
+            color: var(--primary);
+        }
+
+    .branch-list-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    /* ── Shared btn ── */
+    .tbl-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 13px;
+        border-radius: var(--radius-sm);
+        font-size: 12.5px;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        text-decoration: none;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .tbl-btn-detail {
+        background: var(--primary-light);
+        color: var(--primary);
+    }
+
+        .tbl-btn-detail:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+    .tbl-btn-edit {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+        .tbl-btn-edit:hover {
+            background: var(--warning);
+            color: #fff;
+        }
+
+    .tbl-btn-delete {
+        background: #fee2e2;
+        color: var(--danger);
+    }
+
+        .tbl-btn-delete:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+    /* ── Şehir filtresi chip ── */
+    .city-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        border: 1.5px solid var(--border);
+        background: #fff;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: var(--transition);
+        font-family: 'DM Sans', sans-serif;
+        white-space: nowrap;
+    }
+
+        .city-chip:hover, .city-chip.active {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+    .city-chips-wrap {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        padding: 4px 0;
+    }
+
+    /* ── View toggle ── */
+    .view-toggle {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+    }
+
+    .view-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        background: #fff;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .view-btn:hover:not(.active) {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+    /* ── Boş durum ── */
+    .empty-state {
+        padding: 64px 20px;
+        text-align: center;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .empty-icon {
+        width: 72px;
+        height: 72px;
+        background: var(--primary-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: var(--primary);
+        margin: 0 auto 18px;
+    }
+
+    /* ── Pagination ── */
+    .paging-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 4px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .paging-info {
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+
+    .paging-btns {
+        display: flex;
+        gap: 4px;
+    }
+
+    .page-btn {
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        color: var(--text-main);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+        .page-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .page-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
+    @@media (max-width: 575px) {
+        .branches-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .branch-list-meta:not(:first-child) {
+            display: none;
+        }
+    }
+</style>
+
+<!-- ═══ Page Header ═══ -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Şube Listesi</h1>
+        <p class="page-subtitle">Tüm şubeleri görüntüleyin ve yönetin.</p>
+    </div>
+    <a href="/Branch/Create" class="btn-primary-custom">
+        <i class="fa-solid fa-plus"></i> Yeni Şube
+    </a>
+</div>
+
+<!-- ═══ Mini İstatistikler ═══ -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4">
+        <div class="mini-stat">
+            <div class="mini-stat-icon" style="background:#e8efff;color:var(--primary);">
+                <i class="fa-solid fa-building"></i>
+            </div>
+            <div>
+                <div class="mini-stat-val">@Model.Count()</div>
+                <div class="mini-stat-label">Toplam Şube</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="mini-stat">
+            <div class="mini-stat-icon" style="background:#d1fae5;color:#059669;">
+                <i class="fa-solid fa-city"></i>
+            </div>
+            <div>
+                <div class="mini-stat-val" style="color:#059669;">@Model.Select(b => b.City).Distinct().Count()</div>
+                <div class="mini-stat-label">Farklı Şehir</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="mini-stat">
+            <div class="mini-stat-icon" style="background:#fff4ed;color:var(--accent);">
+                <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <div>
+                <div class="mini-stat-val" style="color:var(--accent);font-size:18px;">
+                    @(Model.Any() ? Model.GroupBy(b => b.City).OrderByDescending(g => g.Count()).First().Key : "—")
+                </div>
+                <div class="mini-stat-label">En Yoğun Şehir</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ Şehir Chip Filtreleri ═══ -->
+<div class="city-chips-wrap mb-3" id="cityChips">
+    <button class="city-chip active" data-city="all" onclick="setCityFilter(this, 'all')">
+        <i class="fa-solid fa-globe"></i> Tümü
+    </button>
+    @foreach (var city in Model.Select(b => b.City).Where(c => !string.IsNullOrEmpty(c)).Distinct().OrderBy(c => c))
+    {
+        <button class="city-chip" data-city="@city" onclick="setCityFilter(this, '@city')">
+            <i class="fa-solid fa-location-dot"></i> @city
+        </button>
+    }
+</div>
+
+<!-- ═══ Toolbar ═══ -->
+<div class="branch-toolbar">
+    <div class="branch-search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="branchSearch" placeholder="Şube adı, şehir ara…" oninput="filterBranches()" />
+    </div>
+
+    <select class="filter-select" id="sortSelect" onchange="filterBranches()" style="min-width:180px;">
+        <option value="id-asc">ID — Artan</option>
+        <option value="id-desc">ID — Azalan</option>
+        <option value="name-asc">Ad — A'dan Z'ye</option>
+        <option value="name-desc">Ad — Z'den A'ya</option>
+        <option value="city-asc">Şehir — A'dan Z'ye</option>
+    </select>
+
+    <div class="view-toggle">
+        <button class="view-btn active" id="btnGridView" onclick="setView('grid')" title="Kart Görünümü">
+            <i class="fa-solid fa-grip"></i>
+        </button>
+        <button class="view-btn" id="btnListView" onclick="setView('list')" title="Liste Görünümü">
+            <i class="fa-solid fa-list"></i>
+        </button>
+    </div>
+
+    <button class="btn-action btn-detail" onclick="resetBranchFilters()" style="flex:none;padding:9px 14px;font-size:13px;white-space:nowrap;">
+        <i class="fa-solid fa-rotate-left"></i> Sıfırla
+    </button>
+</div>
+
+<!-- ═══ Kart Grid Görünümü ═══ -->
+<div class="branches-grid" id="branchesGrid">
+    @foreach (var branch in Model)
+    {
+        <div class="branch-card"
+             data-id="@branch.BranchId"
+             data-name="@branch.BranchName?.ToLower()"
+             data-city="@branch.City"
+             data-city-lower="@branch.City?.ToLower()">
+
+            <div class="branch-card-accent"></div>
+
+            <!-- Header: ikon + isim + id -->
+            <div class="branch-card-header">
+                <div class="branch-icon-wrap">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+                <div class="branch-card-title-block">
+                    <div class="branch-card-name">@branch.BranchName</div>
+                    <span class="branch-card-id"># @branch.BranchId</span>
+                </div>
+            </div>
+
+            <!-- Gövde: Şehir + Adres -->
+            <div class="branch-card-body">
+                <div class="branch-info-row">
+                    <div class="branch-info-icon city">
+                        <i class="fa-solid fa-city"></i>
+                    </div>
+                    <div class="branch-info-text">
+                        <span class="branch-info-label">Şehir</span>
+                        <span class="branch-info-value">@(string.IsNullOrEmpty(branch.City) ? "—" : branch.City)</span>
+                    </div>
+                </div>
+
+                <div class="branch-info-row">
+                    <div class="branch-info-icon address">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div class="branch-info-text">
+                        <span class="branch-info-label">Adres</span>
+                        <span class="branch-info-value">@(string.IsNullOrEmpty(branch.Address) ? "—" : branch.Address)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aksiyonlar -->
+            <div class="branch-card-footer">
+                <a href="/Branch/Detail/@branch.BranchId" class="tbl-btn tbl-btn-detail">
+                    <i class="fa-solid fa-eye"></i> Detay
+                </a>
+                <a href="/Branch/Edit/@branch.BranchId" class="tbl-btn tbl-btn-edit">
+                    <i class="fa-solid fa-pen-to-square"></i> Düzenle
+                </a>
+                <button class="tbl-btn tbl-btn-delete"
+                        onclick="openDeleteModal(@branch.BranchId, '@branch.BranchName')">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- ═══ Liste Görünümü ═══ -->
+<div class="branches-list" id="branchesList" style="display:none;">
+    @foreach (var branch in Model)
+    {
+        <div class="branch-list-item"
+             data-id="@branch.BranchId"
+             data-name="@branch.BranchName?.ToLower()"
+             data-city="@branch.City"
+             data-city-lower="@branch.City?.ToLower()">
+
+            <div class="branch-list-icon">
+                <i class="fa-solid fa-building"></i>
+            </div>
+
+            <div class="branch-list-info">
+                <div class="branch-list-name">
+                    @branch.BranchName
+                    <span class="branch-list-id-badge">#@branch.BranchId</span>
+                </div>
+                <div class="branch-list-sub">
+                    <span class="branch-list-meta">
+                        <i class="fa-solid fa-city"></i>
+                        @(string.IsNullOrEmpty(branch.City) ? "—" : branch.City)
+                    </span>
+                    <span style="color:var(--border);">·</span>
+                    <span class="branch-list-meta">
+                        <i class="fa-solid fa-location-dot"></i>
+                        @(string.IsNullOrEmpty(branch.Address) ? "Adres girilmemiş" : branch.Address)
+                    </span>
+                </div>
+            </div>
+
+            <div class="branch-list-actions">
+                <a href="/Branch/Detail/@branch.BranchId" class="tbl-btn tbl-btn-detail" style="flex:none;padding:7px 10px;">
+                    <i class="fa-solid fa-eye"></i>
+                </a>
+                <a href="/Branch/Edit/@branch.BranchId" class="tbl-btn tbl-btn-edit" style="flex:none;padding:7px 10px;">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+                <button class="tbl-btn tbl-btn-delete" style="flex:none;padding:7px 10px;"
+                        onclick="openDeleteModal(@branch.BranchId, '@branch.BranchName')">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Boş Durum -->
+<div class="empty-state" id="emptyState" style="display:none;">
+    <div class="empty-icon"><i class="fa-solid fa-building"></i></div>
+    <h6 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;margin-bottom:6px;">Şube Bulunamadı</h6>
+    <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:14px;">
+        Arama veya filtre kriterinizle eşleşen şube yok.
+    </p>
+    <button class="btn-primary-custom" onclick="resetBranchFilters()">
+        <i class="fa-solid fa-rotate-left"></i> Filtreyi Temizle
+    </button>
+</div>
+
+<!-- Pagination -->
+<div class="paging-wrap" id="pagingWrap" style="display:none;">
+    <div class="paging-info" id="pagingInfo">—</div>
+    <div class="paging-btns" id="pagingBtns"></div>
+</div>
+
+<!-- ═══ SİL ONAY MODAL ═══ -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:34px;height:34px;background:#fee2e2;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--danger);font-size:15px;">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+                    <h5 class="modal-title">Şube Sil</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex;gap:14px;align-items:flex-start;">
+                    <div style="width:46px;height:46px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--danger);font-size:20px;flex-shrink:0;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <p style="margin:0;font-size:14.5px;color:var(--text-main);line-height:1.5;">
+                            <strong id="deleteBranchName">bu şubeyi</strong> silmek istediğinizden emin misiniz?
+                        </p>
+                        <p style="margin:6px 0 0;font-size:13px;color:var(--text-muted);">
+                            Bu işlem geri alınamaz. İlgili araç ve kira kayıtları etkilenebilir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel-form" data-bs-dismiss="modal"
+                        style="display:inline-flex;align-items:center;gap:6px;">
+                    <i class="fa-solid fa-xmark"></i> Vazgeç
+                </button>
+                <form id="deleteForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="deleteBranchId" name="id" />
+                    <button type="submit"
+                            style="display:inline-flex;align-items:center;gap:7px;background:var(--danger);color:#fff;border:none;border-radius:var(--radius-sm);padding:9px 22px;font-size:13.5px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:var(--transition);">
+                        <i class="fa-solid fa-trash-can"></i> Evet, Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
+
+<script>
+    /* ══════════════════════════════════════════
+       Branch List Page Scripts
+    ══════════════════════════════════════════ */
+
+    let currentView = 'grid';
+    let currentPage = 1;
+    let activeCityFilter = 'all';
+    const PAGE_SIZE = 12;
+
+    // ── Görünüm değiştir ──
+    function setView(v) {
+        currentView = v;
+        document.getElementById('branchesGrid').style.display = v === 'grid' ? 'grid' : 'none';
+        document.getElementById('branchesList').style.display = v === 'list' ? 'flex' : 'none';
+        document.getElementById('btnGridView').classList.toggle('active', v === 'grid');
+        document.getElementById('btnListView').classList.toggle('active', v === 'list');
+        currentPage = 1;
+        applyFilters();
+    }
+
+    // ── Şehir chip filtresi ──
+    function setCityFilter(el, city) {
+        document.querySelectorAll('.city-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        activeCityFilter = city;
+        currentPage = 1;
+        applyFilters();
+    }
+
+    // ── Filtrele + Sırala ──
+    function filterBranches() {
+        currentPage = 1;
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const q    = document.getElementById('branchSearch').value.toLowerCase().trim();
+        const sort = document.getElementById('sortSelect').value;
+
+        const gridCards = [...document.querySelectorAll('#branchesGrid .branch-card')];
+        const listItems = [...document.querySelectorAll('#branchesList .branch-list-item')];
+
+        const filterItem = (item) => {
+            const name     = item.dataset.name      || '';
+            const cityLow  = item.dataset.cityLower || '';
+
+            const matchQ    = !q || name.includes(q) || cityLow.includes(q) || item.dataset.id.includes(q);
+            const matchCity = activeCityFilter === 'all' || item.dataset.city === activeCityFilter;
+
+            return matchQ && matchCity;
+        };
+
+        gridCards.forEach(c => c.setAttribute('data-show', filterItem(c) ? '1' : '0'));
+        listItems.forEach(c => c.setAttribute('data-show', filterItem(c) ? '1' : '0'));
+
+        // Sırala
+        const [sortField, sortDir] = sort.split('-');
+        const sortItems = (list) => {
+            list.sort((a, b) => {
+                let va, vb;
+                if      (sortField === 'id')   { va = parseInt(a.dataset.id);  vb = parseInt(b.dataset.id); }
+                else if (sortField === 'name') { va = a.dataset.name || '';    vb = b.dataset.name || ''; }
+                else if (sortField === 'city') { va = a.dataset.cityLower || ''; vb = b.dataset.cityLower || ''; }
+
+                if (typeof va === 'string') return sortDir === 'asc' ? va.localeCompare(vb, 'tr') : vb.localeCompare(va, 'tr');
+                if (va < vb) return sortDir === 'asc' ? -1 :  1;
+                if (va > vb) return sortDir === 'asc' ?  1 : -1;
+                return 0;
+            });
+        };
+
+        sortItems(gridCards);
+        sortItems(listItems);
+
+        const gridParent = document.getElementById('branchesGrid');
+        const listParent = document.getElementById('branchesList');
+        gridCards.forEach(c => gridParent.appendChild(c));
+        listItems.forEach(c => listParent.appendChild(c));
+
+        buildPaging();
+    }
+
+    // ── Sıfırla ──
+    function resetBranchFilters() {
+        document.getElementById('branchSearch').value = '';
+        document.getElementById('sortSelect').value   = 'id-asc';
+        activeCityFilter = 'all';
+        document.querySelectorAll('.city-chip').forEach(c => c.classList.remove('active'));
+        const allChip = document.querySelector('.city-chip[data-city="all"]');
+        if (allChip) allChip.classList.add('active');
+        currentPage = 1;
+        applyFilters();
+        showToast('Filtreler sıfırlandı.', 'info');
+    }
+
+    // ── Pagination ──
+    function buildPaging() {
+        const activeItems = currentView === 'grid'
+            ? [...document.querySelectorAll('#branchesGrid .branch-card')]
+            : [...document.querySelectorAll('#branchesList .branch-list-item')];
+
+        const filtered = activeItems.filter(c => c.getAttribute('data-show') === '1');
+        const total    = filtered.length;
+        const pages    = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        if (currentPage > pages) currentPage = pages;
+
+        activeItems.forEach(c => c.style.display = 'none');
+
+        filtered.forEach((c, i) => {
+            if (i >= (currentPage - 1) * PAGE_SIZE && i < currentPage * PAGE_SIZE) {
+                c.style.display = '';
+            }
+        });
+
+        const inactiveItems = currentView === 'grid'
+            ? [...document.querySelectorAll('#branchesList .branch-list-item')]
+            : [...document.querySelectorAll('#branchesGrid .branch-card')];
+        inactiveItems.forEach(c => c.style.display = 'none');
+
+        document.getElementById('emptyState').style.display = total === 0 ? 'block' : 'none';
+
+        const info = document.getElementById('pagingInfo');
+        const from = total === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+        const to   = Math.min(currentPage * PAGE_SIZE, total);
+        info.textContent = total > 0 ? `${from}–${to} / toplam ${total} şube` : '0 şube';
+
+        const btns = document.getElementById('pagingBtns');
+        btns.innerHTML = '';
+
+        const prev = makePageBtn('<i class="fa-solid fa-chevron-left" style="font-size:11px;"></i>', () => goPage(currentPage - 1));
+        if (currentPage === 1) prev.disabled = true;
+        btns.appendChild(prev);
+
+        for (let p = 1; p <= pages; p++) {
+            const btn = makePageBtn(p, () => goPage(p));
+            if (p === currentPage) btn.classList.add('active');
+            btns.appendChild(btn);
+        }
+
+        const next = makePageBtn('<i class="fa-solid fa-chevron-right" style="font-size:11px;"></i>', () => goPage(currentPage + 1));
+        if (currentPage === pages) next.disabled = true;
+        btns.appendChild(next);
+
+        document.getElementById('pagingWrap').style.display = total <= PAGE_SIZE && pages === 1 ? 'none' : 'flex';
+    }
+
+    function makePageBtn(html, fn) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'page-btn';
+        b.innerHTML = html;
+        b.addEventListener('click', fn);
+        return b;
+    }
+
+    function goPage(p) {
+        const filtered = (currentView === 'grid'
+            ? [...document.querySelectorAll('#branchesGrid .branch-card')]
+            : [...document.querySelectorAll('#branchesList .branch-list-item')]
+        ).filter(c => c.getAttribute('data-show') === '1');
+        const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+        currentPage = Math.max(1, Math.min(pages, p));
+        buildPaging();
+    }
+
+    // ── Sil Modal ──
+    function openDeleteModal(id, name) {
+        document.getElementById('deleteBranchName').textContent = `"${name}"`;
+        document.getElementById('deleteBranchId').value         = id;
+        document.getElementById('deleteForm').action            = `/Branch/Delete/${id}`;
+        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    }
+
+    // ── İlk yükleme ──
+    document.addEventListener('DOMContentLoaded', () => {
+        applyFilters();
+
+        @if (TempData["Success"] != null)
+        {
+                    <text>showToast('@TempData["Success"]', 'success');</text>
+        }
+        @if (TempData["Error"] != null)
+        {
+                    <text>showToast('@TempData["Error"]', 'danger');</text>
+        }
+    });
+</script>
+
+

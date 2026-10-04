@@ -1,0 +1,610 @@
+﻿@model Rentaly.EntityLayer.Entities.Category
+@{
+    ViewData["Title"] = "CreateCategory";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+
+
+<style>
+/* ── Create Category Page ── */
+.form-section {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: var(--transition);
+}
+.form-section:hover { box-shadow: var(--shadow-md); }
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    background: #fafbfc;
+}
+.section-icon {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+}
+.section-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--text-main); margin: 0;
+}
+.section-subtitle {
+    font-size: 12px; color: var(--text-muted); margin: 0; margin-top: 1px;
+}
+.section-body { padding: 22px; }
+
+/* Form */
+.f-label {
+    font-size: 13px; font-weight: 600;
+    color: var(--text-main); margin-bottom: 7px;
+    display: flex; align-items: center; gap: 5px;
+}
+.f-label .req { color: var(--danger); font-size: 14px; line-height: 1; }
+
+.f-control {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13.5px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-main);
+    background: #fff;
+    outline: none;
+    transition: var(--transition);
+}
+.f-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+}
+.f-control.is-invalid {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.08);
+}
+.f-control.is-valid {
+    border-color: var(--success);
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.08);
+}
+.f-error {
+    font-size: 12px; color: var(--danger);
+    margin-top: 5px; display: none;
+    align-items: center; gap: 4px;
+}
+.f-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+.char-count { font-size: 11.5px; color: var(--text-muted); text-align: right; margin-top: 4px; }
+
+/* Icon grid */
+.icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+    gap: 8px;
+}
+.icon-radio { display: none; }
+.icon-radio + label {
+    width: 100%; aspect-ratio: 1;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-muted);
+    background: #fafbfc;
+}
+.icon-radio + label:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary);
+    transform: scale(1.05);
+}
+.icon-radio:checked + label {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(26,86,219,0.3);
+}
+
+/* Color swatch */
+.color-swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.swatch-radio { display: none; }
+.swatch-radio + label {
+    width: 34px; height: 34px;
+    border-radius: 50%; cursor: pointer;
+    border: 3px solid transparent;
+    outline: 2px solid transparent;
+    transition: var(--transition);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: transparent;
+}
+.swatch-radio + label:hover { transform: scale(1.12); }
+.swatch-radio:checked + label {
+    border-color: #fff;
+    outline-color: var(--text-main);
+    color: #fff;
+}
+
+/* Preview card */
+.preview-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 20px;
+    text-align: center;
+    transition: var(--transition);
+}
+.preview-icon-wrap {
+    width: 72px; height: 72px;
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 14px;
+    transition: var(--transition);
+}
+.preview-name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 18px; font-weight: 800;
+    color: var(--text-main); margin-bottom: 6px;
+    min-height: 26px;
+    transition: var(--transition);
+}
+.preview-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600;
+    padding: 4px 12px; border-radius: 20px;
+    transition: var(--transition);
+}
+
+/* Tips list */
+.tip-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--text-muted);
+}
+.tip-item:last-child { border-bottom: none; padding-bottom: 0; }
+.tip-item i { color: var(--primary); margin-top: 1px; font-size: 13px; flex-shrink: 0; }
+
+/* Action bar */
+.action-bar {
+    position: sticky; bottom: 0;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 14px 0; margin-top: 4px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px; z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.07);
+}
+.btn-cancel-page {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: #fff; border: 1px solid var(--border);
+    color: var(--text-muted); border-radius: var(--radius-sm);
+    padding: 10px 20px; font-size: 13.5px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    transition: var(--transition); text-decoration: none;
+}
+.btn-cancel-page:hover { background: #f8fafc; color: var(--text-main); }
+.btn-save {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--primary); color: #fff; border: none;
+    border-radius: var(--radius-sm); padding: 10px 24px;
+    font-size: 13.5px; font-weight: 700;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    transition: var(--transition);
+}
+.btn-save:hover {
+    background: var(--primary-dark);
+    box-shadow: 0 4px 14px rgba(26,86,219,0.4);
+    transform: translateY(-1px);
+}
+.btn-save:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+@@media (max-width: 767px) {
+    .section-body { padding: 14px; }
+    .icon-grid { grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); }
+    .action-bar { padding: 12px 0; }
+}
+</style>
+
+<!-- ═══ Page Header ═══ -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Yeni Kategori Ekle</h1>
+        <p class="page-subtitle">Araç filosuna yeni bir kategori tanımlayın.</p>
+    </div>
+    <a href="/Category/Index" class="btn-cancel-page">
+        <i class="fa-solid fa-arrow-left"></i> Listeye Dön
+    </a>
+</div>
+
+<form id="createCatForm" method="post" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div class="row g-4">
+
+        <!-- ═══ SOL ═══ -->
+        <div class="col-12 col-lg-7">
+
+            <!-- Kategori Adı -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background:#e8efff;color:var(--primary);">
+                        <i class="fa-solid fa-pen-nib"></i>
+                    </div>
+                    <div>
+                        <p class="section-title">Kategori Bilgisi</p>
+                        <p class="section-subtitle">Temel tanımlama bilgisi</p>
+                    </div>
+                </div>
+                <div class="section-body">
+
+                    <label class="f-label" for="CategoryName">
+                        Kategori Adı <span class="req">*</span>
+                    </label>
+                    <input type="text"
+                           id="CategoryName"
+                           name="CategoryName"
+                           class="f-control"
+                           placeholder="Örn: Sedan, SUV, Elektrikli…"
+                           maxlength="50"
+                           autocomplete="off"
+                           oninput="onNameInput(this)" />
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
+                        <div class="f-error" id="nameError">
+                            <i class="fa-solid fa-circle-exclamation"></i> Kategori adı zorunludur.
+                        </div>
+                        <div class="char-count ms-auto"><span id="charCount">0</span>/50</div>
+                    </div>
+                    <p class="f-hint">
+                        <i class="fa-solid fa-circle-info me-1" style="color:var(--primary);"></i>
+                        Kısa ve anlamlı bir isim girin. Büyük-küçük harf duyarlı değildir.
+                    </p>
+
+                    <!-- Var olan kategorilerle benzerlik uyarısı -->
+                    <div id="similarWarn" style="display:none;margin-top:10px;padding:10px 14px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);font-size:13px;color:#92400e;display:none;align-items:center;gap:8px;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span id="similarWarnText">Benzer isimde bir kategori mevcut olabilir.</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- İkon Seçici -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background:#fff4ed;color:var(--accent);">
+                        <i class="fa-solid fa-icons"></i>
+                    </div>
+                    <div>
+                        <p class="section-title">Kategori İkonu</p>
+                        <p class="section-subtitle">Listede görünecek ikon — isteğe bağlı</p>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="icon-grid" id="iconGrid">
+                        @{
+                            var iconList = new[] {
+                                ("fa-car-side",       "Araç"),
+                                ("fa-truck",          "Kamyon"),
+                                ("fa-van-shuttle",    "Minivan"),
+                                ("fa-motorcycle",     "Motorsiklet"),
+                                ("fa-car-rear",       "Sedan"),
+                                ("fa-jeep",           "SUV"),
+                                ("fa-bus",            "Otobüs"),
+                                ("fa-taxi",           "Taksi"),
+                                ("fa-bolt",           "Elektrikli"),
+                                ("fa-leaf",           "Hibrit"),
+                                ("fa-gas-pump",       "Yakıtlı"),
+                                ("fa-shield-halved",  "Premium"),
+                                ("fa-star",           "VIP"),
+                                ("fa-briefcase",      "İş"),
+                                ("fa-people-group",   "Aile"),
+                                ("fa-mountain-sun",   "Offroad"),
+                                ("fa-gauge-high",     "Spor"),
+                                ("fa-snowflake",      "Kış"),
+                                ("fa-umbrella-beach", "Tatil"),
+                                ("fa-building-user",  "Kurumsal"),
+                            };
+                        }
+                        @foreach (var (faClass, label) in iconList)
+                        {
+                            <input type="radio" class="icon-radio" name="IconClass"
+                                   id="ico_@faClass.Replace("-","_")"
+                                   value="@faClass"
+                                   onchange="updatePreview()" />
+                            <label for="ico_@faClass.Replace("-","_")" title="@label">
+                                <i class="fa-solid @faClass"></i>
+                            </label>
+                        }
+                    </div>
+                    <p class="f-hint" style="margin-top:10px;">
+                        <i class="fa-solid fa-circle-info me-1" style="color:var(--primary);"></i>
+                        İkon seçimi veritabanına kaydedilmez; yalnızca görsel amaçlıdır.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Renk Etiketi -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background:#fdf4ff;color:#9333ea;">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <div>
+                        <p class="section-title">Renk Etiketi</p>
+                        <p class="section-subtitle">Kategori için temsil rengi — isteğe bağlı</p>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="color-swatches">
+                        @{
+                            var swatches = new[] {
+                                ("#1a56db", "Mavi"),
+                                ("#f97316", "Turuncu"),
+                                ("#10b981", "Yeşil"),
+                                ("#ef4444", "Kırmızı"),
+                                ("#9333ea", "Mor"),
+                                ("#d97706", "Sarı"),
+                                ("#0284c7", "Açık Mavi"),
+                                ("#db2777", "Pembe"),
+                                ("#64748b", "Gri"),
+                                ("#0f172a", "Siyah"),
+                            };
+                        }
+                        @foreach (var (hex, label) in swatches)
+                        {
+                            <input type="radio" class="swatch-radio" name="ColorTag"
+                                   id="sw_@hex.Replace("#","")"
+                                   value="@hex"
+                                   onchange="updatePreview()" />
+                            <label for="sw_@hex.Replace("#","")"
+                                   style="background:@hex;"
+                                   title="@label">
+                                <i class="fa-solid fa-check"></i>
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /SOL -->
+
+        <!-- ═══ SAĞ ═══ -->
+        <div class="col-12 col-lg-5">
+
+            <!-- Canlı Önizleme -->
+            <div class="form-section" style="position:sticky;top:calc(var(--navbar-height) + 16px);">
+                <div class="section-header">
+                    <div class="section-icon" style="background:#f0fdf4;color:#10b981;">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <div>
+                        <p class="section-title">Canlı Önizleme</p>
+                        <p class="section-subtitle">Kategori listesindeki görünümü</p>
+                    </div>
+                </div>
+                <div class="section-body">
+
+                    <!-- Kart önizleme -->
+                    <div class="preview-card" id="previewCard">
+                        <div class="preview-icon-wrap" id="previewIconWrap"
+                             style="background:#e8efff;color:#1a56db;">
+                            <i class="fa-solid fa-tags" id="previewIcon"></i>
+                        </div>
+                        <div class="preview-name" id="previewName">Kategori Adı</div>
+                        <div>
+                            <span class="preview-badge" id="previewBadge"
+                                  style="background:#e8efff;color:#1a56db;">
+                                <i class="fa-solid fa-tags"></i> Yeni Kategori
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Tablo satır önizlemesi -->
+                    <div style="margin-top:16px;">
+                        <p style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif;">
+                            Tablodaki Görünüm
+                        </p>
+                        <div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">
+                            <div style="background:#f8fafc;padding:8px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);border-bottom:1px solid var(--border);display:flex;gap:12px;">
+                                <span style="width:36px;">#</span>
+                                <span>Kategori Adı</span>
+                            </div>
+                            <div style="padding:10px 14px;display:flex;align-items:center;gap:12px;">
+                                <span style="width:32px;height:32px;background:var(--primary-light);color:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:800;">—</span>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <div id="tableIconBox"
+                                         style="width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;background:#e8efff;color:#1a56db;transition:var(--transition);">
+                                        <i class="fa-solid fa-tags" id="tableIcon"></i>
+                                    </div>
+                                    <div>
+                                        <div id="tableNameRow" style="font-weight:600;font-size:14px;color:var(--text-main);">Kategori Adı</div>
+                                        <div style="font-size:11.5px;color:var(--text-muted);">Kategori #—</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- İpuçları -->
+                    <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
+                        <p style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif;">İpuçları</p>
+                        <div class="tip-item">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Kategori adı 2–50 karakter arasında olmalıdır.</span>
+                        </div>
+                        <div class="tip-item">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Mevcut kategorilerle aynı isim kullanmaktan kaçının.</span>
+                        </div>
+                        <div class="tip-item">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>İkon ve renk seçimi yalnızca görsel; veritabanına kaydedilmez.</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- /SAĞ -->
+
+    </div>
+
+    <!-- ═══ Sticky Action Bar ═══ -->
+    <div class="action-bar">
+        <div style="font-size:13px;color:var(--text-muted);">
+            <i class="fa-solid fa-circle-exclamation me-1" style="color:var(--accent);"></i>
+            <span style="color:var(--danger);">*</span> ile işaretli alanlar zorunludur
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="/Category/Index" class="btn-cancel-page">
+                <i class="fa-solid fa-xmark"></i> Vazgeç
+            </a>
+            <button type="submit" class="btn-save" id="saveBtn" onclick="validateAndSubmit(event)">
+                <i class="fa-solid fa-check"></i> Kategoriyi Kaydet
+            </button>
+        </div>
+    </div>
+
+</form>
+
+<script>
+/* ══════════════════════════════════════════
+   CreateCategory Page Scripts
+══════════════════════════════════════════ */
+
+// Mevcut kategori isimleri (benzerlik kontrolü için)
+// Controller'dan ViewBag.ExistingNames ile beslenebilir
+const existingNames = @Html.Raw(
+    Newtonsoft.Json.JsonConvert.SerializeObject(
+        ViewBag.ExistingNames ?? new string[] {}
+    )
+);
+
+// Seçili renk ve ikon
+let selectedColor = '#1a56db';
+let selectedIcon  = 'fa-tags';
+
+// ── İsim inputu ──
+function onNameInput(el) {
+    const val = el.value;
+    document.getElementById('charCount').textContent = val.length;
+
+    // Validasyon
+    if (val.trim()) {
+        el.classList.remove('is-invalid');
+        el.classList.add('is-valid');
+        document.getElementById('nameError').style.display = 'none';
+    } else {
+        el.classList.remove('is-valid');
+    }
+
+    // Benzerlik kontrolü
+    const lower = val.trim().toLowerCase();
+    const similar = existingNames.find(n => n.toLowerCase().includes(lower) && lower.length >= 2);
+    const warnEl  = document.getElementById('similarWarn');
+    const warnTxt = document.getElementById('similarWarnText');
+    if (similar && lower) {
+        warnTxt.textContent = `"${similar}" adlı benzer bir kategori zaten mevcut.`;
+        warnEl.style.display = 'flex';
+    } else {
+        warnEl.style.display = 'none';
+    }
+
+    updatePreview();
+}
+
+// ── Canlı önizleme güncelle ──
+function updatePreview() {
+    const name  = document.getElementById('CategoryName').value.trim() || 'Kategori Adı';
+    const color = document.querySelector('input[name="ColorTag"]:checked')?.value || '#1a56db';
+    const icon  = document.querySelector('input[name="IconClass"]:checked')?.value || 'fa-tags';
+
+    selectedColor = color;
+    selectedIcon  = icon;
+
+    // Arka plan rengi (açık ton) hesapla
+    const bgLight = color + '22'; // hex + alpha trick
+
+    // Kart önizleme
+    const iconWrap = document.getElementById('previewIconWrap');
+    const iconEl   = document.getElementById('previewIcon');
+    iconWrap.style.background = bgLight;
+    iconWrap.style.color      = color;
+    iconEl.className          = `fa-solid ${icon}`;
+
+    document.getElementById('previewName').textContent = name;
+
+    const badge = document.getElementById('previewBadge');
+    badge.style.background = bgLight;
+    badge.style.color      = color;
+    badge.innerHTML = `<i class="fa-solid ${icon}"></i> ${name}`;
+
+    // Tablo satır önizleme
+    const tableBox  = document.getElementById('tableIconBox');
+    const tableIcon = document.getElementById('tableIcon');
+    tableBox.style.background = bgLight;
+    tableBox.style.color      = color;
+    tableIcon.className       = `fa-solid ${icon}`;
+    document.getElementById('tableNameRow').textContent = name;
+}
+
+// ── Form doğrulama & gönder ──
+function validateAndSubmit(e) {
+    e.preventDefault();
+    const nameEl = document.getElementById('CategoryName');
+    const errEl  = document.getElementById('nameError');
+
+    if (!nameEl.value.trim()) {
+        nameEl.classList.add('is-invalid');
+        nameEl.classList.remove('is-valid');
+        errEl.style.display = 'flex';
+        nameEl.focus();
+        nameEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    if (nameEl.value.trim().length < 2) {
+        nameEl.classList.add('is-invalid');
+        errEl.style.display = 'flex';
+        errEl.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> En az 2 karakter giriniz.';
+        nameEl.focus();
+        return;
+    }
+
+    // Gönder
+    const btn = document.getElementById('saveBtn');
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Kaydediliyor…';
+    btn.disabled  = true;
+    document.getElementById('createCatForm').submit();
+}
+
+// ── Enter ile gönder ──
+document.getElementById('CategoryName')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); validateAndSubmit(e); }
+});
+
+// ── İlk yükleme ──
+document.addEventListener('DOMContentLoaded', () => {
+    // Varsayılan rengi seç
+    const defaultSwatch = document.querySelector('input[name="ColorTag"][value="#1a56db"]');
+    if (defaultSwatch) { defaultSwatch.checked = true; }
+
+    // Varsayılan ikonu seç
+    const defaultIcon = document.querySelector('input[name="IconClass"][value="fa-car-side"]');
+    if (defaultIcon) { defaultIcon.checked = true; }
+
+    updatePreview();
+});
+</script>
+
+

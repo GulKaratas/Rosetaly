@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Rentaly.DataAccessLayer.Abstract
 {
-    public interface ICustormerDal : IGenericDal<Customer>
+    public interface ICustomerDal : IGenericDal<Customer>
     {
     }
 }

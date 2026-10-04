@@ -1,4 +1,6 @@
-﻿using Rentaly.BusinessLayer.Abstract;
+﻿using FluentValidation;
+using Rentaly.BusinessLayer.Abstract;
+using Rentaly.BusinessLayer.ValidationRules;
 using Rentaly.DataAccessLayer.Abstract;
 using Rentaly.EntityLayer.Entities;
 
@@ -30,27 +32,19 @@ namespace Rentaly.BusinessLayer.Concrete
 
         public async Task TInsertAsync(Brand entity)
         {
-            if (string.IsNullOrWhiteSpace(entity.BrandName))
-                throw new Exception("Marka adı boş olamaz");
-
-            if (entity.BrandName.Length < 2)
-                throw new Exception("Marka adı en az 2 karakter olmalıdır");
-
-            var brands = await _brandDal.GetListAsync();
-
-            if (brands.Any(x => x.BrandName.ToLower() == entity.BrandName.ToLower()))
-                throw new Exception("Bu marka zaten mevcut");
-
+            var validator = new BrandValidator();
+            var result = validator.Validate(entity);
+            if(!result.IsValid)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
             await _brandDal.InsertAsync(entity);
         }
 
 
         public async Task TUpdateAsync(Brand entity)
         {
-
-            if (entity.BrandName.Length < 2)
-                throw new Exception("Marka adı çok kısa");
-
             await _brandDal.UpdateAsync(entity);
 
         }

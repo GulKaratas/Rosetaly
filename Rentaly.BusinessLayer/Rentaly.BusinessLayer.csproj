@@ -11,11 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="16.2.0" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Rentaly.DataAccessLayer\Rentaly.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\Rentaly.DtoLayer\Rentaly.DtoLayer.csproj" />
   </ItemGroup>
 
 </Project>

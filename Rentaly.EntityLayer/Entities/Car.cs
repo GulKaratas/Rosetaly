@@ -10,11 +10,14 @@ namespace Rentaly.EntityLayer.Entities
     {
         public int CarId { get; set; }
         public string PlateNumber { get; set; }
-        public string VIN { get; set; } // Şasi No
+        public string VIN { get; set; } 
         public int BrandId { get; set; }
         public int ModelId { get; set; }
         public int CategoryId { get; set; }
+
+        public Category Category { get; set; }
         public int BranchId { get; set; }
+        public Branch Branch { get; set; }
         public int Year { get; set; }
         public int Kilometer { get; set; }
         public decimal DailyPrice { get; set; }

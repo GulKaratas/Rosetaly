@@ -1,4 +1,27 @@
+using Rentaly.BusinessLayer.Abstract;
+using Rentaly.BusinessLayer.Concrete;
+using Rentaly.DataAccessLayer.Abstract;
+using Rentaly.DataAccessLayer.Concrete;
+using Rentaly.DataAccessLayer.EntityFramework;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<ICategoryDal,EfCategoryDal>();
+builder.Services.AddScoped<ICategoryService,CategoryManager>();
+
+builder.Services.AddScoped<ICarDal, EfCarDal>();
+builder.Services.AddScoped<ICarService, CarManager>();
+builder.Services.AddScoped<ICarModelDal, EfCarModelDal>();
+builder.Services.AddScoped<ICarModelService, CarModelManager>();
+
+builder.Services.AddScoped<IBranchDal, EfBranchDal>();
+builder.Services.AddScoped<IBranchService, BranchManager>();
+builder.Services.AddScoped<RentalyContext>();
+
+builder.Services.AddScoped<IBrandDal, EfBrandDal>();
+builder.Services.AddScoped<IBrandService, BrandManager>();
+
+
 
 // Servisleri container'a ekle.
 builder.Services.AddControllersWithViews();

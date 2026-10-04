@@ -130,6 +130,10 @@ namespace Rentaly.DataAccessLayer.Migrations
 
                     b.HasKey("CarId");
 
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Cars");
                 });
 
@@ -246,6 +250,35 @@ namespace Rentaly.DataAccessLayer.Migrations
                     b.HasKey("RentalId");
 
                     b.ToTable("Rentals");
+                });
+
+            modelBuilder.Entity("Rentaly.EntityLayer.Entities.Car", b =>
+                {
+                    b.HasOne("Rentaly.EntityLayer.Entities.Branch", "Branch")
+                        .WithMany("Cars")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Rentaly.EntityLayer.Entities.Category", "Category")
+                        .WithMany("Cars")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Rentaly.EntityLayer.Entities.Branch", b =>
+                {
+                    b.Navigation("Cars");
+                });
+
+            modelBuilder.Entity("Rentaly.EntityLayer.Entities.Category", b =>
+                {
+                    b.Navigation("Cars");
                 });
 #pragma warning restore 612, 618
         }

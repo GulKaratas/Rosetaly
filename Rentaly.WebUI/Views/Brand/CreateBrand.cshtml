@@ -1,0 +1,90 @@
+﻿@model Rentaly.EntityLayer.Entities.Brand
+
+@{
+    ViewData["Title"] = "CreateBrand";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+
+<div style="max-width:480px; margin:2rem auto;">
+    <div style="border:1px solid #e5e7eb; border-radius:12px; padding:1.5rem; background:#fff;">
+        
+        <h2 style="font-size:16px; font-weight:500; margin-bottom:1.5rem; 
+                   padding-bottom:12px; border-bottom:1px solid #f3f4f6;">
+            Yeni Marka Ekle
+        </h2>
+
+        @* Validation özet kutusu - tüm hatalar buraya gelir *@
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div style="background:#fef2f2; border:1px solid #fecaca; 
+                        border-radius:8px; padding:12px 14px; margin-bottom:1.25rem;">
+                <ul style="margin:0; padding-left:16px;">
+                    @foreach (var error in ViewData.ModelState.Values
+                                            .SelectMany(v => v.Errors))
+                    {
+                        <li style="font-size:13px; color:#dc2626; margin-bottom:4px;">
+                            @error.ErrorMessage
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        @* Başarı mesajı - TempData ile controller'dan gelir *@
+        @if (TempData["Success"] != null)
+        {
+            <div style="background:#f0fdf4; border:1px solid #bbf7d0; 
+                        border-radius:8px; padding:10px 14px; margin-bottom:1.25rem;
+                        font-size:13px; color:#16a34a;">
+                @TempData["Success"]
+            </div>
+        }
+
+        <form asp-action="CreateBrand" asp-controller="Brand" method="post">
+            @Html.AntiForgeryToken()
+
+            @* Marka Adı *@
+            <div style="margin-bottom:1.25rem;">
+                <label asp-for="BrandName" 
+                       style="display:block; font-size:13px; 
+                              color:#6b7280; margin-bottom:6px;">
+                    Marka Adı
+                </label>
+                <input asp-for="BrandName"
+                       placeholder="örn. Toyota"
+                       style="width:100%; box-sizing:border-box; padding:8px 12px;
+                              border:1px solid @(ViewData.ModelState["BrandName"]?.Errors.Count > 0 ? "#fca5a5" : "#e5e7eb");
+                              border-radius:8px; font-size:14px;" />
+                <span asp-validation-for="BrandName"
+                      style="font-size:12px; color:#dc2626; display:block; margin-top:4px;">
+                </span>
+            </div>
+
+            @* Görsel URL *@
+            <div style="margin-bottom:1.5rem;">
+                <label asp-for="ImageUrl"
+                       style="display:block; font-size:13px; 
+                              color:#6b7280; margin-bottom:6px;">
+                    Görsel URL
+                </label>
+                <input asp-for="ImageUrl"
+                       placeholder="https://example.com/brand.png"
+                       style="width:100%; box-sizing:border-box; padding:8px 12px;
+                              border:1px solid @(ViewData.ModelState["ImageUrl"]?.Errors.Count > 0 ? "#fca5a5" : "#e5e7eb");
+                              border-radius:8px; font-size:14px;" />
+                <span asp-validation-for="ImageUrl"
+                      style="font-size:12px; color:#dc2626; display:block; margin-top:4px;">
+                </span>
+            </div>
+
+            <button type="submit"
+                    style="width:100%; padding:10px; background:#fff;
+                           border:1px solid #d1d5db; border-radius:8px;
+                           font-size:14px; font-weight:500; cursor:pointer;">
+                Ekle
+            </button>
+        </form>
+    </div>
+</div>
+
