@@ -1,0 +1,1041 @@
+﻿@model List<ResultCustomerDto>
+
+@{
+    ViewData["Title"] = "CustomerList";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+
+<style>
+    /* ── Customer List Page ── */
+
+    /* ── Mini Stat Cards ── */
+    .mini-stat {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        transition: var(--transition);
+    }
+
+        .mini-stat:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+    .mini-stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .mini-stat-val {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--text-main);
+        line-height: 1;
+    }
+
+    .mini-stat-label {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        margin-top: 3px;
+    }
+
+    /* ── Toolbar ── */
+    .customer-toolbar {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 20px;
+    }
+
+    .customer-search-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 200px;
+    }
+
+        .customer-search-wrap i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .customer-search-wrap input {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 9px 12px 9px 36px;
+            font-size: 13.5px;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-main);
+            background: var(--body-bg);
+            outline: none;
+            transition: var(--transition);
+        }
+
+            .customer-search-wrap input:focus {
+                border-color: var(--primary);
+                background: #fff;
+                box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+            }
+
+    /* ── Customer Cards Grid ── */
+    .customers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+        gap: 18px;
+        margin-bottom: 20px;
+    }
+
+    .customer-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+        .customer-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+
+    /* Accent bar */
+    .customer-card-accent {
+        height: 5px;
+        background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%);
+        flex-shrink: 0;
+    }
+
+    /* Avatar + header */
+    .customer-card-header {
+        padding: 18px 18px 14px;
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .customer-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 17px;
+        font-weight: 800;
+        color: #fff;
+        flex-shrink: 0;
+        letter-spacing: -.5px;
+    }
+
+    .customer-card-title-block {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .customer-card-name {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--text-main);
+        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .customer-card-id {
+        display: inline-block;
+        margin-top: 4px;
+        background: #f5f3ff;
+        border: 1px solid #ddd6fe;
+        color: #7c3aed;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 5px;
+        letter-spacing: .5px;
+    }
+
+    /* Card body */
+    .customer-card-body {
+        padding: 16px 18px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .customer-info-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .customer-info-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+        .customer-info-icon.email   { background: #eff6ff; color: #3b82f6; }
+        .customer-info-icon.phone   { background: #f0fdf4; color: #16a34a; }
+        .customer-info-icon.license { background: #fdf4ff; color: #a21caf; }
+        .customer-info-icon.id-num  { background: #fff7ed; color: #ea580c; }
+
+    .customer-info-text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .customer-info-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        line-height: 1;
+        margin-bottom: 2px;
+    }
+
+    .customer-info-value {
+        font-size: 13.5px;
+        color: var(--text-main);
+        font-weight: 500;
+        line-height: 1.4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Card footer */
+    .customer-card-footer {
+        padding: 12px 16px;
+        border-top: 1px solid var(--border);
+        background: #fafbfc;
+        display: flex;
+        gap: 8px;
+    }
+
+    /* ── List View ── */
+    .customers-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .customer-list-item {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 18px;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .customer-list-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #7c3aed 0%, #a78bfa 100%);
+            border-radius: 4px 0 0 4px;
+        }
+
+        .customer-list-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+            border-color: #7c3aed;
+        }
+
+    .customer-list-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        color: #fff;
+        flex-shrink: 0;
+    }
+
+    .customer-list-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .customer-list-name {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14.5px;
+        font-weight: 800;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .customer-list-id-badge {
+        background: #f5f3ff;
+        border: 1px solid #ddd6fe;
+        color: #7c3aed;
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 4px;
+        letter-spacing: .5px;
+    }
+
+    .customer-list-sub {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 5px;
+        flex-wrap: wrap;
+    }
+
+    .customer-list-meta {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12.5px;
+        color: var(--text-muted);
+    }
+
+        .customer-list-meta i {
+            font-size: 11px;
+            color: #7c3aed;
+        }
+
+    .customer-list-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    /* ── Shared btn ── */
+    .tbl-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 13px;
+        border-radius: var(--radius-sm);
+        font-size: 12.5px;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        text-decoration: none;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .tbl-btn-detail {
+        background: #f5f3ff;
+        color: #7c3aed;
+    }
+
+        .tbl-btn-detail:hover {
+            background: #7c3aed;
+            color: #fff;
+        }
+
+    .tbl-btn-edit {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+        .tbl-btn-edit:hover {
+            background: var(--warning);
+            color: #fff;
+        }
+
+    .tbl-btn-delete {
+        background: #fee2e2;
+        color: var(--danger);
+    }
+
+        .tbl-btn-delete:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+    /* ── View toggle ── */
+    .view-toggle {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+    }
+
+    .view-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        background: #fff;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+        .view-btn.active {
+            background: #7c3aed;
+            color: #fff;
+        }
+
+        .view-btn:hover:not(.active) {
+            background: #f5f3ff;
+            color: #7c3aed;
+        }
+
+    /* ── Empty State ── */
+    .empty-state {
+        padding: 64px 20px;
+        text-align: center;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .empty-icon {
+        width: 72px;
+        height: 72px;
+        background: #f5f3ff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: #7c3aed;
+        margin: 0 auto 18px;
+    }
+
+    /* ── Pagination ── */
+    .paging-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 4px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .paging-info {
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+
+    .paging-btns {
+        display: flex;
+        gap: 4px;
+    }
+
+    .page-btn {
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        color: var(--text-main);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+        .page-btn:hover {
+            background: #f5f3ff;
+            border-color: #7c3aed;
+            color: #7c3aed;
+        }
+
+        .page-btn.active {
+            background: #7c3aed;
+            border-color: #7c3aed;
+            color: #fff;
+        }
+
+        .page-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
+    .license-date-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #16a34a;
+        font-size: 11.5px;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: 6px;
+    }
+
+    @@media (max-width: 575px) {
+        .customers-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .customer-list-meta:not(:first-child) {
+            display: none;
+        }
+    }
+</style>
+
+<!-- ═══ Page Header ═══ -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Müşteri Listesi</h1>
+        <p class="page-subtitle">Tüm müşterileri görüntüleyin ve yönetin.</p>
+    </div>
+    <a href="/Customer/Create" class="btn-primary-custom">
+        <i class="fa-solid fa-plus"></i> Yeni Müşteri
+    </a>
+</div>
+
+<!-- ═══ Mini İstatistikler ═══ -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="mini-stat">
+            <div class="mini-stat-icon" style="background:#f5f3ff;color:#7c3aed;">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div>
+                <div class="mini-stat-val" style="color:#7c3aed;">@Model.Count()</div>
+                <div class="mini-stat-label">Toplam Müşteri</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="mini-stat">
+            <div class="mini-stat-icon" style="background:#d1fae5;color:#059669;">
+                <i class="fa-solid fa-id-card"></i>
+            </div>
+            <div>
+                <div class="mini-stat-val" style="color:#059669;">
+                    @Model.Count(c => !string.IsNullOrEmpty(c.DrivingLicenseNumber))
+                </div>
+                <div class="mini-stat-label">Ehliyeti Olan</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="mini-stat">
+            <div class="mini-stat-icon" style="background:#fff7ed;color:#ea580c;">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+            <div>
+                <div class="mini-stat-val" style="color:#ea580c;">
+                    @Model.Count(c => !string.IsNullOrEmpty(c.Email))
+                </div>
+                <div class="mini-stat-label">E-postası Kayıtlı</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="mini-stat">
+            <div class="mini-stat-icon" style="background:#eff6ff;color:#3b82f6;">
+                <i class="fa-solid fa-phone"></i>
+            </div>
+            <div>
+                <div class="mini-stat-val" style="color:#3b82f6;">
+                    @Model.Count(c => !string.IsNullOrEmpty(c.Phone))
+                </div>
+                <div class="mini-stat-label">Telefonu Kayıtlı</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ Toolbar ═══ -->
+<div class="customer-toolbar">
+    <div class="customer-search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="customerSearch" placeholder="Ad, soyad, e-posta, telefon ara…" oninput="filterCustomers()" />
+    </div>
+
+    <select class="filter-select" id="sortSelect" onchange="filterCustomers()" style="min-width:200px;">
+        <option value="id-asc">ID — Artan</option>
+        <option value="id-desc">ID — Azalan</option>
+        <option value="name-asc">Ad — A'dan Z'ye</option>
+        <option value="name-desc">Ad — Z'den A'ya</option>
+        <option value="surname-asc">Soyad — A'dan Z'ye</option>
+        <option value="surname-desc">Soyad — Z'den A'ya</option>
+        <option value="license-asc">Ehliyet Tarihi — Eski→Yeni</option>
+        <option value="license-desc">Ehliyet Tarihi — Yeni→Eski</option>
+    </select>
+
+    <div class="view-toggle">
+        <button class="view-btn active" id="btnGridView" onclick="setView('grid')" title="Kart Görünümü">
+            <i class="fa-solid fa-grip"></i>
+        </button>
+        <button class="view-btn" id="btnListView" onclick="setView('list')" title="Liste Görünümü">
+            <i class="fa-solid fa-list"></i>
+        </button>
+    </div>
+
+    <button class="btn-action btn-detail" onclick="resetCustomerFilters()" style="flex:none;padding:9px 14px;font-size:13px;white-space:nowrap;">
+        <i class="fa-solid fa-rotate-left"></i> Sıfırla
+    </button>
+</div>
+
+<!-- ═══ Kart Grid Görünümü ═══ -->
+<div class="customers-grid" id="customersGrid">
+    @foreach (var customer in Model)
+    {
+        var initials = $"{(string.IsNullOrEmpty(customer.Name) ? "?" : customer.Name[0].ToString())}{(string.IsNullOrEmpty(customer.Surname) ? "" : customer.Surname[0].ToString())}".ToUpper();
+        var fullName = $"{customer.Name} {customer.Surname}".Trim();
+
+        <div class="customer-card"
+             data-id="@customer.CustomerId"
+             data-name="@customer.Name?.ToLower()"
+             data-surname="@customer.Surname?.ToLower()"
+             data-email="@customer.Email?.ToLower()"
+             data-phone="@customer.Phone?.ToLower()"
+             data-license-date="@customer.DrivingLicenseDate.Ticks">
+
+            <div class="customer-card-accent"></div>
+
+            <!-- Header -->
+            <div class="customer-card-header">
+                <div class="customer-avatar">@initials</div>
+                <div class="customer-card-title-block">
+                    <div class="customer-card-name">@fullName</div>
+                    <span class="customer-card-id"># @customer.CustomerId</span>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="customer-card-body">
+                <div class="customer-info-row">
+                    <div class="customer-info-icon email">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <div class="customer-info-text">
+                        <span class="customer-info-label">E-posta</span>
+                        <span class="customer-info-value">@(string.IsNullOrEmpty(customer.Email) ? "—" : customer.Email)</span>
+                    </div>
+                </div>
+
+                <div class="customer-info-row">
+                    <div class="customer-info-icon phone">
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+                    <div class="customer-info-text">
+                        <span class="customer-info-label">Telefon</span>
+                        <span class="customer-info-value">@(string.IsNullOrEmpty(customer.Phone) ? "—" : customer.Phone)</span>
+                    </div>
+                </div>
+
+                <div class="customer-info-row">
+                    <div class="customer-info-icon id-num">
+                        <i class="fa-solid fa-fingerprint"></i>
+                    </div>
+                    <div class="customer-info-text">
+                        <span class="customer-info-label">TC Kimlik No</span>
+                        <span class="customer-info-value">@(string.IsNullOrEmpty(customer.IdentityNumber) ? "—" : customer.IdentityNumber)</span>
+                    </div>
+                </div>
+
+                <div class="customer-info-row">
+                    <div class="customer-info-icon license">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+                    <div class="customer-info-text">
+                        <span class="customer-info-label">Ehliyet No / Tarih</span>
+                        <span class="customer-info-value">
+                            @(string.IsNullOrEmpty(customer.DrivingLicenseNumber) ? "—" : customer.DrivingLicenseNumber)
+                            @if (customer.DrivingLicenseDate != default)
+                            {
+                                <span class="license-date-badge" style="margin-left:4px;">
+                                    <i class="fa-solid fa-calendar-check" style="font-size:10px;"></i>
+                                    @customer.DrivingLicenseDate.ToString("dd.MM.yyyy")
+                                </span>
+                            }
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="customer-card-footer">
+                <a href="/Customer/Detail/@customer.CustomerId" class="tbl-btn tbl-btn-detail">
+                    <i class="fa-solid fa-eye"></i> Detay
+                </a>
+                <a href="/Customer/Edit/@customer.CustomerId" class="tbl-btn tbl-btn-edit">
+                    <i class="fa-solid fa-pen-to-square"></i> Düzenle
+                </a>
+                <button class="tbl-btn tbl-btn-delete"
+                        onclick="openDeleteModal(@customer.CustomerId, '@fullName')">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- ═══ Liste Görünümü ═══ -->
+<div class="customers-list" id="customersList" style="display:none;">
+    @foreach (var customer in Model)
+    {
+        var initials = $"{(string.IsNullOrEmpty(customer.Name) ? "?" : customer.Name[0].ToString())}{(string.IsNullOrEmpty(customer.Surname) ? "" : customer.Surname[0].ToString())}".ToUpper();
+        var fullName = $"{customer.Name} {customer.Surname}".Trim();
+
+        <div class="customer-list-item"
+             data-id="@customer.CustomerId"
+             data-name="@customer.Name?.ToLower()"
+             data-surname="@customer.Surname?.ToLower()"
+             data-email="@customer.Email?.ToLower()"
+             data-phone="@customer.Phone?.ToLower()"
+             data-license-date="@customer.DrivingLicenseDate.Ticks">
+
+            <div class="customer-list-avatar">@initials</div>
+
+            <div class="customer-list-info">
+                <div class="customer-list-name">
+                    @fullName
+                    <span class="customer-list-id-badge">#@customer.CustomerId</span>
+                </div>
+                <div class="customer-list-sub">
+                    <span class="customer-list-meta">
+                        <i class="fa-solid fa-envelope"></i>
+                        @(string.IsNullOrEmpty(customer.Email) ? "E-posta yok" : customer.Email)
+                    </span>
+                    <span style="color:var(--border);">·</span>
+                    <span class="customer-list-meta">
+                        <i class="fa-solid fa-phone"></i>
+                        @(string.IsNullOrEmpty(customer.Phone) ? "Telefon yok" : customer.Phone)
+                    </span>
+                    <span style="color:var(--border);">·</span>
+                    <span class="customer-list-meta">
+                        <i class="fa-solid fa-id-card"></i>
+                        @(string.IsNullOrEmpty(customer.DrivingLicenseNumber) ? "Ehliyet yok" : customer.DrivingLicenseNumber)
+                        @if (customer.DrivingLicenseDate != default)
+                        {
+                            <span style="margin-left:4px;color:#16a34a;">(@customer.DrivingLicenseDate.ToString("dd.MM.yyyy"))</span>
+                        }
+                    </span>
+                </div>
+            </div>
+
+            <div class="customer-list-actions">
+                <a href="/Customer/Detail/@customer.CustomerId" class="tbl-btn tbl-btn-detail" style="flex:none;padding:7px 10px;">
+                    <i class="fa-solid fa-eye"></i>
+                </a>
+                <a href="/Customer/Edit/@customer.CustomerId" class="tbl-btn tbl-btn-edit" style="flex:none;padding:7px 10px;">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+                <button class="tbl-btn tbl-btn-delete" style="flex:none;padding:7px 10px;"
+                        onclick="openDeleteModal(@customer.CustomerId, '@fullName')">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Boş Durum -->
+<div class="empty-state" id="emptyState" style="display:none;">
+    <div class="empty-icon"><i class="fa-solid fa-users"></i></div>
+    <h6 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;margin-bottom:6px;">Müşteri Bulunamadı</h6>
+    <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:14px;">
+        Arama veya filtre kriterinizle eşleşen müşteri yok.
+    </p>
+    <button class="btn-primary-custom" onclick="resetCustomerFilters()">
+        <i class="fa-solid fa-rotate-left"></i> Filtreyi Temizle
+    </button>
+</div>
+
+<!-- Pagination -->
+<div class="paging-wrap" id="pagingWrap" style="display:none;">
+    <div class="paging-info" id="pagingInfo">—</div>
+    <div class="paging-btns" id="pagingBtns"></div>
+</div>
+
+<!-- ═══ SİL ONAY MODAL ═══ -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:34px;height:34px;background:#fee2e2;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--danger);font-size:15px;">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+                    <h5 class="modal-title">Müşteri Sil</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex;gap:14px;align-items:flex-start;">
+                    <div style="width:46px;height:46px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--danger);font-size:20px;flex-shrink:0;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <p style="margin:0;font-size:14.5px;color:var(--text-main);line-height:1.5;">
+                            <strong id="deleteCustomerName">bu müşteriyi</strong> silmek istediğinizden emin misiniz?
+                        </p>
+                        <p style="margin:6px 0 0;font-size:13px;color:var(--text-muted);">
+                            Bu işlem geri alınamaz. İlgili kira kayıtları etkilenebilir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel-form" data-bs-dismiss="modal"
+                        style="display:inline-flex;align-items:center;gap:6px;">
+                    <i class="fa-solid fa-xmark"></i> Vazgeç
+                </button>
+                <form id="deleteForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="deleteCustomerId" name="id" />
+                    <button type="submit"
+                            style="display:inline-flex;align-items:center;gap:7px;background:var(--danger);color:#fff;border:none;border-radius:var(--radius-sm);padding:9px 22px;font-size:13.5px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:var(--transition);">
+                        <i class="fa-solid fa-trash-can"></i> Evet, Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
+
+<script>
+    /* ══════════════════════════════════════════
+       Customer List Page Scripts
+    ══════════════════════════════════════════ */
+
+    let currentView = 'grid';
+    let currentPage = 1;
+    const PAGE_SIZE = 12;
+
+    // ── Görünüm değiştir ──
+    function setView(v) {
+        currentView = v;
+        document.getElementById('customersGrid').style.display  = v === 'grid' ? 'grid'  : 'none';
+        document.getElementById('customersList').style.display  = v === 'list' ? 'flex'  : 'none';
+        document.getElementById('btnGridView').classList.toggle('active', v === 'grid');
+        document.getElementById('btnListView').classList.toggle('active', v === 'list');
+        currentPage = 1;
+        applyFilters();
+    }
+
+    // ── Filtrele + Sırala ──
+    function filterCustomers() {
+        currentPage = 1;
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const q    = document.getElementById('customerSearch').value.toLowerCase().trim();
+        const sort = document.getElementById('sortSelect').value;
+
+        const gridCards = [...document.querySelectorAll('#customersGrid .customer-card')];
+        const listItems = [...document.querySelectorAll('#customersList .customer-list-item')];
+
+        const filterItem = (item) => {
+            if (!q) return true;
+            const name    = item.dataset.name    || '';
+            const surname = item.dataset.surname  || '';
+            const email   = item.dataset.email    || '';
+            const phone   = item.dataset.phone    || '';
+            const id      = item.dataset.id       || '';
+            return name.includes(q) || surname.includes(q) || email.includes(q) || phone.includes(q) || id.includes(q);
+        };
+
+        gridCards.forEach(c => c.setAttribute('data-show', filterItem(c) ? '1' : '0'));
+        listItems.forEach(c => c.setAttribute('data-show', filterItem(c) ? '1' : '0'));
+
+        // Sırala
+        const [sortField, sortDir] = sort.split('-');
+        const sortItems = (list) => {
+            list.sort((a, b) => {
+                let va, vb;
+                if      (sortField === 'id')      { va = parseInt(a.dataset.id);       vb = parseInt(b.dataset.id); }
+                else if (sortField === 'name')    { va = a.dataset.name    || '';      vb = b.dataset.name    || ''; }
+                else if (sortField === 'surname') { va = a.dataset.surname || '';      vb = b.dataset.surname || ''; }
+                else if (sortField === 'license') { va = parseInt(a.dataset.licenseDate) || 0; vb = parseInt(b.dataset.licenseDate) || 0; }
+
+                if (typeof va === 'string') return sortDir === 'asc' ? va.localeCompare(vb, 'tr') : vb.localeCompare(va, 'tr');
+                if (va < vb) return sortDir === 'asc' ? -1 :  1;
+                if (va > vb) return sortDir === 'asc' ?  1 : -1;
+                return 0;
+            });
+        };
+
+        sortItems(gridCards);
+        sortItems(listItems);
+
+        const gridParent = document.getElementById('customersGrid');
+        const listParent = document.getElementById('customersList');
+        gridCards.forEach(c => gridParent.appendChild(c));
+        listItems.forEach(c => listParent.appendChild(c));
+
+        buildPaging();
+    }
+
+    // ── Sıfırla ──
+    function resetCustomerFilters() {
+        document.getElementById('customerSearch').value = '';
+        document.getElementById('sortSelect').value     = 'id-asc';
+        currentPage = 1;
+        applyFilters();
+        showToast('Filtreler sıfırlandı.', 'info');
+    }
+
+    // ── Pagination ──
+    function buildPaging() {
+        const activeItems = currentView === 'grid'
+            ? [...document.querySelectorAll('#customersGrid .customer-card')]
+            : [...document.querySelectorAll('#customersList .customer-list-item')];
+
+        const filtered = activeItems.filter(c => c.getAttribute('data-show') === '1');
+        const total    = filtered.length;
+        const pages    = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        if (currentPage > pages) currentPage = pages;
+
+        activeItems.forEach(c => c.style.display = 'none');
+
+        filtered.forEach((c, i) => {
+            if (i >= (currentPage - 1) * PAGE_SIZE && i < currentPage * PAGE_SIZE) {
+                c.style.display = '';
+            }
+        });
+
+        const inactiveItems = currentView === 'grid'
+            ? [...document.querySelectorAll('#customersList .customer-list-item')]
+            : [...document.querySelectorAll('#customersGrid .customer-card')];
+        inactiveItems.forEach(c => c.style.display = 'none');
+
+        document.getElementById('emptyState').style.display = total === 0 ? 'block' : 'none';
+
+        const info = document.getElementById('pagingInfo');
+        const from = total === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+        const to   = Math.min(currentPage * PAGE_SIZE, total);
+        info.textContent = total > 0 ? `${from}–${to} / toplam ${total} müşteri` : '0 müşteri';
+
+        const btns = document.getElementById('pagingBtns');
+        btns.innerHTML = '';
+
+        const prev = makePageBtn('<i class="fa-solid fa-chevron-left" style="font-size:11px;"></i>', () => goPage(currentPage - 1));
+        if (currentPage === 1) prev.disabled = true;
+        btns.appendChild(prev);
+
+        for (let p = 1; p <= pages; p++) {
+            const btn = makePageBtn(p, () => goPage(p));
+            if (p === currentPage) btn.classList.add('active');
+            btns.appendChild(btn);
+        }
+
+        const next = makePageBtn('<i class="fa-solid fa-chevron-right" style="font-size:11px;"></i>', () => goPage(currentPage + 1));
+        if (currentPage === pages) next.disabled = true;
+        btns.appendChild(next);
+
+        document.getElementById('pagingWrap').style.display = total <= PAGE_SIZE && pages === 1 ? 'none' : 'flex';
+    }
+
+    function makePageBtn(html, fn) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'page-btn';
+        b.innerHTML = html;
+        b.addEventListener('click', fn);
+        return b;
+    }
+
+    function goPage(p) {
+        const filtered = (currentView === 'grid'
+            ? [...document.querySelectorAll('#customersGrid .customer-card')]
+            : [...document.querySelectorAll('#customersList .customer-list-item')]
+        ).filter(c => c.getAttribute('data-show') === '1');
+        const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+        currentPage = Math.max(1, Math.min(pages, p));
+        buildPaging();
+    }
+
+    // ── Sil Modal ──
+    function openDeleteModal(id, name) {
+        document.getElementById('deleteCustomerName').textContent = `"${name}"`;
+        document.getElementById('deleteCustomerId').value         = id;
+        document.getElementById('deleteForm').action             = `/Customer/Delete/${id}`;
+        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    }
+
+    // ── İlk yükleme ──
+    document.addEventListener('DOMContentLoaded', () => {
+        applyFilters();
+
+        @if (TempData["Success"] != null)
+        {
+            <text>showToast('@TempData["Success"]', 'success');</text>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <text>showToast('@TempData["Error"]', 'danger');</text>
+        }
+    });
+</script>
+
+

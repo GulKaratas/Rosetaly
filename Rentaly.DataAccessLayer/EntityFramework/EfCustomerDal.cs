@@ -1,4 +1,5 @@
-﻿using Rentaly.DataAccessLayer.Concrete;
+﻿using Rentaly.DataAccessLayer.Abstract;
+using Rentaly.DataAccessLayer.Concrete;
 using Rentaly.DataAccessLayer.RepositoryDesignPattern;
 using Rentaly.EntityLayer.Entities;
 using System;

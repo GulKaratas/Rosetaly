@@ -1,8 +1,10 @@
 using Rentaly.BusinessLayer.Abstract;
 using Rentaly.BusinessLayer.Concrete;
+using Rentaly.BusinessLayer.Mapping;
 using Rentaly.DataAccessLayer.Abstract;
 using Rentaly.DataAccessLayer.Concrete;
 using Rentaly.DataAccessLayer.EntityFramework;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,11 @@ builder.Services.AddScoped<ICarModelService, CarModelManager>();
 builder.Services.AddScoped<IBranchDal, EfBranchDal>();
 builder.Services.AddScoped<IBranchService, BranchManager>();
 builder.Services.AddScoped<RentalyContext>();
+
+builder.Services.AddScoped<ICustomerDal, EfCustomerDal>();
+builder.Services.AddScoped<ICustomerService, CustomerManager>();
+
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(GeneralMapping).Assembly));
 
 builder.Services.AddScoped<IBrandDal, EfBrandDal>();
 builder.Services.AddScoped<IBrandService, BrandManager>();

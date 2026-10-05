@@ -1,0 +1,21 @@
+Rentaly 1.1.2
+Fixes for Booking and Contact form
+
+Rentaly 1.1
+New added Homepage 1 dark (02_dark-index-1.html)
+New added Car List 1 dark (02_dark-cars.html)
+New added Car List 2 dark (02_dark-cars-list.html)
+New added Car Single dark (02_dark-car-single.html)
+
+Rentaly 1.0.4
+New improvements for RTL mode
+fixes for some issue with RTL mode
+
+Rentaly 1.0.3
+New improvements for RTL mode
+
+Rentaly 1.0.2
+New added Homepage 7 (index-7.html)
+
+Rentaly 1.0.1
+New added 12 custom preloader
