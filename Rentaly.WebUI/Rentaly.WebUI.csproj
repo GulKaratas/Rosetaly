@@ -23,8 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Models\" />
     <Folder Include="wwwroot\Rentaly\Rentaly HTML\vendor\FormGuide\PHPFormValidator\tests\" />
     <Folder Include="wwwroot\Rentaly\Rentaly HTML\vendor\phpmailer\phpmailer\examples\" />
     <Folder Include="wwwroot\Rentaly\Rentaly HTML\vendor\phpmailer\phpmailer\language\" />
