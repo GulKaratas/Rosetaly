@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Rentaly.BusinessLayer.Abstract;
+using Rentaly.DtoLayer.BranchDtos;
 using Rentaly.EntityLayer.Entities;
 
 namespace Rentaly.WebUI.Controllers
@@ -25,9 +26,9 @@ namespace Rentaly.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBranch(Branch branch)
+        public async Task<IActionResult> CreateBranch(CreateBranchDto createBranchDto)
         {
-            await _branchService.TInsertAsync(branch);
+            await _branchService.TInsertAsync(createBranchDto);
             return RedirectToAction("BranchList");
         }
     }

@@ -1,0 +1,72 @@
+﻿<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- İnteraktif Filtreleme, Tarih Kilitleme & OCR Simülasyon Scripti -->
+    <script>
+            // Tarih ve Kategoriye göre Müsait Araçları Filtreleme
+            document.getElementById('btnFilterCars').addEventListener('click', function() {
+                const category = document.getElementById('filterCategory').value;
+                const pickup = document.getElementById('pickupDate').value;
+                const returnD = document.getElementById('returnDate').value;
+                const items = document.querySelectorAll('.car-item-box');
+
+                let matchedCount = 0;
+                items.forEach(item => {
+                    const itemCat = item.getAttribute('data-category');
+                    const isAvail = item.getAttribute('data-available') === 'true';
+
+                    // Kategori ve müsaitlik filtresi (seçilen tarihte sadece müsaitler veya kategori eşleşenler)
+                    if ((category === 'all' || itemCat === category) && isAvail) {
+                        item.style.display = 'block';
+                        matchedCount++;
+                    } else if (category === 'all' && !isAvail) {
+                        // Dolu olanları da göster ama kilitli durumda kalsın
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // Kullanıcıya anlık bildirim
+                const alertBox = document.createElement('div');
+                alertBox.className = 'alert alert-success alert-dismissible fade show position-fixed bottom-0 end-0 m-4 z-3';
+                alertBox.innerHTML = `<strong>Tarihler Güncellendi!</strong> Seçtiğiniz tarihler (${pickup.replace('T', ' ')} / ${returnD.replace('T', ' ')}) için müsait araçlar listelendi.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+                document.body.appendChild(alertBox);
+                setTimeout(() => alertBox.remove(), 4000);
+
+                // Araçlar bölümüne kaydır
+                document.getElementById('section-cars').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Araç Kilitleme ve Rezervasyon Formu Aktarımı
+            function lockAndBookCar(carName, price) {
+                document.getElementById('ocrSelectedCar').value = `${carName} (${price})`;
+
+                // Bildirim
+                alert(`"${carName}" seçtiğiniz tarihler için kilitlendi!\nKimlik OCR veya hızlı form ekranına yönlendiriliyorsunuz.`);
+
+                // OCR modalını aç
+                const ocrModal = new bootstrap.Modal(document.getElementById('ocrModal'));
+                ocrModal.show();
+            }
+
+            // Kimlik OCR Simülasyonu
+            function simulateOcrScan() {
+                const statusMsg = document.getElementById('ocrStatusMsg');
+                statusMsg.style.display = 'block';
+                statusMsg.innerHTML = '<i class="fa fa-spinner fa-spin me-1"></i> Kimlik yapay zeka ile taranıyor...';
+
+                setTimeout(() => {
+                    statusMsg.className = 'mt-3 p-2 rounded small text-center text-success';
+                    statusMsg.style.background = 'rgba(30,203,21,0.15)';
+                    statusMsg.innerHTML = '<i class="fa fa-check-circle me-1"></i> Kimlik başarıyla doğrulandı! Form dolduruldu.';
+
+                    // Formu doldur
+                    document.getElementById('ocrFullName').value = 'Ahmet Hakan Demir';
+                    document.getElementById('ocrIdNumber').value = '28491028472';
+                    document.getElementById('ocrBirthDate').value = '1992-06-15';
+                    document.getElementById('ocrLicenseClass').value = 'B Sınıfı (8 Yıllık)';
+                    document.getElementById('ocrPhone').value = '+90 532 458 92 14';
+                }, 1200);
+            }
+    </script>
+

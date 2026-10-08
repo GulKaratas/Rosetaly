@@ -14,6 +14,12 @@ namespace Rentaly.WebUI.Controllers
             _brandService = brandService;
         }
 
+        public async Task<IActionResult> Index()
+        {
+            var brandList = await _brandService.TGetListAsync();
+            return View(brandList);
+        }
+
         [HttpGet]
         public IActionResult CreateBrand()
         {

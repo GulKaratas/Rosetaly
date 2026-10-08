@@ -1,0 +1,828 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_UILayout.cshtml";
+}
+<div class="no-bottom no-top" id="content">
+    <div id="top"></div>
+    <!-- 1. HERO SLIDER CAROUSEL (ASP.NET Razor Dinamik Uyumlu) -->
+    <section class="hero-section carousel slide carousel-fade" data-bs-interval="5000" data-bs-ride="carousel" id="de-carousel">
+        <div class="carousel-indicators">
+            <button aria-label="Slayt 1" class="active" data-bs-slide-to="0" data-bs-target="#de-carousel" type="button"></button>
+            <button aria-label="Slayt 2" data-bs-slide-to="1" data-bs-target="#de-carousel" type="button"></button>
+            <button aria-label="Slayt 3" data-bs-slide-to="2" data-bs-target="#de-carousel" type="button"></button>
+        </div>
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+                <div class="hero-slide" style="background-image: url('~/Rentaly/Rentaly Html/images/background/1.jpg');">
+                    <div class="hero-overlay">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-8">
+                                    <div class="hero-tag"><i class="fa fa-shield-alt"></i> Güvenli &amp; Anlık Rezervasyon</div>
+                                    <h1 class="hero-title">Premium Araçlar,<br /><span class="text-primary-custom">Kusursuz Konfor.</span></h1>
+                                    <p class="hero-desc">Dünyayı benzersiz konfor ve şıklıkla keşfedin. Seçilen araç tarih boyunca size rezerve edilir ve kilitlenir.</p>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <a class="btn btn-custom-primary" href="#section-filter"><i class="fa fa-calendar-check"></i> Tarihe Göre Araç Bul</a>
+                                        <a class="btn btn-outline-light px-4 py-3 rounded-3 fw-bold" href="#section-cars">Araçları İncele</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="carousel-item">
+                <div class="hero-slide" style="background-image: url('https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg');">
+                    <div class="hero-overlay">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-8">
+                                    <div class="hero-tag"><i class="fa fa-star"></i> VIP Filo &amp; 7/24 Destek</div>
+                                    <h1 class="hero-title">Birinci Sınıf Deneyim,<br /><span class="text-primary-custom">Şeffaf Fiyat Garantisi.</span></h1>
+                                    <p class="hero-desc">Sürpriz masraf yok, gizli ücret yok. AI destekli kimlik okutma ile form doldurmadan saniyeler içinde yola çıkın.</p>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <a class="btn btn-custom-primary" href="#section-cars"><i class="fa fa-car"></i> Araçları Keşfet</a>
+                                        <button class="btn btn-ocr" data-bs-target="#ocrModal" data-bs-toggle="modal"><i class="fa fa-camera"></i> Hızlı Kimlik Tara</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="carousel-item">
+                <div class="hero-slide" style="background-image: url('https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg');">
+                    <div class="hero-overlay">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-8">
+                                    <div class="hero-tag"><i class="fa fa-check-circle"></i> Tam Kapsamlı Kasko</div>
+                                    <h1 class="hero-title">Güvenli Yolculuk,<br /><span class="text-primary-custom">Ödüllü Hizmet Kalitesi.</span></h1>
+                                    <p class="hero-desc">Tüm bakımları eksiksiz yapılmış lüks ve ekonomik SUV, Sedan ve Spor modellerimizle yola hazırsınız.</p>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <a class="btn btn-custom-primary" href="#section-filter">Rezervasyona Başla</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" data-bs-slide="prev" data-bs-target="#de-carousel" type="button">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" data-bs-slide="next" data-bs-target="#de-carousel" type="button">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </section>
+    <!-- DİNAMİK ARAMA FİLTRESİ & TARİH KİLİTLEME PANELİ -->
+    @await Component.InvokeAsync("_DefaultSearchComponentPartial")
+    
+    <!-- 2. MARKALAR & MODELLER (Hızlı Filtreleme Bantı) -->
+    @await Component.InvokeAsync("_DefaultBrandComponentPartial")
+    
+    <!-- 3. PROCESS / İŞLEYİŞ -->
+    <section class="section-padding bg-dark bg-opacity-50" id="section-process">
+        <div class="container">
+            <div class="text-center section-title-wrap">
+                <span class="section-subtitle">Nasıl Çalışır?</span>
+                <h2 class="section-title">4 Kolay Adımda Rezervasyon İşleyişi</h2>
+                <p class="text-muted mx-auto" style="max-width: 650px;">
+                    Aracınızı dakikalar içinde kiralayın, anlık tarih kilit sistemi ve OCR kimlik doğrulamasıyla beklemeden teslim alın.
+                </p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="process-card">
+                        <span class="process-step-num">01</span>
+                        <div class="process-icon"><i class="fa fa-calendar-alt"></i></div>
+                        <h4>Tarih &amp; Lokasyon Seç</h4>
+                        <p class="text-muted small">İhtiyacınız olan alış-iade tarihlerini ve havaalanı veya şehir ofisimizi belirleyin.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="process-card">
+                        <span class="process-step-num">02</span>
+                        <div class="process-icon"><i class="fa fa-car"></i></div>
+                        <h4>Müsait Aracı Kilitle</h4>
+                        <p class="text-muted small">Seçtiğiniz tarihte müsait 10 seçkin araç arasından dilediğinizi anında rezerve edip kilitleyin.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="process-card">
+                        <span class="process-step-num">03</span>
+                        <div class="process-icon"><i class="fa fa-camera-retro"></i></div>
+                        <h4>Hızlı Kimlik OCR</h4>
+                        <p class="text-muted small">Kameradan ya da dosyadan kimliğinizi yükleyin; sözleşme ve ehliyet formları otomatik dolsun.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="process-card">
+                        <span class="process-step-num">04</span>
+                        <div class="process-icon"><i class="fa fa-key"></i></div>
+                        <h4>Anahtarı Teslim Al</h4>
+                        <p class="text-muted small">Ücretsiz karşılama ve ekspres teslimatla maceranıza vakit kaybetmeden start verin.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 4. ARAÇLAR (İLK 10 ARAÇ LİSTESİ - DİNAMİK / TARİH KİLİTLEME ENTEGRELİ) -->
+    <section class="section-padding" id="section-cars">
+        <div class="container">
+            <div class="d-flex align-items-end justify-content-between mb-4 flex-wrap gap-3">
+                <div>
+                    <span class="section-subtitle">Filo Vitrini</span>
+                    <h2 class="section-title mb-0">İlk 10 Popüler Araç</h2>
+                    <p class="text-muted mt-2 mb-0">Tarih seçiminize göre gerçek zamanlı müsaitlik ve kilit durumları gösterilmektedir.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <span class="badge bg-success bg-opacity-25 text-success p-2">8 Müsait</span>
+                    <span class="badge bg-danger bg-opacity-25 text-danger p-2">2 Kilitli (Dolu)</span>
+                </div>
+            </div>
+            <div class="row g-4" id="carsListContainer">
+                <!-- Araç 1: Jeep Renegade -->
+                <div class="col-lg-4 col-md-6 car-item-box" data-available="true" data-category="suv">
+                    <div class="car-card">
+                        <div class="car-thumb">
+                            <span class="car-badge">SUV • 4x4</span>
+                            <span class="car-status-available"><i class="fa fa-check"></i> Müsait</span>
+                            <img alt="Jeep Renegade" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        </div>
+                        <div class="car-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="mb-1">Jeep Renegade Limited</h4>
+                                    <small class="text-muted">Model Yılı: 2024 • Benzin</small>
+                                </div>
+                                <span class="badge bg-dark text-warning"><i class="fa fa-star"></i> 4.9</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="car-spec-item"><i class="fa fa-user-group"></i> 5 Kişi</div>
+                                <div class="car-spec-item"><i class="fa fa-suitcase"></i> 3 Bavul</div>
+                                <div class="car-spec-item"><i class="fa fa-cogs"></i> Otomatik</div>
+                                <div class="car-spec-item"><i class="fa fa-gas-pump"></i> 6.8L/100</div>
+                            </div>
+                            <div class="car-price-row">
+                                <div class="price-val">₺2.450 <span>/ Günlük</span></div>
+                                <button class="btn btn-custom-primary btn-sm px-3" onclick="lockAndBookCar('Jeep Renegade Limited', '₺2.450')">
+                                    <i class="fa fa-lock"></i> Rezerve Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Araç 2: BMW M2 Coupe (Şu an kilitli örnek) -->
+                <div class="col-lg-4 col-md-6 car-item-box" data-available="false" data-category="spor">
+                    <div class="car-card">
+                        <div class="car-thumb">
+                            <span class="car-badge">Spor • Coupe</span>
+                            <span class="car-status-locked"><i class="fa fa-lock"></i> 10-15 Mayıs Kilitli</span>
+                            <img alt="BMW M2" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        </div>
+                        <div class="car-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="mb-1">BMW M2 Competition</h4>
+                                    <small class="text-muted">Model Yılı: 2024 • 410 HP</small>
+                                </div>
+                                <span class="badge bg-dark text-warning"><i class="fa fa-star"></i> 5.0</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="car-spec-item"><i class="fa fa-user-group"></i> 4 Kişi</div>
+                                <div class="car-spec-item"><i class="fa fa-suitcase"></i> 2 Bavul</div>
+                                <div class="car-spec-item"><i class="fa fa-cogs"></i> DKG Otm</div>
+                                <div class="car-spec-item"><i class="fa fa-tachometer-alt"></i> 0-100: 4.2s</div>
+                            </div>
+                            <div class="lock-indicator">
+                                <i class="fa fa-user-lock"></i> Başka bir misafir için rezerve edildi.
+                            </div>
+                            <div class="car-price-row mt-3">
+                                <div class="price-val text-muted">₺4.800 <span>/ Günlük</span></div>
+                                <button class="btn btn-secondary btn-sm px-3 disabled" disabled="">Tarihte Dolu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Araç 3: Mercedes-Benz E-Class -->
+                <div class="col-lg-4 col-md-6 car-item-box" data-available="true" data-category="sedan">
+                    <div class="car-card">
+                        <div class="car-thumb">
+                            <span class="car-badge">Executive Sedan</span>
+                            <span class="car-status-available"><i class="fa fa-check"></i> Müsait</span>
+                            <img alt="Mercedes E Class" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        </div>
+                        <div class="car-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="mb-1">Mercedes-Benz E 300</h4>
+                                    <small class="text-muted">Model Yılı: 2024 • AMG Line</small>
+                                </div>
+                                <span class="badge bg-dark text-warning"><i class="fa fa-star"></i> 4.95</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="car-spec-item"><i class="fa fa-user-group"></i> 5 Kişi</div>
+                                <div class="car-spec-item"><i class="fa fa-suitcase"></i> 4 Bavul</div>
+                                <div class="car-spec-item"><i class="fa fa-cogs"></i> 9G-Tronic</div>
+                                <div class="car-spec-item"><i class="fa fa-gas-pump"></i> 6.2L/100</div>
+                            </div>
+                            <div class="car-price-row">
+                                <div class="price-val">₺3.900 <span>/ Günlük</span></div>
+                                <button class="btn btn-custom-primary btn-sm px-3" onclick="lockAndBookCar('Mercedes E 300', '₺3.900')">
+                                    <i class="fa fa-lock"></i> Rezerve Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Araç 4: Porsche Taycan (Elektrikli) -->
+                <div class="col-lg-4 col-md-6 car-item-box" data-available="true" data-category="elektrik">
+                    <div class="car-card">
+                        <div class="car-thumb">
+                            <span class="car-badge">100% Elektrik • Spor</span>
+                            <span class="car-status-available"><i class="fa fa-check"></i> Müsait</span>
+                            <img alt="Porsche Taycan" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        </div>
+                        <div class="car-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="mb-1">Porsche Taycan 4S</h4>
+                                    <small class="text-muted">530 HP • 480km Menzil</small>
+                                </div>
+                                <span class="badge bg-dark text-warning"><i class="fa fa-star"></i> 5.0</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="car-spec-item"><i class="fa fa-user-group"></i> 4 Kişi</div>
+                                <div class="car-spec-item"><i class="fa fa-suitcase"></i> 2 Bavul</div>
+                                <div class="car-spec-item"><i class="fa fa-bolt"></i> EV Şarj</div>
+                                <div class="car-spec-item"><i class="fa fa-tachometer-alt"></i> 0-100: 4.0s</div>
+                            </div>
+                            <div class="car-price-row">
+                                <div class="price-val">₺6.500 <span>/ Günlük</span></div>
+                                <button class="btn btn-custom-primary btn-sm px-3" onclick="lockAndBookCar('Porsche Taycan 4S', '₺6.500')">
+                                    <i class="fa fa-lock"></i> Rezerve Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Araç 5: Ford Ranger Raptor -->
+                <div class="col-lg-4 col-md-6 car-item-box" data-available="true" data-category="suv">
+                    <div class="car-card">
+                        <div class="car-thumb">
+                            <span class="car-badge">Off-Road • Truck</span>
+                            <span class="car-status-available"><i class="fa fa-check"></i> Müsait</span>
+                            <img alt="Ford Ranger Raptor" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        </div>
+                        <div class="car-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="mb-1">Ford Ranger Raptor V6</h4>
+                                    <small class="text-muted">Twin-Turbo • Fox Süspansiyon</small>
+                                </div>
+                                <span class="badge bg-dark text-warning"><i class="fa fa-star"></i> 4.88</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="car-spec-item"><i class="fa fa-user-group"></i> 5 Kişi</div>
+                                <div class="car-spec-item"><i class="fa fa-truck-pickup"></i> Kasa</div>
+                                <div class="car-spec-item"><i class="fa fa-cogs"></i> 10 Vites</div>
+                                <div class="car-spec-item"><i class="fa fa-mountain"></i> 4x4 Kilit</div>
+                            </div>
+                            <div class="car-price-row">
+                                <div class="price-val">₺3.400 <span>/ Günlük</span></div>
+                                <button class="btn btn-custom-primary btn-sm px-3" onclick="lockAndBookCar('Ford Ranger Raptor V6', '₺3.400')">
+                                    <i class="fa fa-lock"></i> Rezerve Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Araç 6: Audi RS6 Avant -->
+                <div class="col-lg-4 col-md-6 car-item-box" data-available="true" data-category="spor">
+                    <div class="car-card">
+                        <div class="car-thumb">
+                            <span class="car-badge">Super Wagon • Quattro</span>
+                            <span class="car-status-available"><i class="fa fa-check"></i> Müsait</span>
+                            <img alt="Audi RS6" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        </div>
+                        <div class="car-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="mb-1">Audi RS6 Avant Quattro</h4>
+                                    <small class="text-muted">600 HP • V8 Bi-Turbo</small>
+                                </div>
+                                <span class="badge bg-dark text-warning"><i class="fa fa-star"></i> 4.96</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="car-spec-item"><i class="fa fa-user-group"></i> 5 Kişi</div>
+                                <div class="car-spec-item"><i class="fa fa-suitcase"></i> 5 Bavul</div>
+                                <div class="car-spec-item"><i class="fa fa-cogs"></i> Tiptronic</div>
+                                <div class="car-spec-item"><i class="fa fa-tachometer-alt"></i> 0-100: 3.6s</div>
+                            </div>
+                            <div class="car-price-row">
+                                <div class="price-val">₺5.900 <span>/ Günlük</span></div>
+                                <button class="btn btn-custom-primary btn-sm px-3" onclick="lockAndBookCar('Audi RS6 Avant', '₺5.900')">
+                                    <i class="fa fa-lock"></i> Rezerve Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Araç 7: Mini Cooper S Cabrio -->
+                <div class="col-lg-4 col-md-6 car-item-box" data-available="true" data-category="spor">
+                    <div class="car-card">
+                        <div class="car-thumb">
+                            <span class="car-badge">Cabriolet • Şehir</span>
+                            <span class="car-status-available"><i class="fa fa-check"></i> Müsait</span>
+                            <img alt="Mini Cooper Cabrio" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        </div>
+                        <div class="car-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="mb-1">Mini Cooper S Cabrio</h4>
+                                    <small class="text-muted">Açılır Tavan • Benzin</small>
+                                </div>
+                                <span class="badge bg-dark text-warning"><i class="fa fa-star"></i> 4.82</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="car-spec-item"><i class="fa fa-user-group"></i> 4 Kişi</div>
+                                <div class="car-spec-item"><i class="fa fa-suitcase"></i> 2 Bavul</div>
+                                <div class="car-spec-item"><i class="fa fa-cogs"></i> Steptronic</div>
+                                <div class="car-spec-item"><i class="fa fa-sun"></i> Cabrio</div>
+                            </div>
+                            <div class="car-price-row">
+                                <div class="price-val">₺2.200 <span>/ Günlük</span></div>
+                                <button class="btn btn-custom-primary btn-sm px-3" onclick="lockAndBookCar('Mini Cooper S Cabrio', '₺2.200')">
+                                    <i class="fa fa-lock"></i> Rezerve Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Araç 8: Volkswagen Golf R-Line -->
+                <div class="col-lg-4 col-md-6 car-item-box" data-available="true" data-category="sedan">
+                    <div class="car-card">
+                        <div class="car-thumb">
+                            <span class="car-badge">Hatchback • Ekonomik</span>
+                            <span class="car-status-available"><i class="fa fa-check"></i> Müsait</span>
+                            <img alt="VW Golf" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        </div>
+                        <div class="car-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="mb-1">Volkswagen Golf R-Line</h4>
+                                    <small class="text-muted">1.5 eTSI Hibrit • 2024</small>
+                                </div>
+                                <span class="badge bg-dark text-warning"><i class="fa fa-star"></i> 4.85</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="car-spec-item"><i class="fa fa-user-group"></i> 5 Kişi</div>
+                                <div class="car-spec-item"><i class="fa fa-suitcase"></i> 3 Bavul</div>
+                                <div class="car-spec-item"><i class="fa fa-cogs"></i> DSG Otm</div>
+                                <div class="car-spec-item"><i class="fa fa-leaf"></i> 5.1L Hibrit</div>
+                            </div>
+                            <div class="car-price-row">
+                                <div class="price-val">₺1.750 <span>/ Günlük</span></div>
+                                <button class="btn btn-custom-primary btn-sm px-3" onclick="lockAndBookCar('Volkswagen Golf R-Line', '₺1.750')">
+                                    <i class="fa fa-lock"></i> Rezerve Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Araç 9: Tesla Model Y Performance -->
+                <div class="col-lg-4 col-md-6 car-item-box" data-available="true" data-category="elektrik">
+                    <div class="car-card">
+                        <div class="car-thumb">
+                            <span class="car-badge">Elektrikli SUV</span>
+                            <span class="car-status-available"><i class="fa fa-check"></i> Müsait</span>
+                            <img alt="Tesla Model Y" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        </div>
+                        <div class="car-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="mb-1">Tesla Model Y Performance</h4>
+                                    <small class="text-muted">AWD • Otopilot • 514km Menzil</small>
+                                </div>
+                                <span class="badge bg-dark text-warning"><i class="fa fa-star"></i> 4.92</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="car-spec-item"><i class="fa fa-user-group"></i> 5 Kişi</div>
+                                <div class="car-spec-item"><i class="fa fa-suitcase"></i> 5 Bavul</div>
+                                <div class="car-spec-item"><i class="fa fa-bolt"></i> Supercharge</div>
+                                <div class="car-spec-item"><i class="fa fa-tachometer-alt"></i> 0-100: 3.7s</div>
+                            </div>
+                            <div class="car-price-row">
+                                <div class="price-val">₺3.600 <span>/ Günlük</span></div>
+                                <button class="btn btn-custom-primary btn-sm px-3" onclick="lockAndBookCar('Tesla Model Y Performance', '₺3.600')">
+                                    <i class="fa fa-lock"></i> Rezerve Et
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Araç 10: Range Rover Sport (Kilitli Örnek 2) -->
+                <div class="col-lg-4 col-md-6 car-item-box" data-available="false" data-category="suv">
+                    <div class="car-card">
+                        <div class="car-thumb">
+                            <span class="car-badge">Ultra Lüks SUV</span>
+                            <span class="car-status-locked"><i class="fa fa-lock"></i> Anlık Rezerve</span>
+                            <img alt="Range Rover" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        </div>
+                        <div class="car-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="mb-1">Range Rover Sport HSE</h4>
+                                    <small class="text-muted">Model Yılı: 2024 • Dynamic</small>
+                                </div>
+                                <span class="badge bg-dark text-warning"><i class="fa fa-star"></i> 4.98</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="car-spec-item"><i class="fa fa-user-group"></i> 5 Kişi</div>
+                                <div class="car-spec-item"><i class="fa fa-suitcase"></i> 4 Bavul</div>
+                                <div class="car-spec-item"><i class="fa fa-cogs"></i> Otomatik</div>
+                                <div class="car-spec-item"><i class="fa fa-mountain"></i> Havalı Süsp.</div>
+                            </div>
+                            <div class="lock-indicator">
+                                <i class="fa fa-lock"></i> Başka bir kullanıcı tarafından kilitlendi.
+                            </div>
+                            <div class="car-price-row mt-3">
+                                <div class="price-val text-muted">₺5.500 <span>/ Günlük</span></div>
+                                <button class="btn btn-secondary btn-sm px-3 disabled" disabled="">Kilitli</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 5. OUR FUTURE (Geleceğimiz & Vizyonumuz) -->
+    <section class="section-padding bg-dark bg-opacity-75" id="section-future">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <span class="section-subtitle">Geleceğimiz &amp; İnovasyon</span>
+                    <h2 class="section-title">Mobiliteyi Geleceğe Taşıyoruz</h2>
+                    <p class="text-muted mb-4">
+                        Rentaly olarak sürdürülebilir, elektrikli ve yapay zeka entegreli araç kiralama ekosistemi inşa ediyoruz. 2026 vizyonumuzla sıfır karbon ayak izi ve %100 dijital anahtarsız teslimata geçiş yapıyoruz.
+                    </p>
+                    <div class="future-feature-box">
+                        <h5 class="mb-1 text-white"><i class="fa fa-bolt text-primary-custom me-2"></i> %100 Yeşil Enerji &amp; Elektrikli Filo</h5>
+                        <small class="text-muted">2026 yılına kadar filomuzun %65'ini elektrikli araçlardan oluşturmayı ve tüm şarj noktalarını yeşil enerjiden beslemeyi taahhüt ediyoruz.</small>
+                    </div>
+                    <div class="future-feature-box">
+                        <h5 class="mb-1 text-white"><i class="fa fa-mobile-screen-button text-primary-custom me-2"></i> Akıllı Telefonla Dijital Anahtar</h5>
+                        <small class="text-muted">Ofis kuyruğu yok, evrak beklemek yok. Uygulama üzerinden bluetooth ve NFC ile araca yaklaşın, kapıları açıp yola devam edin.</small>
+                    </div>
+                    <div class="future-feature-box">
+                        <h5 class="mb-1 text-white"><i class="fa fa-robot text-primary-custom me-2"></i> Anlık Dinamik Fiyatlandırma &amp; AI Koruma</h5>
+                        <small class="text-muted">Yapay zeka modellerimiz hem araç müsaitliğini milisaniyelik kilitler hem de size en uygun dönemsel avantajlı fiyatı sunar.</small>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="position-relative">
+                        <img alt="Elektrikli Gelecek" class="img-fluid rounded-4 shadow-lg border border-secondary border-opacity-25" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        <div class="position-absolute bottom-0 start-0 m-4 p-4 rounded-3 text-white" style="background: rgba(13, 15, 19, 0.9); backdrop-filter: blur(10px); border: 1px solid var(--border-color); max-width: 320px;">
+                            <div class="fw-bold fs-5 text-primary-custom">Hedef: %0 Emisyon</div>
+                            <small class="text-muted">Temiz gelecek için doğayla uyumlu yolculuklar.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 6. İSTATİSTİKLER & ABOUT (HAKKIMIZDA) -->
+    <section class="section-padding" id="section-about">
+        <div class="container">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-6">
+                    <span class="section-subtitle">Hakkımızda &amp; Deneyim</span>
+                    <h2 class="section-title">Ticari ve Lüks Araçlarda Güvenilir Çözüm Ortağınız</h2>
+                    <p class="text-muted mb-4">
+                        Araç kiralama acentemizde, bütçesi ne olursa olsun herkesin güvenilir, bakımlı ve konforlu bir araç kullanma ayrıcalığını hak ettiğine inanıyoruz. Modern teknolojik altyapımız, hızlı rezervasyon süreci ve 7/24 kesintisiz desteğimizle iş seyahatlerinizden hafta sonu kaçamaklarına kadar her anınızda yanınızdayız.
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background: var(--dark-card);">
+                                <i class="fa fa-check-circle text-primary-custom fs-4"></i>
+                                <div>
+                                    <div class="fw-bold">Garantili Kasko</div>
+                                    <small class="text-muted">Tam muafiyetsiz teminat</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background: var(--dark-card);">
+                                <i class="fa fa-map-pin text-primary-custom fs-4"></i>
+                                <div>
+                                    <div class="fw-bold">Havalimanı Vale</div>
+                                    <small class="text-muted">Kapıda ücretsiz teslim</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <div class="stat-number">15.4K+</div>
+                                <div class="stat-label">Tamamlanan Kiralama</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <div class="stat-number">8.7K+</div>
+                                <div class="stat-label">Mutlu Müşteri</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <div class="stat-number">250+</div>
+                                <div class="stat-label">Modern Araç Filosu</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-box">
+                                <div class="stat-number">15+</div>
+                                <div class="stat-label">Yıllık Tecrübe</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 7. ÖDÜLLER (AWARDS) -->
+    <section class="section-padding bg-dark bg-opacity-50" id="section-awards">
+        <div class="container">
+            <div class="text-center section-title-wrap">
+                <span class="section-subtitle">Başarılarımız &amp; Takdirler</span>
+                <h2 class="section-title">Kazandığımız Ulusal &amp; Uluslararası Ödüller</h2>
+                <p class="text-muted mx-auto" style="max-width: 600px;">
+                    Müşteri memnuniyeti, teknoloji odaklı filo yönetimi ve şeffaf hizmet ilkelerimizle taçlandırılan başarılarımız.
+                </p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="award-card">
+                        <div class="award-icon-wrap"><i class="fa fa-trophy"></i></div>
+                        <span class="badge bg-warning bg-opacity-25 text-warning mb-2">2024 Ödülü</span>
+                        <h5>En İyi Filo Yönetimi</h5>
+                        <p class="text-muted small mb-0">Avrupa Mobilite Zirvesi Yılın En İnovatif Araç Kiralama Filosu Ödülü.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="award-card">
+                        <div class="award-icon-wrap"><i class="fa fa-award"></i></div>
+                        <span class="badge bg-warning bg-opacity-25 text-warning mb-2">2023 &amp; 2024</span>
+                        <h5>Müşteri Memnuniyeti 1.'si</h5>
+                        <p class="text-muted small mb-0">Türkiye genelinde %99.2 müşteri memnuniyet skoru ile Altın Lider ödülü.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="award-card">
+                        <div class="award-icon-wrap"><i class="fa fa-leaf"></i></div>
+                        <span class="badge bg-warning bg-opacity-25 text-warning mb-2">2023 Yeşil Yıldız</span>
+                        <h5>Sürdürülebilir Filo Ödülü</h5>
+                        <p class="text-muted small mb-0">Elektrikli araç yatırımları ve sıfır karbon vizyonu ile Yeşil Acente belgesi.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="award-card">
+                        <div class="award-icon-wrap"><i class="fa fa-shield-alt"></i></div>
+                        <span class="badge bg-warning bg-opacity-25 text-warning mb-2">2022 Küresel Başarı</span>
+                        <h5>En Güvenli Kiralama Altyapısı</h5>
+                        <p class="text-muted small mb-0">TÜV ve uluslararası denetçilerden tam puanlı güvenlik ve bakım sertifikası.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 8. TESTIMONIAL (MÜŞTERİ YORUMLARI) -->
+    <section class="section-padding" id="section-testimonials">
+        <div class="container">
+            <div class="text-center section-title-wrap">
+                <span class="section-subtitle">Misafir Deneyimleri</span>
+                <h2 class="section-title">Müşterilerimiz Bizim İçin Ne Diyor?</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="testimonial-card">
+                        <div class="testi-quote-icon"><i class="fa fa-quote-left"></i></div>
+                        <p class="text-light mb-4">
+                            "Havalimanına indiğimde aracım pırıl pırıl hazırlanmıştı. Kimlik tarama özelliği sayesinde hiçbir kağıtla uğraşmadan 2 dakikada anahtarı aldım. Kesinlikle tavsiye ederim."
+                        </p>
+                        <div class="d-flex align-items-center gap-3">
+                            <img alt="Selin Hutchkiss" class="avatar-img" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                            <div>
+                                <div class="fw-bold">Selin Aksoy</div>
+                                <small class="text-muted">Kurumsal Danışman</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="testimonial-card">
+                        <div class="testi-quote-icon"><i class="fa fa-quote-left"></i></div>
+                        <p class="text-light mb-4">
+                            "Tarih seçtiğimde BMW M2'yi hemen kilitlediler. Başka kimse kapamadı ve tam sözleştiğimiz gibi teslim aldım. Fiyat politikaları son derece dürüst, ek sürpriz yok."
+                        </p>
+                        <div class="d-flex align-items-center gap-3">
+                            <img alt="Caner Yılmaz" class="avatar-img" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                            <div>
+                                <div class="fw-bold">Caner Yılmaz</div>
+                                <small class="text-muted">Yazılım Mühendisi</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <div class="testimonial-card">
+                        <div class="testi-quote-icon"><i class="fa fa-quote-left"></i></div>
+                        <p class="text-light mb-4">
+                            "Ailemizle Antalya tatili için SUV kiraladık. Çocuk koltuğuna kadar her şey eksiksiz yerleştirilmişti. 7/24 destek hattı her sorumuzda anında yardımcı oldu."
+                        </p>
+                        <div class="d-flex align-items-center gap-3">
+                            <img alt="Kader Şen" class="avatar-img" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                            <div>
+                                <div class="fw-bold">Kader Şen</div>
+                                <small class="text-muted">Mimar</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 9. SIKÇA SORULAN SORULAR (FAQ) -->
+    <section class="section-padding bg-dark bg-opacity-50" id="section-faq">
+        <div class="container">
+            <div class="text-center section-title-wrap">
+                <span class="section-subtitle">Yardım Merkezi</span>
+                <h2 class="section-title">Sıkça Sorulan Sorular</h2>
+                <p class="text-muted">Rezervasyon ve araç kiralama süreçleriyle ilgili merak edilenler.</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion custom-accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqHead1">
+                                <button class="accordion-button" data-bs-target="#faqCol1" data-bs-toggle="collapse" type="button">
+                                    Tarih bazlı araç kilitleme sistemi nasıl çalışır?
+                                </button>
+                            </h2>
+                            <div class="accordion-collapse collapse show" data-bs-parent="#faqAccordion" id="faqCol1">
+                                <div class="accordion-body">
+                                    Lokasyon ve tarih aralığı seçip aracı seçtiğiniz anda sistem aracı sizin adınıza 15 dakika boyunca kilitler. Bu süre zarfında başka hiçbir kullanıcı aynı tarih aralığı için bu aracı rezerve edemez. Ödeme ve onay sonrası araç takvimden tamamen rezerve durumuna geçer.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqHead2">
+                                <button class="accordion-button collapsed" data-bs-target="#faqCol2" data-bs-toggle="collapse" type="button">
+                                    Kamera ile Kimlik / Ehliyet okutma nasıl çalışır?
+                                </button>
+                            </h2>
+                            <div class="accordion-collapse collapse" data-bs-parent="#faqAccordion" id="faqCol2">
+                                <div class="accordion-body">
+                                    Opsiyonel OCR özelliğimiz sayesinde telefon kamerasını veya bilgisayardan kimlik görselini taratarak Ad, Soyad, T.C. Kimlik No, Doğum Tarihi ve Ehliyet Sınıfı gibi alanları formunuza tek tıkla otomatik doldurabilirsiniz. Bilgileriniz KVKK standartlarında güvenle işlenir.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqHead3">
+                                <button class="accordion-button collapsed" data-bs-target="#faqCol3" data-bs-toggle="collapse" type="button">
+                                    Depozito (Provizyon) ücreti ve iadesi ne zaman yapılır?
+                                </button>
+                            </h2>
+                        </div>
+                        <div class="accordion-collapse collapse" data-bs-parent="#faqAccordion" id="faqCol3">
+                            <div class="accordion-body">
+                                Kredi kartınızdan araç sınıfına göre bloke edilen provizyon tutarı, aracı eksiksiz teslim etmenizin ardından banka prosedürlerine bağlı olarak 1-7 iş günü içerisinde kartınıza eksiksiz iade edilir.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqHead4">
+                            <button class="accordion-button collapsed" data-bs-target="#faqCol4" data-bs-toggle="collapse" type="button">
+                                Rezervasyonu iptal edebilir veya tarihlerini değiştirebilir miyim?
+                            </button>
+                        </h2>
+                    </div>
+                    <div class="accordion-collapse collapse" data-bs-parent="#faqAccordion" id="faqCol4">
+                        <div class="accordion-body">
+                            Alış saatine 24 saat kalana kadar yapılan tüm iptallerde %100 kesintisiz ücret iadesi yapılmaktadır. Tarih güncellemeleri de müsaitlik durumuna göre anında panelden yapılabilmektedir.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div aria-hidden="true" aria-labelledby="ocrModalLabel" class="modal fade" id="ocrModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-content-custom">
+            <div class="modal-header border-secondary border-opacity-25 pb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa fa-camera-retro text-primary-custom fs-4"></i>
+                    <div>
+                        <h5 class="modal-title fw-bold" id="ocrModalLabel">Yapay Zeka ile Kimlik &amp; Ehliyet Tarama</h5>
+                        <small class="text-muted">Kamera veya dosya yüklemesi ile rezervasyon formunu anında doldurun.</small>
+                    </div>
+                </div>
+                <button aria-label="Close" class="btn-close btn-close-white" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-4">
+                    <!-- Yükleme / Kamera Alanı -->
+                    <div class="col-md-6">
+                        <div class="ocr-dropzone mb-3" onclick="simulateOcrScan()">
+                            <i class="fa fa-cloud-arrow-up text-primary-custom fs-1 mb-2"></i>
+                            <h6 class="fw-bold">Kimlik / Ehliyet Fotoğrafı Yükle</h6>
+                            <p class="text-muted small mb-3">Masaüstünden sürükleyin veya dosya seçin</p>
+                            <span class="btn btn-outline-light btn-sm">Dosya Seç</span>
+                        </div>
+                        <div class="text-center mb-2">
+                            <span class="text-muted small">— VEYA —</span>
+                        </div>
+                        <button class="btn btn-dark border-secondary w-100 py-2 d-flex align-items-center justify-content-center gap-2" onclick="simulateOcrScan()">
+                            <i class="fa fa-camera text-primary-custom"></i>
+                            <span>Kamerayı Aç ve Kimliği Okut</span>
+                        </button>
+                        <div class="mt-3 p-2 rounded small text-center text-primary-custom" id="ocrStatusMsg" style="display:none; background: rgba(30,203,21,0.1);">
+                            <i class="fa fa-spinner fa-spin me-1"></i> Kimlik bilgileri yapay zeka ile taranıyor...
+                        </div>
+                    </div>
+                    <!-- Otomatik Doldurulan Rezervasyon Formu -->
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-white mb-3"><i class="fa fa-clipboard-check text-primary-custom me-2"></i>Otomatik Çıkarılan Bilgiler</h6>
+                        <form id="bookingForm" onsubmit="event.preventDefault(); alert('Rezervasyonunuz oluşturuldu ve araç kilitlendi!');">
+                            <div class="mb-2">
+                                <label class="form-label text-muted small mb-1">Ad Soyad</label>
+                                <input class="form-control bg-dark border-secondary text-white" id="ocrFullName" placeholder="Örn: Selin Aksoy" type="text" />
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="form-label text-muted small mb-1">T.C. / Pasaport No</label>
+                                    <input class="form-control bg-dark border-secondary text-white" id="ocrIdNumber" placeholder="11 haneli T.C." type="text" />
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label text-muted small mb-1">Doğum Tarihi</label>
+                                    <input class="form-control bg-dark border-secondary text-white" id="ocrBirthDate" type="date" />
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="form-label text-muted small mb-1">Ehliyet Sınıfı</label>
+                                    <input class="form-control bg-dark border-secondary text-white" id="ocrLicenseClass" placeholder="B Sınıfı (Min 2 Yıl)" type="text" />
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label text-muted small mb-1">Telefon</label>
+                                    <input class="form-control bg-dark border-secondary text-white" id="ocrPhone" placeholder="0532 000 00 00" type="tel" />
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small mb-1">Seçilen Kilitli Araç</label>
+                                <input class="form-control bg-dark border-secondary text-primary-custom fw-bold" id="ocrSelectedCar" readonly="" type="text" value="Jeep Renegade Limited" />
+                            </div>
+                            <button class="btn btn-custom-primary w-100" type="submit">
+                                <i class="fa fa-check"></i> Bilgileri Onayla &amp; Kiralama Tamamla
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 10. CALL TO ACTION / HIZLI DESTEK -->
+<section class="py-5" id="section-call-to-action" style="background: linear-gradient(135deg, #11151c 0%, #17202b 100%); border-top: 1px solid var(--border-color);">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <span class="text-primary-custom fw-bold text-uppercase small">7/24 Müşteri İletişim Hattı</span>
+                <h2 class="text-white mt-1 mb-2">Herhangi Bir Sorunuz mu Var?</h2>
+                <p class="text-muted mb-0">Uzman kiralama danışmanlarımız rota planlaması ve araç tercihinde bir telefon uzağınızda.</p>
+            </div>
+            <div class="col-lg-6 text-lg-end">
+                <div class="d-inline-flex align-items-center gap-3 p-3 rounded-4" style="background: var(--dark-card); border: 1px solid var(--border-color);">
+                    <div class="rounded-circle bg-primary-custom text-dark d-flex align-items-center justify-content-center" style="width: 52px; height: 52px; font-size: 1.4rem;">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    <div class="text-start me-3">
+                        <small class="text-muted d-block">Hemen Arayın</small>
+                        <span class="fs-4 fw-bold text-white">0850 333 8000</span>
+                    </div>
+                    <a class="btn btn-custom-primary" href="#section-filter">Rezervasyon Yap</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

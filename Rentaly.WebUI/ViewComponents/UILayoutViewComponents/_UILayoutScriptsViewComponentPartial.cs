@@ -4,7 +4,7 @@ namespace Rentaly.WebUI.ViewComponents.UILayoutViewComponents
 {
     public class _UILayoutScriptsViewComponentPartial : ViewComponent
     {
-        public IViewComponentResult ınvoke()
+        public IViewComponentResult Invoke()
         {
             return View();
         }

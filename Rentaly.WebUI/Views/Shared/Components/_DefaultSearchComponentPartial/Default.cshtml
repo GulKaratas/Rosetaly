@@ -1,0 +1,60 @@
+﻿
+<div class="container" id="section-filter">
+        <div class="search-floating-card">
+            <div class="row g-3 align-items-end">
+                <div class="col-lg-3 col-md-6">
+                    <div class="filter-field">
+                        <label><i class="fa fa-map-marker-alt text-primary-custom me-1"></i> Alış &amp; Bırakış Lokasyonu</label>
+                        <select class="form-select" id="filterLocation">
+                            <option value="">Lokasyon Seçiniz</option>
+                            @foreach (var item in ViewBag.Branches){
+                                <option value="@item.BranchId">@item.BranchName</option>
+                             }
+                            
+                            
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <div class="filter-field">
+                        <label><i class="fa fa-calendar text-primary-custom me-1"></i> Alış Tarihi &amp; Saati</label>
+                        <input id="pickupDate" type="datetime-local" value="2025-05-10T10:00" />
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <div class="filter-field">
+                        <label><i class="fa fa-calendar-check text-primary-custom me-1"></i> İade Tarihi &amp; Saati</label>
+                        <input id="returnDate" type="datetime-local" value="2025-05-15T18:00" />
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="filter-field">
+                        <label><i class="fa fa-car-side text-primary-custom me-1"></i> Araç Tipi / Segment</label>
+                        <select class="form-select" id="filterCategory">
+                            <option value="all">Tüm Araç Tipini Seçiniz</option>
+                            @foreach (var item in ViewBag.Categories){
+                                <option value="@item.CategoryId">@item.CategoryName</option>
+                             }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-12">
+                    <button class="btn btn-custom-primary w-100" id="btnFilterCars" type="button">
+                        <i class="fa fa-search"></i> Müsait Bul
+                    </button>
+                </div>
+            </div>
+            <!-- Tarih Kilitleme Bilgilendirme Notu -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between mt-3 pt-3 border-top border-secondary border-opacity-25 text-muted small">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-50 px-2 py-1">
+                        <i class="fa fa-lock"></i> Anlık Kilitleme Sistemi Aktif
+                    </span>
+                    <span>Seçilen araç belirtilen tarih aralığında sepetinizde <strong>15 dakika</strong> kilitlenir; çakışan rezervasyon engellenir.</span>
+                </div>
+                <div class="text-primary-custom cursor-pointer" data-bs-target="#ocrModal" data-bs-toggle="modal">
+                    <i class="fa fa-camera-retro me-1"></i> Hızlı İşlem: Kimlik OCR ile Bilgileri Doldur →
+                </div>
+            </div>
+        </div>
+    </div>
