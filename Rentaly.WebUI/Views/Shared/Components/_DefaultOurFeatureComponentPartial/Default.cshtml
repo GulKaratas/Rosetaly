@@ -1,0 +1,35 @@
+﻿@model List<OurFeature >
+
+<section class="section-padding bg-dark bg-opacity-75" id="section-future">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+
+                    <span class="section-subtitle">Geleceğimiz &amp; İnovasyon</span>
+                    <h2 class="section-title">Mobiliteyi Geleceğe Taşıyoruz</h2>
+                    <p class="text-muted mb-4">
+                        Rentaly olarak sürdürülebilir, elektrikli ve yapay zeka entegreli araç kiralama ekosistemi inşa ediyoruz. 2026 vizyonumuzla sıfır karbon ayak izi ve %100 dijital anahtarsız teslimata geçiş yapıyoruz.
+                    </p>
+                @foreach (var item in Model)
+                {
+                    <div class="future-feature-box mb-3">
+                        <h5 class="mb-1 text-white">
+                            <i class="@item.IconCssClass text-primary-custom me-2"></i> @item.Title
+                        </h5>
+                        <small class="text-white-50 d-block">@item.Description</small>
+                    </div>
+                    
+                }
+            </div>
+                <div class="col-lg-6">
+                    <div class="position-relative">
+                        <img alt="Elektrikli Gelecek" class="img-fluid rounded-4 shadow-lg border border-secondary border-opacity-25" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
+                        <div class="position-absolute bottom-0 start-0 m-4 p-4 rounded-3 text-white" style="background: rgba(13, 15, 19, 0.9); backdrop-filter: blur(10px); border: 1px solid var(--border-color); max-width: 320px;">
+                            <div class="fw-bold fs-5 text-primary-custom">Hedef: %0 Emisyon</div>
+                            <small class="text-muted">Temiz gelecek için doğayla uyumlu yolculuklar.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

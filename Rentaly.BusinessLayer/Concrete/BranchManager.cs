@@ -50,5 +50,6 @@ namespace Rentaly.BusinessLayer.Concrete
             var value = _mapper.Map<Branch>(updateBranchDto);
             await _branchDal.UpdateAsync(value);
         }
+
     }
 }

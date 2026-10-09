@@ -70,3 +70,100 @@
             }
     </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const track = document.getElementById("carsListContainer");
+        const prevBtn = document.getElementById("prevCarBtn");
+        const nextBtn = document.getElementById("nextCarBtn");
+
+        if (!track || !prevBtn || !nextBtn) return;
+
+        let currentIndex = 0;
+
+        function getVisibleCount() {
+            if (window.innerWidth <= 575) return 1;
+            if (window.innerWidth <= 991) return 2;
+            return 3;
+        }
+
+        function getSlides() {
+            return Array.from(track.querySelectorAll(".car-slide"));
+        }
+
+        function updateSlider() {
+            const slides = getSlides();
+            const visibleCount = getVisibleCount();
+            const maxIndex = Math.max(0, slides.length - visibleCount);
+
+            currentIndex = Math.min(currentIndex, maxIndex);
+
+            if (slides.length > 0) {
+                const gap = parseFloat(
+                    getComputedStyle(track).columnGap
+                ) || 0;
+
+                const slideWidth =
+                    slides[0].getBoundingClientRect().width;
+
+                const offset = currentIndex * (slideWidth + gap);
+
+                track.style.transform =
+                    `translateX(-${offset}px)`;
+            } else {
+                track.style.transform = "translateX(0)";
+            }
+
+            // Sonsuz kaydırmada oklar hiçbir zaman kapanmaz.
+            prevBtn.disabled = false;
+            nextBtn.disabled = false;
+        }
+
+        nextBtn.addEventListener("click", function () {
+            const slides = getSlides();
+            const visibleCount = getVisibleCount();
+            const maxIndex = Math.max(
+                0,
+                slides.length - visibleCount
+            );
+
+            if (currentIndex >= maxIndex) {
+                // Son gruptan ilk gruba dön.
+                currentIndex = 0;
+            } else {
+                currentIndex = Math.min(
+                    currentIndex + visibleCount,
+                    maxIndex
+                );
+            }
+
+            updateSlider();
+        });
+
+        prevBtn.addEventListener("click", function () {
+            const slides = getSlides();
+            const visibleCount = getVisibleCount();
+            const maxIndex = Math.max(
+                0,
+                slides.length - visibleCount
+            );
+
+            if (currentIndex <= 0) {
+                // İlk gruptan son gruba dön.
+                currentIndex = maxIndex;
+            } else {
+                currentIndex = Math.max(
+                    currentIndex - visibleCount,
+                    0
+                );
+            }
+
+            updateSlider();
+        });
+
+        window.addEventListener("resize", updateSlider);
+
+        updateSlider();
+    });
+</script>
+
+

@@ -23,6 +23,11 @@ namespace Rentaly.BusinessLayer.Concrete
             return await _carModelDal.GetByIdAsync(id);
         }
 
+        public async Task<int> TGetCountAsync()
+        {
+            return await _carModelDal.CountAsync();
+        }
+
         public async Task<List<CarModel>> TGetListAsync()
         {
             return await _carModelDal.GetListAsync();

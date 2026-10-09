@@ -25,6 +25,11 @@ namespace Rentaly.BusinessLayer.Concrete
             return await _brandDal.GetByIdAsync(id);
         }
 
+        public async Task<int> TGetCountAsync()
+        {
+            return await _brandDal.CountAsync();
+        }
+
         public async Task<List<Brand>> TGetListAsync()
         {
             return await _brandDal.GetListAsync();

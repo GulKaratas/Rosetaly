@@ -13,6 +13,7 @@ namespace Rentaly.DataAccessLayer.Abstract
         Task UpdateAsync(T entity);
         Task<List<T>> GetListAsync();
         Task<T> GetByIdAsync(int id);
+        Task<int> CountAsync();
 
     }
 }

@@ -1,0 +1,143 @@
+﻿@model List<ResultCarDto>
+
+
+<section class="section-padding" id="section-cars">
+    <div class="container">
+        <!-- Başlık ve Müsaitlik Özeti -->
+        <div class="d-flex align-items-end justify-content-between mb-4 flex-wrap gap-3">
+            <div>
+                <span class="section-subtitle">Filo Vitrini</span>
+                <h2 class="section-title mb-0">İlk 10 Popüler Araç</h2>
+                <p class="text-white-50 mt-2 mb-0">Tarih seçiminize göre gerçek zamanlı müsaitlik durumları gösterilmektedir.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <span class="badge bg-success bg-opacity-25 text-success p-2">
+                    @Model.Count(x => x.IsAvailable) Müsait
+                </span>
+                <span class="badge bg-danger bg-opacity-25 text-danger p-2">
+                    @Model.Count(x => !x.IsAvailable) Dolu / Kilitli
+                </span>
+            </div>
+        </div>
+
+        <!-- Araç Listesi -->
+       
+        <!-- Araç Listesi Başlık ve Slider Kontrolleri -->
+        <div class="d-flex align-items-center justify-content-end gap-2 mb-3">
+            <button type="button"
+                    class="car-slider-arrow"
+                    id="prevCarBtn"
+                    aria-label="Önceki araçlar">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+
+            <button type="button"
+                    class="car-slider-arrow"
+                    id="nextCarBtn"
+                    aria-label="Sonraki araçlar">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Yatay Araç Slider -->
+        <div class="car-slider-wrapper">
+            <div class="car-slider-track" id="carsListContainer">
+
+                @foreach (var car in Model)
+                {
+                    <div class="car-slide"
+                         data-available="@car.IsAvailable.ToString().ToLower()"
+                         data-category="@car.CategoryName?.ToLower()">
+
+                        <div class="car-card">
+
+                            <!-- Görsel ve Durum Rozetleri -->
+                            <div class="car-thumb">
+                                <span class="car-badge">@car.CategoryName</span>
+
+                                @if (car.IsAvailable)
+                                {
+                                    <span class="car-status-available">
+                                        <i class="fa fa-check"></i> Müsait
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="car-status-locked text-danger bg-danger bg-opacity-10 px-2 py-1 rounded">
+                                        <i class="fa fa-lock"></i> Rezerve Edildi
+                                    </span>
+                                }
+
+                                <img alt="@car.BrandName @car.ModelName"
+                                     src="@(string.IsNullOrEmpty(car.ImageUrl)
+                                                                ? "https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"
+                                                                : car.ImageUrl)"
+                                     class="img-fluid" />
+                            </div>
+
+                            <!-- Araç Detayları -->
+                            <div class="car-bodyz">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h4 class="mb-1">@car.BrandName @car.ModelName</h4>
+                                        <small class="text-white-50 mt-2 mb-0 d-block">
+                                            Model Yılı: @car.Year • @car.FuelType
+                                        </small>
+                                    </div>
+
+                                    <span class="badge bg-dark text-warning">
+                                        <i class="fa fa-star"></i> @car.Rating.ToString("0.0")
+                                    </span>
+                                </div>
+
+                                <!-- Teknik Özellikler -->
+                                <div class="car-specs-grid">
+                                    <div class="car-spec-item">
+                                        <i class="fa fa-user-group"></i> @car.SeatCount Kişi
+                                    </div>
+                                    <div class="car-spec-item">
+                                        <i class="fa fa-suitcase"></i> @car.LuggageCount Bavul
+                                    </div>
+                                    <div class="car-spec-item">
+                                        <i class="fa fa-cogs"></i> @car.Transmission
+                                    </div>
+                                    <div class="car-spec-item">
+                                        <i class="fa fa-gauge"></i> @(car.PerformanceInfo ?? "Standart")
+                                    </div>
+                                </div>
+
+                                <!-- Fiyat ve Buton -->
+                                <div class="car-price-row">
+                                    <div class="price-val">
+                                        ₺@car.DailyPrice.ToString("N0")
+                                        <span>/ Günlük</span>
+                                    </div>
+
+                                    @if (car.IsAvailable)
+                                    {
+                                        <button type="button"
+                                                class="btn btn-custom-primary btn-sm px-3"
+                                                onclick="lockAndBookCar('@car.BrandName @car.ModelName', '₺@car.DailyPrice.ToString("N0")')">
+                                            <i class="fa fa-lock"></i> Rezerve Et
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="btn btn-secondary btn-sm px-3"
+                                                disabled>
+                                            <i class="fa fa-ban"></i> Uygun Değil
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+        
+    </div>
+</section>

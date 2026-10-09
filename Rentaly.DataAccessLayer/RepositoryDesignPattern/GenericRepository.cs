@@ -49,5 +49,9 @@ namespace Rentaly.DataAccessLayer.RepositoryDesignPattern
             _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
         }
+        public async Task<int> CountAsync()
+        {
+            return await _context.Set<T>().CountAsync();
+        }
     }
 }

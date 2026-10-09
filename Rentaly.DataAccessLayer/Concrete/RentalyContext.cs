@@ -18,5 +18,8 @@ namespace Rentaly.DataAccessLayer.Concrete
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<OurFeature> OurFeatures { get; set; }
+        public DbSet<About> Abouts { get; set; }
     }
 }

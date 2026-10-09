@@ -663,34 +663,33 @@
 
                         <!-- Marka -->
                         <div class="form-field">
-                            <label asp-for="BrandId" class="form-label">
+                            <label for="BrandId" class="form-label">
                                 <i class="fa-solid fa-copyright" style="color:var(--primary);"></i>
                                 Marka <span class="req">*</span>
                             </label>
-                            <select asp-for="BrandId"
-                                    asp-items="ViewBag.Brands"
-                                    class="form-control-custom"
-                                    onchange="updatePreview()">
+                            <select id="BrandId" name="BrandId" class="form-control-custom" onchange="filterModels()">
                                 <option value="">— Marka Seçin —</option>
+                                @foreach (var brand in (IEnumerable<Rentaly.EntityLayer.Entities.Brand>)ViewBag.Brands)
+                                {
+                                    <option value="@brand.BrandId" selected="@(ViewBag.SelectedBrandId?.ToString() == brand.BrandId.ToString() ? "selected" : null)">@brand.BrandName</option>
+                                }
                             </select>
-                            <span asp-validation-for="BrandId" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
                         </div>
 
                         <!-- Model -->
                         <div class="form-field">
-                            <label asp-for="ModelId" class="form-label">
+                            <label asp-for="CarModelId" class="form-label">
                                 <i class="fa-solid fa-car" style="color:var(--primary);"></i>
                                 Model <span class="req">*</span>
                             </label>
-                            <select asp-for="ModelId"
-                                    asp-items="ViewBag.Models"
-                                    class="form-control-custom"
-                                    onchange="updatePreview()">
+                            <select asp-for="CarModelId" class="form-control-custom" onchange="updatePreview()">
                                 <option value="">— Model Seçin —</option>
+                                @foreach (var carModel in (IEnumerable<Rentaly.EntityLayer.Entities.CarModel>)ViewBag.CarModels)
+                                {
+                                    <option value="@carModel.CarModelId" data-brand-id="@carModel.BrandId" selected="@(Model?.CarModelId == carModel.CarModelId ? "selected" : null)">@carModel.ModelName</option>
+                                }
                             </select>
-                            <span asp-validation-for="ModelId" class="field-error">
+                            <span asp-validation-for="CarModelId" class="field-error">
                                 <i class="fa-solid fa-circle-exclamation"></i>
                             </span>
                         </div>
@@ -1047,7 +1046,7 @@
         const catText  = catSel?.selectedIndex > 0 ? catSel.options[catSel.selectedIndex].text : '—';
 
         // Model metni
-        const modSel   = document.getElementById('ModelId');
+        const modSel   = document.getElementById('CarModelId');
         const modText  = modSel?.selectedIndex > 0 ? modSel.options[modSel.selectedIndex].text : '';
 
         document.getElementById('previewPlate').textContent = plate.toUpperCase() || '— — —';
@@ -1060,6 +1059,25 @@
         document.getElementById('previewPrice').textContent = price
             ? parseFloat(price).toLocaleString('tr-TR', { minimumFractionDigits: 0 }) + ' ₺'
             : '— ₺';
+    }
+
+    function filterModels() {
+        const brandId = document.getElementById('BrandId')?.value || '';
+        const modelSelect = document.getElementById('CarModelId');
+        if (!modelSelect) return;
+
+        [...modelSelect.options].forEach(option => {
+            if (!option.value) {
+                option.hidden = false;
+                return;
+            }
+            option.hidden = brandId !== '' && option.dataset.brandId !== brandId;
+        });
+
+        if (modelSelect.selectedOptions[0]?.hidden) {
+            modelSelect.value = '';
+        }
+        updatePreview();
     }
 
     // ── Görsel URL önizleme ──
@@ -1088,6 +1106,7 @@
     // ── İlk yükleme ──
     document.addEventListener('DOMContentLoaded', () => {
         goStep(1);
+        filterModels();
         updatePreview();
     });
 </script>

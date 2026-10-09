@@ -4,6 +4,9 @@ using Rentaly.BusinessLayer.Mapping;
 using Rentaly.DataAccessLayer.Abstract;
 using Rentaly.DataAccessLayer.Concrete;
 using Rentaly.DataAccessLayer.EntityFramework;
+using Rentaly.BusinessLayer.ValidationRules;
+using Rentaly.DtoLayer.CarDtos;
+using FluentValidation;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,7 @@ builder.Services.AddScoped<ICategoryService,CategoryManager>();
 
 builder.Services.AddScoped<ICarDal, EfCarDal>();
 builder.Services.AddScoped<ICarService, CarManager>();
+builder.Services.AddScoped<IValidator<CreateCarDto>, CreateCarDtoValidator>();
 builder.Services.AddScoped<ICarModelDal, EfCarModelDal>();
 builder.Services.AddScoped<ICarModelService, CarModelManager>();
 
@@ -27,6 +31,18 @@ builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(GeneralMapping).Assembl
 
 builder.Services.AddScoped<IBrandDal, EfBrandDal>();
 builder.Services.AddScoped<IBrandService, BrandManager>();
+builder.Services.AddScoped<IRentalDal, EfRentalDal>();
+builder.Services.AddScoped<IRentalService, RentalManager>();
+builder.Services.AddScoped<IReviewDal, EfReviewDal>();
+builder.Services.AddScoped<IReviewService, ReviewManager>();
+builder.Services.AddScoped<IAboutDal, EfAboutDal>();
+builder.Services.AddScoped<IAboutService, AboutManager>();
+
+
+builder.Services.AddScoped<IOurFeatureService, OurFeatureManager>();
+
+
+builder.Services.AddScoped<IOurFeatureDal, EfOurFeatureDal>();
 
 
 

@@ -9,25 +9,40 @@ namespace Rentaly.EntityLayer.Entities
     public class Car
     {
         public int CarId { get; set; }
-        public string PlateNumber { get; set; }
-        public string VIN { get; set; } 
-        public int BrandId { get; set; }
-        public int ModelId { get; set; }
-        public int CategoryId { get; set; }
 
+        public string PlateNumber { get; set; }
+        public string? VIN { get; set; }
+
+        public int CarModelId { get; set; }
+        public CarModel CarModel { get; set; }
+
+        public int CategoryId { get; set; }
         public Category Category { get; set; }
+
         public int BranchId { get; set; }
         public Branch Branch { get; set; }
+
+        public string? ImageUrl { get; set; }
+
         public int Year { get; set; }
         public int Kilometer { get; set; }
-        public decimal DailyPrice { get; set; }
-        public decimal DepositAmount { get; set; }
-        public bool IsAvailable { get; set; }
-        public bool IsActive { get; set; }
-        public string ImageUrl { get; set; }
+
         public int SeatCount { get; set; }
         public int LuggageCount { get; set; }
-        public string FuelType { get; set; }
 
+        public string FuelType { get; set; }
+        public string Transmission { get; set; }
+        public string? PerformanceInfo { get; set; }
+
+        public decimal DailyPrice { get; set; }
+        public decimal DepositAmount { get; set; }
+
+        public decimal Rating { get; set; }
+        public int ReservationCount { get; set; }
+
+        public bool IsAvailable { get; set; }
+        public bool IsActive { get; set; }
+
+        public DateTime CreatedAt { get; set; } 
     }
 }

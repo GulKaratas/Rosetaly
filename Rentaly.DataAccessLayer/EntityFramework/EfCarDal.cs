@@ -13,15 +13,34 @@ namespace Rentaly.DataAccessLayer.EntityFramework
 {
     public class EfCarDal : GenericRepository<Car>, ICarDal
     {
+        private readonly RentalyContext _context;
+
         public EfCarDal(RentalyContext context) : base(context)
         {
+            _context = context;
         }
-
         public async Task<List<Car>> GetAllCarsWithCategoryAsync()
         {
-            var context = new RentalyContext();
-            var values = await context.Cars.Include(c => c.Category).ToListAsync();
-            return values;
+            return await _context.Cars
+                .AsNoTracking()
+                .Include(car => car.CarModel)
+                    .ThenInclude(model => model.Brand)
+                .Include(car => car.Category)
+                .Include(car => car.Branch)
+                .ToListAsync();
+        }
+        public async Task<List<Car>> GetLatest10CarsAsync()
+        {
+            return await _context.Cars
+                .AsNoTracking()
+                .Include(car => car.CarModel)
+                    .ThenInclude(model => model.Brand)
+                .Include(car => car.Category)
+                .Where(car => car.IsActive)
+                .OrderByDescending(car => car.CreatedAt)
+                .ThenByDescending(car => car.CarId)
+                .Take(10)
+                .ToListAsync();
         }
     }
 }

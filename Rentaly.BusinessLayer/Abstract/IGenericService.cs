@@ -13,5 +13,6 @@ namespace Rentaly.BusinessLayer.Abstract
         Task TUpdateAsync(T entity);
         Task<List<T>> TGetListAsync();
         Task<T> TGetByIdAsync(int id);
+        Task<int> TGetCountAsync();
     }
 }

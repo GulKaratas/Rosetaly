@@ -10,6 +10,7 @@ namespace Rentaly.EntityLayer.Entities
     {
         public int RentalId { get; set; }
         public int CarId { get; set; }
+        public Car Car { get; set; }
         public int CustomerId { get; set; }
         public int PickupBranchId { get; set; }
         public int ReturnBranchId { get; set; }

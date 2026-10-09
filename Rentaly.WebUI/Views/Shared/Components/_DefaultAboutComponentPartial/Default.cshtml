@@ -1,0 +1,68 @@
+﻿@model Rentaly.WebUI.Models.AboutComponentViewModel
+
+<section class="section-padding" id="section-about">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <!-- Sol Kolon: Hakkımızda Metinleri (Veritabanından Doğrudan DTO) -->
+            <div class="col-lg-6">
+                <span class="section-subtitle">Hakkımızda &amp; Deneyim</span>
+                <h2 class="section-title">@Model.About.Title</h2>
+                <p class="text-muted mb-4">
+                    @Model.About.Description
+                </p>
+                <div class="row g-3">
+                    <!-- 1. Avantaj Kutusu -->
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background: var(--dark-card);">
+                            <i class="fa fa-check-circle text-primary-custom fs-4"></i>
+                            <div>
+                                <div class="fw-bold">@Model.About.FirstAdvantageTitle</div>
+                                <small class="text-muted">@Model.About.FirstAdvantageDescription</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 2. Avantaj Kutusu -->
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background: var(--dark-card);">
+                            <i class="fa fa-map-pin text-primary-custom fs-4"></i>
+                            <div>
+                                <div class="fw-bold">@Model.About.SecondAdvantageTitle</div>
+                                <small class="text-muted">@Model.About.SecondAdvantageDescription</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ Kolon: Canlı Veritabanı Sayımları -->
+            <div class="col-lg-6">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <div class="stat-number">@Model.TotalRentals.ToString("N0")+</div>
+                            <div class="stat-label">Tamamlanan Kiralama</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <div class="stat-number">@Model.TotalReviews.ToString("N0")+</div>
+                            <div class="stat-label">Yorum Yapan Müşteri</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <div class="stat-number">@Model.TotalCars.ToString("N0")+</div>
+                            <div class="stat-label">Modern Araç Filosu</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <div class="stat-number">@Model.ExperienceYears+</div>
+                            <div class="stat-label">Yıllık Tecrübe</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
