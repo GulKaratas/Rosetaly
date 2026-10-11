@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Rentaly.BusinessLayer.Abstract;
+using Rentaly.DtoLayer.About;
 using Rentaly.WebUI.Models;
 
 namespace Rentaly.WebUI.ViewComponents.DefaultViewComponents
@@ -27,6 +28,7 @@ namespace Rentaly.WebUI.ViewComponents.DefaultViewComponents
         {
             var aboutList = await _aboutService.TGetListAsync();
             var aboutDto = aboutList.FirstOrDefault();
+           
 
             var totalCars = await _carService.TGetCountAsync(); 
             var totalRentals = await _rentalService.TGetCountAsync();

@@ -21,5 +21,8 @@ namespace Rentaly.DataAccessLayer.Concrete
         public DbSet<Review> Reviews { get; set; }
         public DbSet<OurFeature> OurFeatures { get; set; }
         public DbSet<About> Abouts { get; set; }
+        public DbSet<Testimonial> Testimonials { get; set; }
+        public DbSet<FAQ> FAQs { get; set; }
+
     }
 }

@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Rentaly.DtoLayer/1.0.0": {
+        "runtime": {
+          "Rentaly.DtoLayer.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Rentaly.DtoLayer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

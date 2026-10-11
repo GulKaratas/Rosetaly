@@ -4,7 +4,7 @@
 }
 <div class="no-bottom no-top" id="content">
     <div id="top"></div>
-    <!-- 1. HERO SLIDER CAROUSEL (ASP.NET Razor Dinamik Uyumlu) -->
+    <!-- 1. HERO SLIDER CAROUSEL -->
     <section class="hero-section carousel slide carousel-fade" data-bs-interval="5000" data-bs-ride="carousel" id="de-carousel">
         <div class="carousel-indicators">
             <button aria-label="Slayt 1" class="active" data-bs-slide-to="0" data-bs-target="#de-carousel" type="button"></button>
@@ -14,7 +14,7 @@
         <div class="carousel-inner">
             <!-- Slide 1 -->
             <div class="carousel-item active">
-                <div class="hero-slide" style="background-image: url('~/Rentaly/Rentaly Html/images/background/1.jpg');">
+                <div class="hero-slide" style="background-image: url('/images/4.jpeg');">
                     <div class="hero-overlay">
                         <div class="container">
                             <div class="row align-items-center">
@@ -34,7 +34,7 @@
             </div>
             <!-- Slide 2 -->
             <div class="carousel-item">
-                <div class="hero-slide" style="background-image: url('https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg');">
+                <div class="hero-slide" style="background-image: url('/images/1.jpeg');">
                     <div class="hero-overlay">
                         <div class="container">
                             <div class="row align-items-center">
@@ -54,7 +54,7 @@
             </div>
             <!-- Slide 3 -->
             <div class="carousel-item">
-                <div class="hero-slide" style="background-image: url('https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg');">
+                <div class="hero-slide" style="background-image: url('/images/2.jpeg');">
                     <div class="hero-overlay">
                         <div class="container">
                             <div class="row align-items-center">
@@ -141,171 +141,14 @@
     @await Component.InvokeAsync("_DefaultAboutComponentPartial")
     
     <!-- 7. ÖDÜLLER (AWARDS) -->
-    <section class="section-padding bg-dark bg-opacity-50" id="section-awards">
-        <div class="container">
-            <div class="text-center section-title-wrap">
-                <span class="section-subtitle">Başarılarımız &amp; Takdirler</span>
-                <h2 class="section-title">Kazandığımız Ulusal &amp; Uluslararası Ödüller</h2>
-                <p class="text-muted mx-auto" style="max-width: 600px;">
-                    Müşteri memnuniyeti, teknoloji odaklı filo yönetimi ve şeffaf hizmet ilkelerimizle taçlandırılan başarılarımız.
-                </p>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6">
-                    <div class="award-card">
-                        <div class="award-icon-wrap"><i class="fa fa-trophy"></i></div>
-                        <span class="badge bg-warning bg-opacity-25 text-warning mb-2">2024 Ödülü</span>
-                        <h5>En İyi Filo Yönetimi</h5>
-                        <p class="text-muted small mb-0">Avrupa Mobilite Zirvesi Yılın En İnovatif Araç Kiralama Filosu Ödülü.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="award-card">
-                        <div class="award-icon-wrap"><i class="fa fa-award"></i></div>
-                        <span class="badge bg-warning bg-opacity-25 text-warning mb-2">2023 &amp; 2024</span>
-                        <h5>Müşteri Memnuniyeti 1.'si</h5>
-                        <p class="text-muted small mb-0">Türkiye genelinde %99.2 müşteri memnuniyet skoru ile Altın Lider ödülü.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="award-card">
-                        <div class="award-icon-wrap"><i class="fa fa-leaf"></i></div>
-                        <span class="badge bg-warning bg-opacity-25 text-warning mb-2">2023 Yeşil Yıldız</span>
-                        <h5>Sürdürülebilir Filo Ödülü</h5>
-                        <p class="text-muted small mb-0">Elektrikli araç yatırımları ve sıfır karbon vizyonu ile Yeşil Acente belgesi.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="award-card">
-                        <div class="award-icon-wrap"><i class="fa fa-shield-alt"></i></div>
-                        <span class="badge bg-warning bg-opacity-25 text-warning mb-2">2022 Küresel Başarı</span>
-                        <h5>En Güvenli Kiralama Altyapısı</h5>
-                        <p class="text-muted small mb-0">TÜV ve uluslararası denetçilerden tam puanlı güvenlik ve bakım sertifikası.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @await Component.InvokeAsync("_DefaultAwardsComponentPartial")
+  
     <!-- 8. TESTIMONIAL (MÜŞTERİ YORUMLARI) -->
-    <section class="section-padding" id="section-testimonials">
-        <div class="container">
-            <div class="text-center section-title-wrap">
-                <span class="section-subtitle">Misafir Deneyimleri</span>
-                <h2 class="section-title">Müşterilerimiz Bizim İçin Ne Diyor?</h2>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
-                    <div class="testimonial-card">
-                        <div class="testi-quote-icon"><i class="fa fa-quote-left"></i></div>
-                        <p class="text-light mb-4">
-                            "Havalimanına indiğimde aracım pırıl pırıl hazırlanmıştı. Kimlik tarama özelliği sayesinde hiçbir kağıtla uğraşmadan 2 dakikada anahtarı aldım. Kesinlikle tavsiye ederim."
-                        </p>
-                        <div class="d-flex align-items-center gap-3">
-                            <img alt="Selin Hutchkiss" class="avatar-img" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
-                            <div>
-                                <div class="fw-bold">Selin Aksoy</div>
-                                <small class="text-muted">Kurumsal Danışman</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="testimonial-card">
-                        <div class="testi-quote-icon"><i class="fa fa-quote-left"></i></div>
-                        <p class="text-light mb-4">
-                            "Tarih seçtiğimde BMW M2'yi hemen kilitlediler. Başka kimse kapamadı ve tam sözleştiğimiz gibi teslim aldım. Fiyat politikaları son derece dürüst, ek sürpriz yok."
-                        </p>
-                        <div class="d-flex align-items-center gap-3">
-                            <img alt="Caner Yılmaz" class="avatar-img" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
-                            <div>
-                                <div class="fw-bold">Caner Yılmaz</div>
-                                <small class="text-muted">Yazılım Mühendisi</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12">
-                    <div class="testimonial-card">
-                        <div class="testi-quote-icon"><i class="fa fa-quote-left"></i></div>
-                        <p class="text-light mb-4">
-                            "Ailemizle Antalya tatili için SUV kiraladık. Çocuk koltuğuna kadar her şey eksiksiz yerleştirilmişti. 7/24 destek hattı her sorumuzda anında yardımcı oldu."
-                        </p>
-                        <div class="d-flex align-items-center gap-3">
-                            <img alt="Kader Şen" class="avatar-img" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" />
-                            <div>
-                                <div class="fw-bold">Kader Şen</div>
-                                <small class="text-muted">Mimar</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @await Component.InvokeAsync("_DefaultTestimonialComponentPartial")
+    
     <!-- 9. SIKÇA SORULAN SORULAR (FAQ) -->
-    <section class="section-padding bg-dark bg-opacity-50" id="section-faq">
-        <div class="container">
-            <div class="text-center section-title-wrap">
-                <span class="section-subtitle">Yardım Merkezi</span>
-                <h2 class="section-title">Sıkça Sorulan Sorular</h2>
-                <p class="text-muted">Rezervasyon ve araç kiralama süreçleriyle ilgili merak edilenler.</p>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="accordion custom-accordion" id="faqAccordion">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="faqHead1">
-                                <button class="accordion-button" data-bs-target="#faqCol1" data-bs-toggle="collapse" type="button">
-                                    Tarih bazlı araç kilitleme sistemi nasıl çalışır?
-                                </button>
-                            </h2>
-                            <div class="accordion-collapse collapse show" data-bs-parent="#faqAccordion" id="faqCol1">
-                                <div class="accordion-body">
-                                    Lokasyon ve tarih aralığı seçip aracı seçtiğiniz anda sistem aracı sizin adınıza 15 dakika boyunca kilitler. Bu süre zarfında başka hiçbir kullanıcı aynı tarih aralığı için bu aracı rezerve edemez. Ödeme ve onay sonrası araç takvimden tamamen rezerve durumuna geçer.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="faqHead2">
-                                <button class="accordion-button collapsed" data-bs-target="#faqCol2" data-bs-toggle="collapse" type="button">
-                                    Kamera ile Kimlik / Ehliyet okutma nasıl çalışır?
-                                </button>
-                            </h2>
-                            <div class="accordion-collapse collapse" data-bs-parent="#faqAccordion" id="faqCol2">
-                                <div class="accordion-body">
-                                    Opsiyonel OCR özelliğimiz sayesinde telefon kamerasını veya bilgisayardan kimlik görselini taratarak Ad, Soyad, T.C. Kimlik No, Doğum Tarihi ve Ehliyet Sınıfı gibi alanları formunuza tek tıkla otomatik doldurabilirsiniz. Bilgileriniz KVKK standartlarında güvenle işlenir.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="faqHead3">
-                                <button class="accordion-button collapsed" data-bs-target="#faqCol3" data-bs-toggle="collapse" type="button">
-                                    Depozito (Provizyon) ücreti ve iadesi ne zaman yapılır?
-                                </button>
-                            </h2>
-                        </div>
-                        <div class="accordion-collapse collapse" data-bs-parent="#faqAccordion" id="faqCol3">
-                            <div class="accordion-body">
-                                Kredi kartınızdan araç sınıfına göre bloke edilen provizyon tutarı, aracı eksiksiz teslim etmenizin ardından banka prosedürlerine bağlı olarak 1-7 iş günü içerisinde kartınıza eksiksiz iade edilir.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="faqHead4">
-                            <button class="accordion-button collapsed" data-bs-target="#faqCol4" data-bs-toggle="collapse" type="button">
-                                Rezervasyonu iptal edebilir veya tarihlerini değiştirebilir miyim?
-                            </button>
-                        </h2>
-                    </div>
-                    <div class="accordion-collapse collapse" data-bs-parent="#faqAccordion" id="faqCol4">
-                        <div class="accordion-body">
-                            Alış saatine 24 saat kalana kadar yapılan tüm iptallerde %100 kesintisiz ücret iadesi yapılmaktadır. Tarih güncellemeleri de müsaitlik durumuna göre anında panelden yapılabilmektedir.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @await Component.InvokeAsync("_DefaultFAQComponentPartial")
+ 
 </div>
 <div aria-hidden="true" aria-labelledby="ocrModalLabel" class="modal fade" id="ocrModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">

@@ -1,0 +1,33 @@
+﻿@model List<ResultFAQDto>
+
+<section class="section-padding bg-dark bg-opacity-50" id="section-faq">
+    <div class="container">
+        <div class="text-center section-title-wrap">
+            <span class="section-subtitle">Yardım Merkezi</span>
+            <h2 class="section-title">Sıkça Sorulan Sorular</h2>
+            <p class="text-muted">Rezervasyon ve araç kiralama süreçleriyle ilgili merak edilenler.</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion custom-accordion" id="faqAccordion">
+                    @foreach (var faq in Model)
+                    {
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqHead_@faq.FAQId">
+                                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faqCol_@faq.FAQId" type="button" aria-expanded="false" aria-controls="faqCol_@faq.FAQId">
+                                    @faq.Question
+                                </button>
+                            </h2>
+                            
+                            <div id="faqCol_@faq.FAQId" class="accordion-collapse collapse" data-bs-parent="#faqAccordion" aria-labelledby="faqHead_@faq.FAQId">
+                                <div class="accordion-body">
+                                    @faq.Answer
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

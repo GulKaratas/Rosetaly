@@ -265,6 +265,33 @@ namespace Rentaly.DataAccessLayer.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("Rentaly.EntityLayer.Entities.FAQ", b =>
+                {
+                    b.Property<int>("FAQId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FAQId"));
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FAQId");
+
+                    b.ToTable("FAQs");
+                });
+
             modelBuilder.Entity("Rentaly.EntityLayer.Entities.OurFeature", b =>
                 {
                     b.Property<int>("OurFeatureId")
@@ -363,6 +390,35 @@ namespace Rentaly.DataAccessLayer.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("Rentaly.EntityLayer.Entities.Testimonial", b =>
+                {
+                    b.Property<int>("TestimonialId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TestimonialId"));
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TestimonialId");
+
+                    b.ToTable("Testimonials");
                 });
 
             modelBuilder.Entity("Rentaly.EntityLayer.Entities.Car", b =>

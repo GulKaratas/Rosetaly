@@ -1,0 +1,30 @@
+﻿@model List<ResultTestimonialDto>
+
+<section class="section-padding" id="section-testimonials">
+    <div class="container">
+        <div class="text-center section-title-wrap">
+            <span class="section-subtitle">Misafir Deneyimleri</span>
+            <h2 class="section-title">Müşterilerimiz Bizim İçin Ne Diyor?</h2>
+        </div>
+        <div class="row g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="testimonial-card">
+                        <div class="testi-quote-icon"><i class="fa fa-quote-left"></i></div>
+                        <p class="text-light mb-4">
+                            "@item.Comment"
+                        </p>
+                        <div class="d-flex align-items-center gap-3">
+                            <img alt="@item.ClientName" class="avatar-img" src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" : item.ImageUrl)" />
+                            <div>
+                                <div class="fw-bold">@item.ClientName</div>
+                                <small class="text-muted">@item.Title</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

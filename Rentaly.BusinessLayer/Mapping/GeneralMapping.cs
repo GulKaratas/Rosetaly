@@ -4,6 +4,8 @@ using Rentaly.DtoLayer.BranchDtos;
 using Rentaly.DtoLayer.CarDtos;
 using Rentaly.DtoLayer.CategoryDtos;
 using Rentaly.DtoLayer.CustomerDtos;
+using Rentaly.DtoLayer.FAQDtos;
+using Rentaly.DtoLayer.Testimonial;
 using Rentaly.EntityLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -42,6 +44,15 @@ namespace Rentaly.BusinessLayer.Mapping
             CreateMap<About, UpdateAboutDto>().ReverseMap();
             CreateMap<About, GetAboutById>().ReverseMap();
 
+            CreateMap<Testimonial, ResultTestimonialDto>().ReverseMap();
+            CreateMap<Testimonial, CreateTestimonialDto>().ReverseMap();
+            CreateMap<Testimonial, UpdateTestimonialDto>().ReverseMap();
+            CreateMap<Testimonial, GetTestimonialByIdDto>().ReverseMap();
+
+            CreateMap<FAQ, ResultFAQDto>().ReverseMap();
+            CreateMap<FAQ, CreateFAQDto>().ReverseMap();
+            CreateMap<FAQ, UpdateFAQDto>().ReverseMap();
+            CreateMap<FAQ, GetFAQByIdDto>().ReverseMap();
         }
     }
 }

@@ -38,15 +38,15 @@ builder.Services.AddScoped<IReviewService, ReviewManager>();
 builder.Services.AddScoped<IAboutDal, EfAboutDal>();
 builder.Services.AddScoped<IAboutService, AboutManager>();
 
+builder.Services.AddScoped<ITestimonialDal, EfTestimonialDal>();
+builder.Services.AddScoped<ITestimonialService, TestimonialManager>();
 
 builder.Services.AddScoped<IOurFeatureService, OurFeatureManager>();
-
-
 builder.Services.AddScoped<IOurFeatureDal, EfOurFeatureDal>();
 
+builder.Services.AddScoped<IFAQDal, EfFAQDal>();
+builder.Services.AddScoped<IFAQService, FAQManager>();
 
-
-// Servisleri container'a ekle.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
