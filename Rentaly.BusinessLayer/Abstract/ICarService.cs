@@ -9,7 +9,7 @@ namespace Rentaly.BusinessLayer.Abstract
         Task<List<Car>> TGetAllCarsWithCategoryAsync();
         Task<List<ResultCarDto>> TGetLatest10CarsAsync();
         Task<List<ResultCarDto>> TGetListAsync();
-        Task<ResultCarDto> TGetByIdAsync(int id);
+        Task<GetCarByIdDto> TGetByIdAsync(int id);
         Task TInsertAsync(CreateCarDto createCarDto);
         Task TUpdateAsync(UpdateCarDto updateCarDto);
         Task TDeleteAsync(int id);

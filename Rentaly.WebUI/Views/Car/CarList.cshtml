@@ -1,532 +1,521 @@
+@model CarListViewModel
 
 @{
     ViewData["Title"] = "CarList";
     Layout = "~/Views/Shared/_UILayout.cshtml";
 }
 
-<body>
-    <div id="wrapper">
-        
-        <!-- page preloader begin -->
-        <div id="de-preloader"></div>
-        <!-- page preloader close -->
+<style>
+    .car-filters .item_filter_group {
+        background: var(--dark-card);
+        border: 1px solid var(--border-color);
+        border-radius: 18px;
+        padding: 22px;
+        margin-bottom: 18px;
+        color: #e5eaf1;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
-       
-        <!-- content begin -->
-        <div class="no-bottom no-top zebra" id="content">
-            <div id="top"></div>
-            
-            <!-- section begin -->
-            <section id="subheader" class="jarallax text-light">
-                <img src="images/background/2.jpg" class="jarallax-img" alt="">
-                    <div class="center-y relative text-center">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12 text-center">
-									<h1>Cars</h1>
-                                </div>
-                                <div class="clearfix"></div>
-                            </div>
-                        </div>
-                    </div>
-            </section>
-            <!-- section close -->
+    .car-filters .item_filter_group h4 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.05rem;
+        margin-bottom: 14px;
+        color: #fff;
+    }
 
-            <section id="section-cars">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-3">
+    .car-filters .form-check {
+        margin-bottom: 8px;
+        min-height: 1.4rem;
+    }
+
+    .car-filters .form-check-label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: #e5eaf1;
+        font-size: 0.92rem;
+        cursor: pointer;
+    }
+
+    .car-filters .form-check-input {
+        background-color: #11141a;
+        border-color: rgba(255, 255, 255, 0.25);
+        cursor: pointer;
+    }
+
+    .car-filters .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .car-filters .form-check-input:focus {
+        box-shadow: 0 0 0 3px rgba(30, 203, 21, 0.2);
+        border-color: var(--primary-color);
+    }
+
+    .car-filters .price-input {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .car-filters .price-input .field {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        font-size: 0.85rem;
+        color: #b8c2d0;
+    }
+
+    .car-filters .price-input .field input {
+        width: 100%;
+        background: #11141a;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        padding: 6px 8px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 600;
+        outline: none;
+    }
+
+    .car-filters .slider {
+        height: 5px;
+        position: relative;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 5px;
+        margin: 8px 0 16px;
+    }
+
+    .car-filters .slider .progress {
+        height: 100%;
+        left: 0;
+        right: 0;
+        position: absolute;
+        border-radius: 5px;
+        background: var(--primary-color);
+    }
+
+    .car-filters .range-input {
+        position: relative;
+        height: 5px;
+        margin-top: -21px;
+        margin-bottom: 8px;
+    }
+
+    .car-filters .range-input input {
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        top: 0;
+        background: none;
+        pointer-events: none;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .car-filters .range-input input::-webkit-slider-thumb {
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        pointer-events: auto;
+        -webkit-appearance: none;
+        cursor: pointer;
+    }
+
+    .car-filters .range-input input::-moz-range-thumb {
+        height: 16px;
+        width: 16px;
+        border: none;
+        border-radius: 50%;
+        background: var(--primary-color);
+        pointer-events: auto;
+        cursor: pointer;
+    }
+
+    .car-filters {
+        scrollbar-width: thin;
+        scrollbar-color: #2c3442 #0d0f13;
+    }
+
+    .car-filters::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .car-filters::-webkit-scrollbar-track {
+        background: #0d0f13;
+        border-radius: 999px;
+    }
+
+    .car-filters::-webkit-scrollbar-thumb {
+        background: #2c3442;
+        border: 2px solid #0d0f13;
+        border-radius: 999px;
+    }
+
+    .car-filters::-webkit-scrollbar-thumb:hover {
+        background: #3d4758;
+    }
+
+    .car-thumb-link {
+        display: block;
+    }
+
+        .car-thumb-link img {
+            transition: transform 0.3s ease;
+        }
+
+        .car-thumb-link:hover img {
+            transform: scale(1.04);
+        }
+
+    @@media (min-width: 992px) {
+        .car-filters {
+            position: sticky;
+            top: 96px;
+            max-height: calc(100vh - 112px);
+            overflow-y: auto;
+        }
+    }
+</style>
+
+<section class="section-padding" id="section-cars" style="margin-top: 76px;">
+    <div class="container">
+        <div class="d-flex align-items-end justify-content-between mb-4 flex-wrap gap-3">
+            <div>
+                <span class="section-subtitle">Filo</span>
+                <h2 class="section-title mb-0">Araç Listesi</h2>
+                <p class="text-white-50 mt-2 mb-0">Müsait araçları inceleyin ve günlük fiyatla rezervasyon yapın.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <span class="badge bg-success bg-opacity-25 text-success p-2">
+                    @Model.Cars.Count(x => x.IsAvailable) Müsait
+                </span>
+                <span class="badge bg-danger bg-opacity-25 text-danger p-2">
+                    @Model.Cars.Count(x => !x.IsAvailable) Dolu / Kilitli
+                </span>
+            </div>
+        </div>
+
+        @if (Model.Cars.Count == 0)
+        {
+            <div class="car-card p-5 text-center">
+                <i class="fa fa-car text-primary-custom fs-2 mb-3"></i>
+                <h4 class="mb-2">Listelenecek araç yok</h4>
+                <p class="mb-0">Filoya araç eklendiğinde burada görünecek.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                <div class="col-lg-3">
+                    <div class="car-filters">
+                        @if (Model.Brands.Count > 0)
+                        {
                             <div class="item_filter_group">
-                                <h4>Vehicle Type</h4>
-                                <div class="de_form">
-                                    <div class="de_checkbox">
-                                        <input id="vehicle_type_1" name="vehicle_type_1" type="checkbox" value="vehicle_type_1">
-                                        <label for="vehicle_type_1">Car</label>
+                                <h4>Marka</h4>
+                                @for (var i = 0; i < Model.Brands.Count; i++)
+                                {
+                                    var brandName = Model.Brands[i];
+                                    <div class="form-check">
+                                        <input class="form-check-input js-brand" id="brand-@i" type="checkbox" value="@brandName" />
+                                        <label class="form-check-label" for="brand-@i">@brandName</label>
                                     </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="vehicle_type_2" name="vehicle_type_2" type="checkbox" value="vehicle_type_2">
-                                        <label for="vehicle_type_2">Van</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="vehicle_type_3" name="vehicle_type_3" type="checkbox" value="vehicle_type_3">
-                                        <label for="vehicle_type_3">Minibus</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="vehicle_type_4" name="vehicle_type_4" type="checkbox" value="vehicle_type_4">
-                                        <label for="vehicle_type_4">Prestige</label>
-                                    </div>
-
-                                </div>
+                                }
                             </div>
+                        }
 
+                        @if (Model.Categories.Count > 0)
+                        {
                             <div class="item_filter_group">
-                                <h4>Car Body Type</h4>
-                                <div class="de_form">
-                                    <div class="de_checkbox">
-                                        <input id="car_body_type_1" name="car_body_type_1" type="checkbox" value="car_body_type_1">
-                                        <label for="car_body_type_1">Convertible</label>
+                                <h4>Kategori</h4>
+                                @for (var i = 0; i < Model.Categories.Count; i++)
+                                {
+                                    var categoryName = Model.Categories[i];
+                                    <div class="form-check">
+                                        <input class="form-check-input js-category" id="category-@i" type="checkbox" value="@categoryName" />
+                                        <label class="form-check-label" for="category-@i">@categoryName</label>
                                     </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_body_type_2" name="car_body_type_2" type="checkbox" value="car_body_type_2">
-                                        <label for="car_body_type_2">Coupe</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_body_type_3" name="car_body_type_3" type="checkbox" value="car_body_type_3">
-                                        <label for="car_body_type_3">Exotic Cars</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_body_type_4" name="car_body_type_4" type="checkbox" value="car_body_type_4">
-                                        <label for="car_body_type_4">Hatchback</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_body_type_5" name="car_body_type_5" type="checkbox" value="car_body_type_5">
-                                        <label for="car_body_type_5">Minivan</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_body_type_6" name="car_body_type_6" type="checkbox" value="car_body_type_6">
-                                        <label for="car_body_type_6">Truck</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_body_type_7" name="car_body_type_7" type="checkbox" value="car_body_type_7">
-                                        <label for="car_body_type_7">Sedan</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_body_type_8" name="car_body_type_8" type="checkbox" value="car_body_type_8">
-                                        <label for="car_body_type_8">Sports Car</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_body_type_9" name="car_body_type_9" type="checkbox" value="car_body_type_9">
-                                        <label for="car_body_type_9">Station Wagon</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_body_type_10" name="car_body_type_10" type="checkbox" value="car_body_type_10">
-                                        <label for="car_body_type_10">SUV</label>
-                                    </div>
-
-                                </div>
+                                }
                             </div>
+                        }
 
+                        @if (Model.SeatCounts.Count > 0)
+                        {
                             <div class="item_filter_group">
-                                <h4>Car Seats</h4>
-                                <div class="de_form">
-                                    <div class="de_checkbox">
-                                        <input id="car_seat_1" name="car_seat_1" type="checkbox" value="car_seat_1">
-                                        <label for="car_seat_1">2 seats</label>
+                                <h4>Koltuk Sayısı</h4>
+                                @foreach (var seatCount in Model.SeatCounts)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input js-seats" id="seat-@seatCount" type="checkbox" value="@seatCount" />
+                                        <label class="form-check-label" for="seat-@seatCount">@seatCount Kişi</label>
                                     </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_seat_2" name="car_seat_2" type="checkbox" value="car_seat_2">
-                                        <label for="car_seat_2">4 seats</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_seat_3" name="car_seat_3" type="checkbox" value="car_seat_3">
-                                        <label for="car_seat_3">6 seats</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_seat_4" name="car_seat_4" type="checkbox" value="car_seat_4">
-                                        <label for="car_seat_4">6+ seats</label>
-                                    </div>
-
-                                </div>
+                                }
                             </div>
+                        }
 
+                        @if (Model.FuelTypes.Count > 0)
+                        {
                             <div class="item_filter_group">
-                                <h4>Car Engine Capacity (cc)</h4>
-                                <div class="de_form">
-                                    <div class="de_checkbox">
-                                        <input id="car_engine_1" name="car_engine_1" type="checkbox" value="car_engine_1">
-                                        <label for="car_engine_1">1000 - 2000</label>
+                                <h4>Yakıt</h4>
+                                @for (var i = 0; i < Model.FuelTypes.Count; i++)
+                                {
+                                    var fuelType = Model.FuelTypes[i];
+                                    <div class="form-check">
+                                        <input class="form-check-input js-fuel" id="fuel-@i" type="checkbox" value="@fuelType" />
+                                        <label class="form-check-label" for="fuel-@i">@fuelType</label>
                                     </div>
+                                }
+                            </div>
+                        }
 
-                                    <div class="de_checkbox">
-                                        <input id="car_engine_2" name="car_engine_2" type="checkbox" value="car_engine_2">
-                                        <label for="car_engine_2">2000 - 4000</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_engine_3" name="car_engine_3" type="checkbox" value="car_engine_3">
-                                        <label for="car_engine_3">4000 - 6000</label>
-                                    </div>
-
-                                    <div class="de_checkbox">
-                                        <input id="car_engine_4" name="car_engine_4" type="checkbox" value="car_engine_4">
-                                        <label for="car_engine_4">6000+</label>
-                                    </div>
-
+                        <div class="item_filter_group">
+                            <h4>Günlük Fiyat (₺)</h4>
+                            <div class="price-input">
+                                <div class="field">
+                                    <span>Min</span>
+                                    <input type="number" class="input-min" value="0" min="0" />
+                                </div>
+                                <div class="field">
+                                    <span>Max</span>
+                                    <input type="number" class="input-max" value="0" min="0" />
                                 </div>
                             </div>
-
-                            <div class="item_filter_group">
-                                <h4>Price ($)</h4>
-                                  <div class="price-input">
-                                    <div class="field">
-                                      <span>Min</span>
-                                      <input type="number" class="input-min" value="0">
-                                    </div>
-                                    <div class="field">
-                                      <span>Max</span>
-                                      <input type="number" class="input-max" value="2000">
-                                    </div>
-                                  </div>
-                                  <div class="slider">
-                                    <div class="progress"></div>
-                                  </div>
-                                  <div class="range-input">
-                                    <input type="range" class="range-min" min="0" max="2000" value="0" step="1">
-                                    <input type="range" class="range-max" min="0" max="2000" value="2000" step="1">
-                                  </div>
+                            <div class="slider">
+                                <div class="progress"></div>
                             </div>
-                        </div>
-
-                        <div class="col-lg-9">
-                            <div class="row">
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/jeep-renegade.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Jeep Renegade</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>25</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">SUV</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$265</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/bmw-m5.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Mini Cooper</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>79</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">Sedan</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$244</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/ferrari-enzo.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Ferarri Enzo</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>55</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">Exotic Car</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$167</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/ford-raptor.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Ford Raptor</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>89</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">Truck</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$147</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/mini-cooper.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Mini Cooper</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>87</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">Hatchback</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$238</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/vw-polo.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>VW Polo</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>37</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">Hatchback</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$106</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/chevrolet-camaro.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Chevrolet Camaro</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>39</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">Exotic Car</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$245</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/hyundai-staria.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Hyundai Staria</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>23</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">Minivan</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$191</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/toyota-rav.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Toyota Rav 4</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>63</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">SUV</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$114</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/bentley.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Bentley</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>45</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">SUV</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$299</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/lexus.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Lexus</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>61</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">Sedan</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$131</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4 col-lg-6">
-                                    <div class="de-item mb30">
-                                        <div class="d-img">
-                                            <img src="images/cars/range-rover.jpg" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="d-info">
-                                            <div class="d-text">
-                                                <h4>Range Rover</h4>
-                                                <div class="d-item_like">
-                                            <i class="fa fa-heart"></i><span>69</span>
-                                        </div>
-                                        <div class="d-atr-group">
-                                                    <span class="d-atr"><img src="images/icons/1-green.svg" alt="">5</span>
-                                                    <span class="d-atr"><img src="images/icons/2-green.svg" alt="">2</span>
-                                                    <span class="d-atr"><img src="images/icons/3-green.svg" alt="">4</span>
-                                                    <span class="d-atr"><img src="images/icons/4-green.svg" alt="">Exotic Car</span>
-                                                </div>
-                                                <div class="d-price">
-                                                    Daily rate from <span>$228</span>
-                                                    <a class="btn-main" href="car-single.html">Rent Now</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                
-
+                            <div class="range-input">
+                                <input type="range" class="range-min" min="0" value="0" step="50" />
+                                <input type="range" class="range-max" min="0" value="0" step="50" />
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-			
-			
-        </div>
-        <!-- content close -->
 
-        <a href="#" id="back-to-top"></a>
-     
-        
+                <div class="col-lg-9">
+                    <div class="row g-4" id="carGrid">
+                        @foreach (var car in Model.Cars)
+                        {
+                            <div class="col-xl-4 col-lg-6 car-filter-item"
+                                 data-brand="@car.BrandName"
+                                 data-category="@car.CategoryName"
+                                 data-seats="@car.SeatCount"
+                                 data-fuel="@car.FuelType"
+                                 data-price="@car.DailyPrice.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                                <div class="car-card h-100 d-flex flex-column">
+                                    <div class="car-thumb">
+                                        <span class="car-badge">@car.CategoryName</span>
+
+                                        @if (car.IsAvailable)
+                                        {
+                                            <span class="car-status-available">
+                                                <i class="fa fa-check"></i> Müsait
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="car-status-locked">
+                                                <i class="fa fa-lock"></i> Rezerve Edildi
+                                            </span>
+                                        }
+
+                                        <a asp-controller="Car"
+                                           asp-action="CarsDetails"
+                                           asp-route-id="@car.CarId"
+                                           class="car-thumb-link">
+                                            <img alt="@car.BrandName @car.ModelName"
+                                                 class="img-fluid"
+                                                 src="@car.ImageUrl" />
+                                        </a>
+                                    </div>
+
+                                    <div class="car-body d-flex flex-column flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h4 class="mb-1">@car.BrandName @car.ModelName</h4>
+                                                <small class="text-white-50 mt-2 mb-0 d-block">
+                                                    Model Yılı: @car.Year • @car.FuelType
+                                                </small>
+                                            </div>
+                                            <span class="badge bg-dark text-warning">
+                                                <i class="fa fa-star"></i> @car.Rating.ToString("0.0")
+                                            </span>
+                                        </div>
+
+                                        <div class="car-specs-grid">
+                                            <div class="car-spec-item">
+                                                <i class="fa fa-user-group"></i> @car.SeatCount Kişi
+                                            </div>
+                                            <div class="car-spec-item">
+                                                <i class="fa fa-suitcase"></i> @car.LuggageCount Bavul
+                                            </div>
+                                            <div class="car-spec-item">
+                                                <i class="fa fa-cogs"></i> @car.Transmission
+                                            </div>
+                                            <div class="car-spec-item">
+                                                <i class="fa fa-gauge"></i> @(car.PerformanceInfo ?? "Standart")
+                                            </div>
+                                        </div>
+
+                                        <div class="car-price-row mt-auto">
+                                            <div class="price-val">
+                                                ₺@car.DailyPrice.ToString("N0")
+                                                <span>/ Günlük</span>
+                                            </div>
+
+                                            @if (car.IsAvailable)
+                                            {
+                                                <button type="button"
+                                                        class="btn btn-custom-primary btn-sm px-3"
+                                                        onclick="lockAndBookCar('@car.BrandName @car.ModelName', '₺@car.DailyPrice.ToString("N0")')">
+                                                    <i class="fa fa-lock"></i> Rezerve Et
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="btn btn-secondary btn-sm px-3" disabled>
+                                                    <i class="fa fa-ban"></i> Uygun Değil
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="car-card p-5 text-center d-none" id="carFilterEmpty">
+                        <i class="fa fa-filter text-primary-custom fs-2 mb-3"></i>
+                        <h4 class="mb-2">Bu filtrelere uygun araç yok</h4>
+                        <p class="mb-0">Seçimleri gevşetin ya da fiyat aralığını genişletin.</p>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
+</section>
 
+<script>
+    (function () {
+        const minInput = document.querySelector('.car-filters .input-min');
+        const maxInput = document.querySelector('.car-filters .input-max');
+        const minRange = document.querySelector('.car-filters .range-min');
+        const maxRange = document.querySelector('.car-filters .range-max');
+        const progress = document.querySelector('.car-filters .slider .progress');
+        const emptyBox = document.getElementById('carFilterEmpty');
 
-    <!-- Javascript Files
-    ================================================== -->
- 
+        if (!minInput || !maxInput || !minRange || !maxRange || !progress || !emptyBox) {
+            return;
+        }
 
-</body>
+        const items = () => [...document.querySelectorAll('.car-filter-item')];
+        const checkedValues = (selector) => [...document.querySelectorAll(selector + ':checked')].map(el => el.value.trim().toLowerCase());
+
+        const prices = items().map(item => Number(item.dataset.price || 0));
+        const highest = prices.length ? Math.ceil(Math.max(...prices)) : 0;
+        const priceMax = Math.max(2000, Math.ceil(highest / 100) * 100);
+
+        [minInput, maxInput, minRange, maxRange].forEach(function (input) {
+            input.min = 0;
+            input.max = priceMax;
+        });
+        minInput.value = 0;
+        minRange.value = 0;
+        maxInput.value = priceMax;
+        maxRange.value = priceMax;
+
+        function matchesAny(selected, actual) {
+            return selected.length === 0 || selected.includes(actual);
+        }
+
+        function paintRange() {
+            const maxLimit = Number(minRange.max) || 1;
+            const minVal = Number(minRange.value);
+            const maxVal = Number(maxRange.value);
+            progress.style.left = (minVal / maxLimit) * 100 + '%';
+            progress.style.right = (100 - (maxVal / maxLimit) * 100) + '%';
+        }
+
+        function applyFilters() {
+            const brands = checkedValues('.js-brand');
+            const categories = checkedValues('.js-category');
+            const seats = checkedValues('.js-seats');
+            const fuels = checkedValues('.js-fuel');
+            const minPrice = Number(minInput.value || 0);
+            const maxPrice = Number(maxInput.value || minRange.max);
+
+            let visible = 0;
+            items().forEach(item => {
+                const brand = (item.dataset.brand || '').trim().toLowerCase();
+                const category = (item.dataset.category || '').trim().toLowerCase();
+                const seatCount = String(item.dataset.seats || '');
+                const fuel = (item.dataset.fuel || '').trim().toLowerCase();
+                const price = Number(item.dataset.price || 0);
+
+                const brandOk = matchesAny(brands, brand);
+                const categoryOk = matchesAny(categories, category);
+                const seatOk = matchesAny(seats, seatCount);
+                const fuelOk = matchesAny(fuels, fuel);
+                const priceOk = price >= minPrice && price <= maxPrice;
+                const show = brandOk && categoryOk && seatOk && fuelOk && priceOk;
+
+                item.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+
+            emptyBox.classList.toggle('d-none', visible !== 0);
+        }
+
+        document.querySelectorAll('.car-filters input[type="checkbox"]').forEach(input => {
+            input.addEventListener('change', applyFilters);
+        });
+
+        minInput.addEventListener('input', function () {
+            let minVal = Number(minInput.value || 0);
+            const maxVal = Number(maxInput.value || 0);
+            if (minVal > maxVal) minVal = maxVal;
+            minInput.value = minVal;
+            minRange.value = minVal;
+            paintRange();
+            applyFilters();
+        });
+
+        maxInput.addEventListener('input', function () {
+            let maxVal = Number(maxInput.value || 0);
+            const minVal = Number(minInput.value || 0);
+            const limit = Number(maxRange.max);
+            if (maxVal < minVal) maxVal = minVal;
+            if (maxVal > limit) maxVal = limit;
+            maxInput.value = maxVal;
+            maxRange.value = maxVal;
+            paintRange();
+            applyFilters();
+        });
+
+        minRange.addEventListener('input', function () {
+            let minVal = Number(minRange.value);
+            const maxVal = Number(maxRange.value);
+            if (minVal > maxVal) {
+                minVal = maxVal;
+                minRange.value = minVal;
+            }
+            minInput.value = minVal;
+            paintRange();
+            applyFilters();
+        });
+
+        maxRange.addEventListener('input', function () {
+            let maxVal = Number(maxRange.value);
+            const minVal = Number(minRange.value);
+            if (maxVal < minVal) {
+                maxVal = minVal;
+                maxRange.value = maxVal;
+            }
+            maxInput.value = maxVal;
+            paintRange();
+            applyFilters();
+        });
+
+        paintRange();
+    })();
+</script>

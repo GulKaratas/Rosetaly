@@ -1,0 +1,229 @@
+﻿@model List<Rentaly.EntityLayer.Entities.CarModel>
+@{
+    ViewData["Title"] = "CarModelList";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Araç Modelleri", "Sistemde kayıtlı araç modelleri ve marka eşleşme listesi", "Modeller", "/Admin/CarModel/CreateCarModel/", "Yeni Model Ekle", false, ""))
+}
+
+
+<div class="bg-surface-container-lowest rounded-xl shadow-sm flex flex-col overflow-hidden">
+
+    <!-- Arama ve Filtre Alanı -->
+    <div class="p-space-md bg-surface-container-lowest flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+
+        <div class="relative flex-1 max-w-md">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">
+                search
+            </span>
+
+            <input id="modelSearch"
+                   class="w-full pl-9 pr-space-md py-space-xs bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline outline-none focus:bg-surface-container transition-colors"
+                   placeholder="Model adı veya marka ara..."
+                   type="text">
+        </div>
+
+        <div class="flex items-center gap-space-sm flex-wrap">
+
+            <!-- Marka Filtresi -->
+            <div class="relative">
+                <select id="brandFilter"
+                        class="appearance-none bg-surface-container-low text-on-surface font-body-sm text-body-sm py-space-xs pl-space-md pr-8 rounded-lg outline-none cursor-pointer focus:bg-surface-container transition-colors">
+                    <option value="">Tüm Markalar</option>
+
+                    @foreach (var brand in Model
+                        .Where(x => x.Brand != null)
+                        .Select(x => x.Brand.BrandName)
+                        .Distinct()
+                        .OrderBy(x => x))
+                    {
+                        <option value="@brand">@brand</option>
+                    }
+                </select>
+
+                <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-[18px] pointer-events-none">
+                    expand_more
+                </span>
+            </div>
+
+            <!-- Sıralama -->
+            <div class="relative">
+                <select id="sortFilter"
+                        class="appearance-none bg-surface-container-low text-on-surface font-body-sm text-body-sm py-space-xs pl-space-md pr-8 rounded-lg outline-none cursor-pointer focus:bg-surface-container transition-colors">
+                    <option value="asc">Sıralama: A - Z</option>
+                    <option value="desc">Sıralama: Z - A</option>
+                </select>
+
+                <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-[18px] pointer-events-none">
+                    swap_vert
+                </span>
+            </div>
+
+            <!-- Filtreleri Temizle -->
+            <button id="resetFilters"
+                    class="inline-flex items-center gap-1.5 px-space-md py-space-xs bg-surface-container-low hover:bg-surface-container text-secondary font-body-sm text-body-sm rounded-lg transition-colors"
+                    title="Filtreleri Temizle"
+                    type="button">
+                <span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
+                Sıfırla
+            </button>
+
+        </div>
+    </div>
+
+    <!-- Tablo -->
+    <div class="w-full overflow-x-auto">
+
+        <table class="w-full text-left font-body-md text-body-md">
+
+            <thead>
+                <tr class="bg-surface-container-low font-table-header text-table-header text-secondary uppercase tracking-wider">
+
+                    <th class="py-3 px-4 w-12 text-center">
+                        <input id="selectAll"
+                               class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary"
+                               type="checkbox">
+                    </th>
+
+                    <th class="py-3 px-4">ID</th>
+                    <th class="py-3 px-4">Model Adı</th>
+                    <th class="py-3 px-4">Bağlı Marka</th>
+                    <th class="py-3 px-4">Filo Bilgisi</th>
+                    <th class="py-3 px-4">Durum</th>
+                    <th class="py-3 px-4 text-right">İşlemler</th>
+
+                </tr>
+            </thead>
+
+            <tbody id="modelTableBody"
+                   class="divide-y-0">
+
+                @foreach (var item in Model)
+                {
+                    var brandName = item.Brand?.BrandName ?? "Marka belirtilmemiş";
+
+                    <tr class="model-row hover:bg-surface-container-low/60 transition-colors group"
+                        data-name="@item.ModelName"
+                        data-brand="@brandName">
+
+                        <td class="py-3 px-4 text-center">
+                            <input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary"
+                                   type="checkbox"
+                                   value="@item.CarModelId">
+                        </td>
+
+                        <td class="py-3 px-4 font-mono text-body-sm font-semibold text-secondary">
+                            #@item.CarModelId.ToString("D2")
+                        </td>
+
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-space-sm">
+
+                                <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform shrink-0">
+                                    <span class="material-symbols-outlined text-[20px]">
+                                        directions_car
+                                    </span>
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <span class="font-headline-md text-body-md font-semibold text-on-surface">
+                                        @item.ModelName
+                                    </span>
+
+                                    <span class="font-body-sm text-[11px] text-outline">
+                                        Araç modeli
+                                    </span>
+                                </div>
+
+                            </div>
+                        </td>
+
+                        <td class="py-3 px-4">
+                            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-surface-container font-label-badge text-label-badge text-on-surface">
+
+                                <span class="material-symbols-outlined text-[16px] text-primary">
+                                    directions_car
+                                </span>
+
+                                <span>@brandName</span>
+                            </div>
+                        </td>
+
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center gap-1 font-semibold text-on-surface">
+                                    <span class="material-symbols-outlined text-[16px] text-secondary">
+                                        local_taxi
+                                    </span>
+                                    Araç
+                                </span>
+                            </div>
+                        </td>
+
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed">
+                                <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                Kayıtlı
+                            </span>
+                        </td>
+
+                        <td class="py-3 px-4 text-right">
+                            <div class="inline-flex items-center justify-end gap-1">
+
+                                <a href="/Admin/Car/CarList?carModelId=@item.CarModelId"
+                                   class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors"
+                                   title="Modelin Araçlarını Gör">
+                                    <span class="material-symbols-outlined text-[18px]">
+                                        directions_car
+                                    </span>
+                                </a>
+
+                                <a href="/Admin/CarModel/UpdateCarModel/@item.CarModelId"
+                                   class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors"
+                                   title="Düzenle">
+                                    <span class="material-symbols-outlined text-[18px]">
+                                        edit
+                                    </span>
+                                </a>
+
+                                <a href="/Admin/CarModel/DeleteCarModel/@item.CarModelId"
+                                   class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors"
+                                   title="Sil"
+                                   onclick="return confirm('Bu araç modelini silmek istediğinize emin misiniz?')">
+                                    <span class="material-symbols-outlined text-[18px]">
+                                        delete
+                                    </span>
+                                </a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Alt Bilgi -->
+    <div class="p-space-md bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-md">
+
+        <span id="modelCount"
+              class="font-body-sm text-body-sm text-secondary">
+            Toplam <strong class="text-on-surface">@Model.Count</strong> model listeleniyor.
+        </span>
+
+        <div class="flex items-center gap-1">
+            <span class="font-body-sm text-body-sm text-outline">
+                Toplam model sayısı:
+            </span>
+
+            <span class="inline-flex items-center justify-center min-w-8 h-8 px-2 rounded-lg bg-surface-container text-body-sm font-semibold text-on-surface">
+                @Model.Count
+            </span>
+        </div>
+
+    </div>
+</div>
+

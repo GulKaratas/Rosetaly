@@ -1,0 +1,521 @@
+﻿@using Rentaly.DtoLayer.BranchDtos
+@model List<ResultBranchDto>
+@{
+    ViewData["Title"] = "BranchList";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Şubeler", "Şirketin hizmet verdiği tüm şube lokasyonları ve yönetim listesi", "Şubeler", "/Admin/Branch/CreateBranch/", "Yeni Şube Ekle", false, ""))
+}
+  
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+ <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+                <div class="p-space-md bg-surface-container-lowest flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+                    <div class="relative flex-1 min-w-[260px] max-w-lg">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">search</span>
+                        <input class="w-full pl-10 pr-4 py-2 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-secondary focus:outline-none focus:bg-surface-container focus:ring-1 focus:ring-primary transition-colors" id="branchSearchInput" placeholder="Şube adı, şehir veya adres ara..." type="text" />
+                    </div>
+                    <div class="flex flex-wrap items-center gap-space-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="font-body-sm text-body-sm text-secondary whitespace-nowrap">Şehir:</span>
+                            <select class="bg-surface-container-low text-on-surface font-body-sm text-body-sm px-3 py-2 rounded-lg focus:outline-none focus:bg-surface-container transition-colors cursor-pointer" id="cityFilterSelect">
+                                <option value="all">Tüm Şehirler</option>
+                                <option value="istanbul">İstanbul</option>
+                                <option value="ankara">Ankara</option>
+                                <option value="izmir">İzmir</option>
+                                <option value="antalya">Antalya</option>
+                                <option value="mugla">Muğla</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-body-sm text-body-sm text-secondary whitespace-nowrap">Sırala:</span>
+                            <select class="bg-surface-container-low text-on-surface font-body-sm text-body-sm px-3 py-2 rounded-lg focus:outline-none focus:bg-surface-container transition-colors cursor-pointer" id="sortSelect">
+                                <option value="fleet-desc">En Çok Araç</option>
+                                <option value="az">A - Z</option>
+                                <option value="za">Z - A</option>
+                                <option value="recent">Son Eklenenler</option>
+                            </select>
+                        </div>
+                        <button class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-secondary hover:text-on-surface transition-colors" id="resetFiltersBtn" title="Filtreleri Temizle" type="button">
+                            <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left" id="branchesTable">
+                        <thead>
+                            <tr class="bg-surface-container-low text-secondary font-table-header text-table-header uppercase">
+                                <th class="py-3 px-4 w-10 text-center">
+                                    <input class="w-4 h-4 rounded text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer accent-primary" id="selectAllCheckbox" type="checkbox" />
+                                </th>
+                                <th class="py-3 px-4 w-16">ID</th>
+                                <th class="py-3 px-4">ŞUBE ADI &amp; İKON</th>
+                                <th class="py-3 px-4">ŞEHİR</th>
+                                <th class="py-3 px-4">AÇIK ADRES &amp; İLETİŞİM</th>
+                                <th class="py-3 px-4 text-center">AKTİF ARAÇ SAYISI</th>
+                                <th class="py-3 px-4 text-center">DURUM</th>
+                                <th class="py-3 px-4 text-right">İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-surface-container-low" id="tableBody">
+                            <tr class="hover:bg-surface-container-low/60 transition-colors branch-row" data-city="istanbul" data-fleet="34" data-name="İstanbul Havalimanı (IST)">
+                                <td class="py-3.5 px-4 text-center">
+                                    <input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary" type="checkbox" />
+                                </td>
+                                <td class="py-3.5 px-4 font-table-cell text-table-cell text-secondary font-semibold">#01</td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                                            <span class="material-symbols-outlined text-[20px]">flight</span>
+                                        </div>
+                                        <div class="flex flex-col min-w-0">
+                                            <span class="font-body-md text-body-md font-semibold text-on-surface truncate">İstanbul Havalimanı (IST)</span>
+                                            <span class="font-label-badge text-label-badge text-secondary">Dış Hatlar Terminali</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-label-badge text-label-badge bg-surface-container text-primary font-medium">
+                                        <span class="material-symbols-outlined text-[14px]">pin_drop</span> İstanbul
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex flex-col space-y-0.5 max-w-xs">
+                                        <span class="font-body-sm text-body-sm text-on-surface truncate">Tayakadın Mah. Terminal Cad. No:1, Arnavutköy</span>
+                                        <span class="font-label-badge text-label-badge text-secondary flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[13px]">call</span> +90 (212) 463 30 00
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-badge text-label-badge font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                        <span>34 Araç</span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed-variant font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Aktif
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center justify-end gap-1">
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" href="/Vehicles?branchId=1" title="Araçları Gör">
+                                            <span class="material-symbols-outlined text-[19px]">directions_car</span>
+                                        </a>
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" href="/Branches/EditBranch/1" title="Düzenle">
+                                            <span class="material-symbols-outlined text-[19px]">edit</span>
+                                        </a>
+                                        <button class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/40 transition-colors" onclick="confirmDelete(1, 'İstanbul Havalimanı (IST)')" title="Sil" type="button">
+                                            <span class="material-symbols-outlined text-[19px]">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low/60 transition-colors branch-row" data-city="istanbul" data-fleet="26" data-name="Kadıköy Rıhtım Merkez">
+                                <td class="py-3.5 px-4 text-center">
+                                    <input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary" type="checkbox" />
+                                </td>
+                                <td class="py-3.5 px-4 font-table-cell text-table-cell text-secondary font-semibold">#02</td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                                            <span class="material-symbols-outlined text-[20px]">store</span>
+                                        </div>
+                                        <div class="flex flex-col min-w-0">
+                                            <span class="font-body-md text-body-md font-semibold text-on-surface truncate">Kadıköy Rıhtım Merkez</span>
+                                            <span class="font-label-badge text-label-badge text-secondary">Şehir Ofisi</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-label-badge text-label-badge bg-surface-container text-primary font-medium">
+                                        <span class="material-symbols-outlined text-[14px]">pin_drop</span> İstanbul
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex flex-col space-y-0.5 max-w-xs">
+                                        <span class="font-body-sm text-body-sm text-on-surface truncate">Caferağa Mah. Rıhtım Cad. No:44, Kadıköy</span>
+                                        <span class="font-label-badge text-label-badge text-secondary flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[13px]">call</span> +90 (216) 345 12 34
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-badge text-label-badge font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                        <span>26 Araç</span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed-variant font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Aktif
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center justify-end gap-1">
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" href="/Vehicles?branchId=2" title="Araçları Gör">
+                                            <span class="material-symbols-outlined text-[19px]">directions_car</span>
+                                        </a>
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" href="/Branches/EditBranch/2" title="Düzenle">
+                                            <span class="material-symbols-outlined text-[19px]">edit</span>
+                                        </a>
+                                        <button class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/40 transition-colors" onclick="confirmDelete(2, 'Kadıköy Rıhtım Merkez')" title="Sil" type="button">
+                                            <span class="material-symbols-outlined text-[19px]">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low/60 transition-colors branch-row" data-city="ankara" data-fleet="22" data-name="Ankara Esenboğa Havalimanı (ESB)">
+                                <td class="py-3.5 px-4 text-center">
+                                    <input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary" type="checkbox" />
+                                </td>
+                                <td class="py-3.5 px-4 font-table-cell text-table-cell text-secondary font-semibold">#03</td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                                            <span class="material-symbols-outlined text-[20px]">flight</span>
+                                        </div>
+                                        <div class="flex flex-col min-w-0">
+                                            <span class="font-body-md text-body-md font-semibold text-on-surface truncate">Ankara Esenboğa Havalimanı (ESB)</span>
+                                            <span class="font-label-badge text-label-badge text-secondary">İç &amp; Dış Hatlar İrtibat</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-label-badge text-label-badge bg-secondary-fixed text-on-secondary-fixed-variant font-medium">
+                                        <span class="material-symbols-outlined text-[14px]">pin_drop</span> Ankara
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex flex-col space-y-0.5 max-w-xs">
+                                        <span class="font-body-sm text-body-sm text-on-surface truncate">Balıkhisar Mah. Özal Bulvarı No:12, Çubuk</span>
+                                        <span class="font-label-badge text-label-badge text-secondary flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[13px]">call</span> +90 (312) 398 00 00
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-badge text-label-badge font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                        <span>22 Araç</span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed-variant font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Aktif
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center justify-end gap-1">
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" href="/Vehicles?branchId=3" title="Araçları Gör">
+                                            <span class="material-symbols-outlined text-[19px]">directions_car</span>
+                                        </a>
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" href="/Branches/EditBranch/3" title="Düzenle">
+                                            <span class="material-symbols-outlined text-[19px]">edit</span>
+                                        </a>
+                                        <button class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/40 transition-colors" onclick="confirmDelete(3, 'Ankara Esenboğa Havalimanı (ESB)')" title="Sil" type="button">
+                                            <span class="material-symbols-outlined text-[19px]">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low/60 transition-colors branch-row" data-city="ankara" data-fleet="14" data-name="Ankara Çankaya VIP">
+                                <td class="py-3.5 px-4 text-center">
+                                    <input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary" type="checkbox" />
+                                </td>
+                                <td class="py-3.5 px-4 font-table-cell text-table-cell text-secondary font-semibold">#04</td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                                            <span class="material-symbols-outlined text-[20px]">business</span>
+                                        </div>
+                                        <div class="flex flex-col min-w-0">
+                                            <span class="font-body-md text-body-md font-semibold text-on-surface truncate">Ankara Çankaya VIP</span>
+                                            <span class="font-label-badge text-label-badge text-secondary">Premium Hizmet Noktası</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-label-badge text-label-badge bg-secondary-fixed text-on-secondary-fixed-variant font-medium">
+                                        <span class="material-symbols-outlined text-[14px]">pin_drop</span> Ankara
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex flex-col space-y-0.5 max-w-xs">
+                                        <span class="font-body-sm text-body-sm text-on-surface truncate">Turan Güneş Bulvarı No:82/A, Çankaya</span>
+                                        <span class="font-label-badge text-label-badge text-secondary flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[13px]">call</span> +90 (312) 440 88 90
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-badge text-label-badge font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                        <span>14 Araç</span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed-variant font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Aktif
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center justify-end gap-1">
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" href="/Vehicles?branchId=4" title="Araçları Gör">
+                                            <span class="material-symbols-outlined text-[19px]">directions_car</span>
+                                        </a>
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" href="/Branches/EditBranch/4" title="Düzenle">
+                                            <span class="material-symbols-outlined text-[19px]">edit</span>
+                                        </a>
+                                        <button class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/40 transition-colors" onclick="confirmDelete(4, 'Ankara Çankaya VIP')" title="Sil" type="button">
+                                            <span class="material-symbols-outlined text-[19px]">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low/60 transition-colors branch-row" data-city="izmir" data-fleet="18" data-name="İzmir Adnan Menderes Havalimanı (ADB)">
+                                <td class="py-3.5 px-4 text-center">
+                                    <input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary" type="checkbox" />
+                                </td>
+                                <td class="py-3.5 px-4 font-table-cell text-table-cell text-secondary font-semibold">#05</td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                                            <span class="material-symbols-outlined text-[20px]">flight</span>
+                                        </div>
+                                        <div class="flex flex-col min-w-0">
+                                            <span class="font-body-md text-body-md font-semibold text-on-surface truncate">İzmir Adnan Menderes (ADB)</span>
+                                            <span class="font-label-badge text-label-badge text-secondary">İç Hatlar Salonu</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-label-badge text-label-badge bg-surface-container text-primary font-medium">
+                                        <span class="material-symbols-outlined text-[14px]">pin_drop</span> İzmir
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex flex-col space-y-0.5 max-w-xs">
+                                        <span class="font-body-sm text-body-sm text-on-surface truncate">Dokuz Eylül Mah. Havalimanı Cad., Gaziemir</span>
+                                        <span class="font-label-badge text-label-badge text-secondary flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[13px]">call</span> +90 (232) 274 22 22
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-badge text-label-badge font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                        <span>18 Araç</span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed-variant font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Aktif
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center justify-end gap-1">
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" href="/Vehicles?branchId=5" title="Araçları Gör">
+                                            <span class="material-symbols-outlined text-[19px]">directions_car</span>
+                                        </a>
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" href="/Branches/EditBranch/5" title="Düzenle">
+                                            <span class="material-symbols-outlined text-[19px]">edit</span>
+                                        </a>
+                                        <button class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/40 transition-colors" onclick="confirmDelete(5, 'İzmir Adnan Menderes Havalimanı (ADB)')" title="Sil" type="button">
+                                            <span class="material-symbols-outlined text-[19px]">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low/60 transition-colors branch-row" data-city="antalya" data-fleet="15" data-name="Antalya Havalimanı (AYT)">
+                                <td class="py-3.5 px-4 text-center">
+                                    <input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary" type="checkbox" />
+                                </td>
+                                <td class="py-3.5 px-4 font-table-cell text-table-cell text-secondary font-semibold">#06</td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                                            <span class="material-symbols-outlined text-[20px]">flight</span>
+                                        </div>
+                                        <div class="flex flex-col min-w-0">
+                                            <span class="font-body-md text-body-md font-semibold text-on-surface truncate">Antalya Havalimanı (AYT)</span>
+                                            <span class="font-label-badge text-label-badge text-secondary">Terminal 1 Karşılama</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-label-badge text-label-badge bg-surface-container text-primary font-medium">
+                                        <span class="material-symbols-outlined text-[14px]">pin_drop</span> Antalya
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex flex-col space-y-0.5 max-w-xs">
+                                        <span class="font-body-sm text-body-sm text-on-surface truncate">Güzelyurt Mah. Havaalanı Cad., Muratpaşa</span>
+                                        <span class="font-label-badge text-label-badge text-secondary flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[13px]">call</span> +90 (242) 330 30 30
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-badge text-label-badge font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                        <span>15 Araç</span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed-variant font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Aktif
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center justify-end gap-1">
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" href="/Vehicles?branchId=6" title="Araçları Gör">
+                                            <span class="material-symbols-outlined text-[19px]">directions_car</span>
+                                        </a>
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" href="/Branches/EditBranch/6" title="Düzenle">
+                                            <span class="material-symbols-outlined text-[19px]">edit</span>
+                                        </a>
+                                        <button class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/40 transition-colors" onclick="confirmDelete(6, 'Antalya Havalimanı (AYT)')" title="Sil" type="button">
+                                            <span class="material-symbols-outlined text-[19px]">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low/60 transition-colors branch-row" data-city="mugla" data-fleet="8" data-name="Bodrum Milas Havalimanı (BJV)">
+                                <td class="py-3.5 px-4 text-center">
+                                    <input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary" type="checkbox" />
+                                </td>
+                                <td class="py-3.5 px-4 font-table-cell text-table-cell text-secondary font-semibold">#07</td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                                            <span class="material-symbols-outlined text-[20px]">beach_access</span>
+                                        </div>
+                                        <div class="flex flex-col min-w-0">
+                                            <span class="font-body-md text-body-md font-semibold text-on-surface truncate">Bodrum Milas Havalimanı (BJV)</span>
+                                            <span class="font-label-badge text-label-badge text-secondary">Yaz Sezonu Şubesi</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-label-badge text-label-badge bg-surface-container text-primary font-medium">
+                                        <span class="material-symbols-outlined text-[14px]">pin_drop</span> Muğla
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex flex-col space-y-0.5 max-w-xs">
+                                        <span class="font-body-sm text-body-sm text-on-surface truncate">Ekinanbarı Mah. Milas Bodrum Yolu, Milas</span>
+                                        <span class="font-label-badge text-label-badge text-secondary flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[13px]">call</span> +90 (252) 523 01 01
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-badge text-label-badge font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                        <span>8 Araç</span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed-variant font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Aktif
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center justify-end gap-1">
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" href="/Vehicles?branchId=7" title="Araçları Gör">
+                                            <span class="material-symbols-outlined text-[19px]">directions_car</span>
+                                        </a>
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" href="/Branches/EditBranch/7" title="Düzenle">
+                                            <span class="material-symbols-outlined text-[19px]">edit</span>
+                                        </a>
+                                        <button class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/40 transition-colors" onclick="confirmDelete(7, 'Bodrum Milas Havalimanı (BJV)')" title="Sil" type="button">
+                                            <span class="material-symbols-outlined text-[19px]">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low/60 transition-colors branch-row" data-city="mugla" data-fleet="5" data-name="Fethiye Merkez Marina">
+                                <td class="py-3.5 px-4 text-center">
+                                    <input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary" type="checkbox" />
+                                </td>
+                                <td class="py-3.5 px-4 font-table-cell text-table-cell text-secondary font-semibold">#08</td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                                            <span class="material-symbols-outlined text-[20px]">sailing</span>
+                                        </div>
+                                        <div class="flex flex-col min-w-0">
+                                            <span class="font-body-md text-body-md font-semibold text-on-surface truncate">Fethiye Merkez Marina</span>
+                                            <span class="font-label-badge text-label-badge text-secondary">Turistik Hizmet Ofisi</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-label-badge text-label-badge bg-surface-container text-primary font-medium">
+                                        <span class="material-symbols-outlined text-[14px]">pin_drop</span> Muğla
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex flex-col space-y-0.5 max-w-xs">
+                                        <span class="font-body-sm text-body-sm text-on-surface truncate">Karagözler Mah. Fevzi Çakmak Cad. No:18, Fethiye</span>
+                                        <span class="font-label-badge text-label-badge text-secondary flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[13px]">call</span> +90 (252) 614 44 55
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-badge text-label-badge font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                        <span>5 Araç</span>
+                                    </div>
+                                </td>
+                                <td class="py-3.5 px-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed-variant font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Aktif
+                                    </span>
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <div class="inline-flex items-center justify-end gap-1">
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" href="/Vehicles?branchId=8" title="Araçları Gör">
+                                            <span class="material-symbols-outlined text-[19px]">directions_car</span>
+                                        </a>
+                                        <a class="p-1.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-colors" href="/Branches/EditBranch/8" title="Düzenle">
+                                            <span class="material-symbols-outlined text-[19px]">edit</span>
+                                        </a>
+                                        <button class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/40 transition-colors" onclick="confirmDelete(8, 'Fethiye Merkez Marina')" title="Sil" type="button">
+                                            <span class="material-symbols-outlined text-[19px]">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-space-md bg-surface-container-lowest flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+                    <div class="flex items-center gap-2">
+                        <span class="font-body-sm text-body-sm text-secondary" id="paginationInfoText">
+                            Toplam <span class="font-semibold text-on-surface">8</span> kayıtlı şubeden <span class="font-semibold text-on-surface">1-8</span> arası gösteriliyor
+                        </span>
+                    </div>
+                    <nav aria-label="Sayfalama" class="flex items-center gap-1">
+                        <button class="px-2.5 py-1.5 rounded-lg text-secondary hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-40 disabled:pointer-events-none" disabled="" type="button">
+                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                        </button>
+                        <button class="w-8 h-8 rounded-lg bg-primary text-on-primary font-body-sm text-body-sm font-semibold flex items-center justify-center shadow-sm" type="button">
+                            1
+                        </button>
+                        <button class="w-8 h-8 rounded-lg text-secondary hover:bg-surface-container hover:text-on-surface font-body-sm text-body-sm flex items-center justify-center transition-colors" type="button">
+                            2
+                        </button>
+                        <button class="px-2.5 py-1.5 rounded-lg text-secondary hover:bg-surface-container hover:text-on-surface transition-colors" type="button">
+                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+ </div>
+     
+   
+  

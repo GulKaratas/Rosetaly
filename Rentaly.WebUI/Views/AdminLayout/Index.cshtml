@@ -1,168 +1,145 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RentCar Admin Panel</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link rel="stylesheet" href="/css/style.css" />
-</head>
-@await RenderSectionAsync("Styles", required: false)
-<body>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="web_dashboard" name="shell-type">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+    <style>
+            @@layer base {
+                html, body {
+                    margin: 0;
+                    padding: 0;
+                }
 
-    <aside class="sidebar" id="sidebar">
-        <a href="admin-layout.html" class="sidebar-logo">
-            <div class="logo-icon"><i class="fa-solid fa-car-side"></i></div>
-            <div class="logo-text">
-                <strong>RentCar</strong>
-                <span>Admin Panel</span>
-            </div>
-        </a>
+                body {
+                    overscroll-behavior: none;
+                }
 
-        <nav class="sidebar-nav" id="sidebarNav">
-            <div class="menu-label">Ana Menü</div>
-            <a href="admin-layout.html" class="nav-link active">
-                <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
-                <span class="link-text">Dashboard</span>
-            </a>
+                main > :first-child {
+                    margin-top: 0 !important;
+                }
 
-            <div class="menu-label">Araç Yönetimi</div>
-            <div class="has-submenu" id="vehicleMenu">
-                <div class="nav-link" onclick="toggleSubmenu('vehicleSubmenu', 'vehicleMenu')">
-                    <span class="nav-icon"><i class="fa-solid fa-cars"></i></span>
-                    <span class="link-text">Araç Yönetimi</span>
-                    <i class="fa-solid fa-chevron-right submenu-arrow ms-auto"></i>
-                </div>
-                <div class="submenu open" id="vehicleSubmenu">
-                    <a href="vehicle-list.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-list"></i></span>
-                        <span class="link-text">Araç Listesi</span>
-                    </a>
-                    <a href="#" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-plus"></i></span>
-                        <span class="link-text">Yeni Araç Ekle</span>
-                    </a>
-                    <a href="#" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-trademark"></i></span>
-                        <span class="link-text">Marka Yönetimi</span>
-                    </a>
-                    <a href="#" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-cube"></i></span>
-                        <span class="link-text">Model Yönetimi</span>
-                    </a>
-                    <a href="#" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-tags"></i></span>
-                        <span class="link-text">Kategori Yönetimi</span>
-                    </a>
-                </div>
-            </div>
+                main > :last-child {
+                    margin-bottom: 0 !important;
+                }
+            }
 
-            <div class="menu-label">Operasyon</div>
-            <a href="#" class="nav-link">
-                <span class="nav-icon"><i class="fa-solid fa-building"></i></span>
-                <span class="link-text">Şube Yönetimi</span>
-            </a>
-            <a href="#" class="nav-link">
-                <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
-                <span class="link-text">Müşteri Yönetimi</span>
-                <span class="menu-badge">12</span>
-            </a>
-            <a href="#" class="nav-link">
-                <span class="nav-icon"><i class="fa-solid fa-calendar-check"></i></span>
-                <span class="link-text">Rezervasyon Yönetimi</span>
-                <span class="menu-badge">5</span>
-            </a>
-            <a href="#" class="nav-link">
-                <span class="nav-icon"><i class="fa-solid fa-credit-card"></i></span>
-                <span class="link-text">Ödeme Yönetimi</span>
-            </a>
-
-            <div class="menu-label">Sistem</div>
-            <a href="#" class="nav-link">
-                <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
-                <span class="link-text">Raporlar</span>
-            </a>
-            <a href="#" class="nav-link">
-                <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
-                <span class="link-text">Ayarlar</span>
-            </a>
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="sidebar-user">
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=1a56db&color=fff&size=80" alt="Admin" />
-                <div class="user-info">
-                    <div class="user-name">Admin User</div>
-                    <div class="user-role">Süper Yönetici</div>
-                </div>
-            </div>
+            ::-webkit-scrollbar {
+                display: none;
+        }</style>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed": "#002113", "secondary": "#565e74", "on-primary-fixed-variant": "#003ea8", "primary-container": "#2563eb", "primary-fixed-dim": "#b4c5ff", "on-error": "#ffffff", "surface-container-highest": "#d3e4fe", "tertiary-fixed-dim": "#4edea3", "on-primary-fixed": "#00174b", "on-surface": "#0b1c30", "background": "#f8f9ff", "secondary-fixed-dim": "#bec6e0", "secondary-container": "#dae2fd", "surface": "#f8f9ff", "on-secondary-container": "#5c647a", "surface-bright": "#f8f9ff", "on-secondary-fixed": "#131b2e", "on-primary-container": "#eeefff", "on-tertiary": "#ffffff", "on-error-container": "#93000a", "tertiary": "#006242", "on-secondary-fixed-variant": "#3f465c", "primary": "#004ac6", "surface-container-low": "#eff4ff", "surface-dim": "#cbdbf5", "tertiary-fixed": "#6ffbbe", "primary-fixed": "#dbe1ff", "on-primary": "#ffffff", "surface-container-lowest": "#ffffff", "inverse-primary": "#b4c5ff", "surface-container": "#e5eeff", "on-tertiary-fixed-variant": "#005236", "surface-container-high": "#dce9ff", "on-secondary": "#ffffff", "secondary-fixed": "#dae2fd", "error-container": "#ffdad6", "surface-variant": "#d3e4fe", "outline": "#737686", "outline-variant": "#c3c6d7", "tertiary-container": "#007d55", "inverse-surface": "#213145", "inverse-on-surface": "#eaf1ff", "error": "#ba1a1a", "on-background": "#0b1c30", "surface-tint": "#0053db", "on-surface-variant": "#434655", "on-tertiary-container": "#bdffdb" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "2rem", "margin-mobile": "1rem", "gutter": "1.5rem", "space-xl": "2rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-md": "1rem", "space-lg": "1.5rem", "gutter-sm": "0.75rem" }, "fontFamily": { "body-md": ["Inter"], "headline-lg": ["Inter"], "body-sm": ["Inter"], "label-nav-header": ["Inter"], "label-nav-item": ["Inter"], "table-cell": ["Inter"], "table-header": ["Inter"], "headline-xl": ["Inter"], "headline-md": ["Inter"], "body-lg": ["Inter"], "label-badge": ["Inter"] }, "fontSize": { "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "label-nav-header": ["11px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }], "label-nav-item": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "table-cell": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "table-header": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-xl": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "label-badge": ["12px", { "lineHeight": "16px", "fontWeight": "600" }] } } } };</script>
+    </head>
+    <body class="bg-background font-body-md text-body-md text-on-surface antialiased">
+<aside class="fixed left-0 top-0 h-full w-64 bg-inverse-surface z-50 flex flex-col">
+    <!-- Logo ve Başlık -->
+    <div class="h-16 px-space-lg flex items-center gap-space-sm">
+        <div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
+            <span class="material-symbols-outlined text-[20px]">directions_car</span>
         </div>
-    </aside>
-
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebarMobile()"></div>
-
-    <div class="main-wrapper" id="mainWrapper">
-
-        <nav class="navbar-top" id="navbarTop">
-            <button class="toggle-btn" id="toggleBtn" onclick="toggleSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <div class="navbar-breadcrumb d-none d-sm-block">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="admin-layout.html">Ana Sayfa</a></li>
-                    <li class="breadcrumb-item"><a href="#">Araç Yönetimi</a></li>
-                    <li class="breadcrumb-item active">Araç Listesi</li>
-                </ol>
-            </div>
-            <div class="navbar-actions ms-auto">
-                <div class="dropdown notif-dropdown">
-                    <button class="action-btn" data-bs-toggle="dropdown">
-                        <i class="fa-regular fa-bell"></i><span class="badge-dot"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <div class="notif-header"><h6>Bildirimler</h6><a href="#">Tümünü Gör</a></div>
-                        <div class="notif-list">
-                            <div class="notif-item"><div class="notif-icon" style="background:#e8efff;color:#1a56db;"><i class="fa-solid fa-calendar-check"></i></div><div class="notif-text"><p>Yeni rezervasyon talebi alındı</p><small>2 dakika önce</small></div></div>
-                            <div class="notif-item"><div class="notif-icon" style="background:#f0fdf4;color:#10b981;"><i class="fa-solid fa-credit-card"></i></div><div class="notif-text"><p>₺4.200 ödeme alındı</p><small>3 saat önce</small></div></div>
-                        </div>
-                    </ul>
-                </div>
-                <button class="action-btn"><i class="fa-regular fa-envelope"></i></button>
-                <div class="navbar-divider d-none d-sm-block"></div>
-                <div class="dropdown admin-dropdown">
-                    <a href="#" class="dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
-                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=1a56db&color=fff&size=80" alt="Admin">
-                        <div class="admin-info d-none d-lg-flex">
-                            <span class="admin-name">Admin User</span><span class="admin-role">Süper Yönetici</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-down" style="font-size:11px;color:var(--text-muted);"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fa-regular fa-user"></i> Profil</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-gear"></i> Ayarlar</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <main class="page-content">
-            @RenderBody()
-        </main>
-
-        <footer class="site-footer">
-            <div class="footer-text">© 2026 <span>RentCar</span> Yönetim Paneli — Tüm Hakları Saklıdır</div>
-            <div class="footer-links">
-                <a href="#">Gizlilik Politikası</a><a href="#">Kullanım Koşulları</a><a href="#">Destek</a>
-            </div>
-        </footer>
+        <div class="flex flex-col">
+            <span class="font-headline-md text-headline-md text-inverse-on-surface tracking-tight font-bold">RentAdmin</span>
+            <span class="font-table-header text-table-header text-secondary-fixed-dim uppercase tracking-wider text-[10px]">Filo Yönetimi</span>
+        </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/script.js"></script>
+    <!-- Menü Linkleri -->
+    <div class="flex-1 overflow-y-auto px-space-sm py-space-sm">
+        <nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-variant/20 text-inverse-on-surface font-semibold rounded-lg">
+            
+            <!-- GENEL -->
+            <div class="px-space-sm pt-space-sm pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">GENEL</div>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="dashboard" href="/Admin/Dashboard/Index">
+                <span class="material-symbols-outlined text-[20px]">grid_view</span>
+                <span>Dashboard</span>
+            </a>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="kiralamalar" href="/Admin/Rental/RentalList">
+                <span class="material-symbols-outlined text-[20px]">vpn_key</span>
+                <span>Kiralamalar</span>
+            </a>
 
+            <!-- FİLO -->
+            <div class="px-space-sm pt-space-md pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">FİLO</div>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="araclar" href="/Admin/Car/CarList">
+                <span class="material-symbols-outlined text-[20px]">directions_car</span>
+                <span>Araçlar</span>
+            </a>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="arac-modelleri" href="/Admin/CarModel/CarModelList">
+                <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                <span>Araç Modelleri</span>
+            </a>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="markalar" href="/Admin/Brand/BrandList">
+                <span class="material-symbols-outlined text-[20px]">military_tech</span>
+                <span>Markalar</span>
+            </a>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="kategoriler" href="/Admin/Category/CategoryList">
+                <span class="material-symbols-outlined text-[20px]">layers</span>
+                <span>Kategoriler</span>
+            </a>
+
+            <!-- OPERASYON -->
+            <div class="px-space-sm pt-space-md pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">OPERASYON</div>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="subeler" href="/Admin/Branch/BranchList">
+                <span class="material-symbols-outlined text-[20px]">location_city</span>
+                <span>Şubeler</span>
+            </a>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="musteriler" href="/Admin/Customer/CustomerList">
+                <span class="material-symbols-outlined text-[20px]">group</span>
+                <span>Müşteriler</span>
+            </a>
+
+            <!-- SİTE İÇERİĞİ -->
+            <div class="px-space-sm pt-space-md pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">SİTE İÇERİĞİ</div>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="hakkimizda" href="/Admin/About/AboutList">
+                <span class="material-symbols-outlined text-[20px]">explore</span>
+                <span>Hakkımızda</span>
+            </a>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="ozellikler" href="/Admin/Feature/FeatureList">
+                <span class="material-symbols-outlined text-[20px]">bolt</span>
+                <span>Özellikler</span>
+            </a>
+            
+            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="yorumlar" href="/Admin/Testimonial/TestimonialList">
+                <span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+                <span>Yorumlar</span>
+            </a>
+
+        </nav>
+    </div>
+</aside>
+            <div class="pl-64">
+            <header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40"><div class="h-16 w-full px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md flex-1 max-w-lg"><div class="relative w-full"></div></div><div class="flex items-center gap-space-md">
+                
+               <button class="relative w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-sm pl-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="hidden md:flex flex-col text-left"><span class="font-label-nav-item text-label-nav-item text-on-surface font-semibold">Admin Yönetici</span><span class="font-table-header text-table-header text-outline text-[11px]">Süper Admin</span></div><span class="material-symbols-outlined text-outline text-[18px]">expand_more</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen">
+            <div class="flex flex-col w-full">
+                <!-- Content Area Wrapper matching enterprise 2rem grid system -->
+                <div class="p-margin flex flex-col gap-space-lg">
+                    <!-- Breadcrumb & Top Bar -->
+                    <div class="flex flex-col gap-space-xs">
+                        
+                        <!-- Page Header: Title, Description & Action Buttons -->
+                        @await RenderSectionAsync("PageHeader", required: false)
+                    </div>
+                    <!-- KPI Summary Cards Grid -->
+                    <!-- Main Data Table Container matching Kategoriler table layout & tokens -->
+                     @RenderBody()
+</div>
+            </div>
+        </main>
+    </div>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

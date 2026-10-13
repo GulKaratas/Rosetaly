@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,5 +45,24 @@ namespace Rentaly.DtoLayer.CarDtos
         public bool IsActive { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public string DisplayName
+        {
+            get
+            {
+                var name = $"{BrandName} {ModelName}".Trim();
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    return name;
+                }
+
+                return string.IsNullOrWhiteSpace(PlateNumber) ? "Araç" : PlateNumber;
+            }
+        }
+
+        public string DisplayImageUrl =>
+            string.IsNullOrWhiteSpace(ImageUrl)
+                ? "https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"
+                : ImageUrl;
     }
 }

@@ -1,0 +1,262 @@
+﻿@using Rentaly.DtoLayer.About
+
+@model List<ResultAboutDto>
+@{
+    ViewData["Title"] = "CreateAbout";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Hakkımızda İçeriği Ekle", "Sitede görünecek kurumsal başlık, görsel ve açıklama metinlerini girin.", "Site İçeriği", "", "Listeye Dön", true, "/Admin/About/AboutList/"))
+}
+
+<!-- 2 + 1 Column Layout Matrix -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left & Middle: Form Construction Columns (8 Cols) -->
+<div class="lg:col-span-8 flex flex-col gap-gutter">
+<!-- Card 1: Primary Brand Presentation Content -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">corporate_fare</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Temel Kurumsal Tanıtım Bilgileri</h2>
+<span class="font-table-header text-table-header text-secondary uppercase tracking-wider">Tanıtım ve Ana Başlık</span>
+</div>
+</div>
+<span class="font-label-badge text-label-badge text-outline">* Zorunlu Alanlar</span>
+</div>
+<!-- Quick Fill Templates -->
+<div class="bg-surface-container-low rounded-lg p-space-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs text-secondary font-label-badge text-label-badge">
+<span class="material-symbols-outlined text-[16px] text-primary">auto_fix_high</span>
+<span>Hızlı Doldur Şablonları:</span>
+</div>
+<div class="flex flex-wrap items-center gap-space-xs">
+<button class="px-space-sm py-1 rounded bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-secondary font-label-badge text-label-badge transition-all shadow-sm" onclick="applyTemplate('corporate')" type="button">
+              Kurumsal &amp; Filo
+            </button>
+<button class="px-space-sm py-1 rounded bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-secondary font-label-badge text-label-badge transition-all shadow-sm" onclick="applyTemplate('luxury')" type="button">
+              Lüks &amp; Prestij
+            </button>
+<button class="px-space-sm py-1 rounded bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-secondary font-label-badge text-label-badge transition-all shadow-sm" onclick="applyTemplate('budget')" type="button">
+              Ekonomik &amp; Güvenilir
+            </button>
+</div>
+</div>
+<form class="flex flex-col gap-space-md mt-space-xs" id="aboutForm">
+<!-- Title Input -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center justify-between" for="Title">
+<span>Kurumsal Başlık (Title) <span class="text-error">*</span></span>
+<span class="font-table-header text-table-header text-secondary font-normal" id="titleLengthHint">0 / 80 Karakter</span>
+</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-secondary text-[20px]">title</span>
+<input class="w-full pl-10 pr-4 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest transition-colors shadow-sm" id="Title" maxlength="120" name="Title" placeholder="Örn: Türkiye'nin En Güvenilir ve Yenilikçi Araç Kiralama Deneyimi" required="" type="text"/>
+</div>
+</div>
+<!-- Description Textarea -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center justify-between" for="Description">
+<span>Detaylı Tanıtım Açıklaması (Description) <span class="text-error">*</span></span>
+<span class="font-table-header text-table-header text-secondary font-normal" id="descCounter">0 / 600 Karakter</span>
+</label>
+<div class="relative">
+<textarea class="w-full p-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest transition-colors shadow-sm resize-none" id="Description" name="Description" placeholder="RentAdmin olarak 2012 yılından bu yana bireysel ve kurumsal kiralama çözümlerinde müşteri memnuniyetini en üst seviyede tutuyoruz..." required="" rows="4"></textarea>
+</div>
+</div>
+</form>
+</div>
+<!-- Card 2: Strategic Advantages (2 Pillars) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center gap-space-sm pb-space-xs">
+<div class="w-8 h-8 rounded-lg bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[20px]">workspace_premium</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Öne Çıkan Değerler &amp; Avantaj Kartları</h2>
+<span class="font-table-header text-table-header text-secondary uppercase tracking-wider">İki Temel Rekabet Gücü &amp; Güven Unsuru</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-sm mt-space-xs">
+<!-- Pillar 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-sm relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-badge text-label-badge flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">looks_one</span>
+                1. Avantaj Bloğu
+              </span>
+<span class="material-symbols-outlined text-primary text-[20px]">support_agent</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold" for="FirstAdvantageTitle">
+                1. Avantaj Başlığı <span class="text-error">*</span>
+</label>
+<input class="w-full px-3 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none shadow-sm" id="FirstAdvantageTitle" name="FirstAdvantageTitle" placeholder="Örn: 7/24 Kesintisiz Yol Desteği" required="" type="text"/>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold" for="FirstAdvantageDescription">
+                1. Avantaj Açıklaması <span class="text-error">*</span>
+</label>
+<textarea class="w-full px-3 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none shadow-sm resize-none" id="FirstAdvantageDescription" name="FirstAdvantageDescription" placeholder="Türkiye genelinde tüm yolculuklarınızda anında çekici ve ikame araç güvencesi." required="" rows="2"></textarea>
+</div>
+</div>
+<!-- Pillar 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-sm relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-badge text-label-badge flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">looks_two</span>
+                2. Avantaj Bloğu
+              </span>
+<span class="material-symbols-outlined text-tertiary text-[20px]">price_check</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold" for="SecondAdvantageTitle">
+                2. Avantaj Başlığı <span class="text-error">*</span>
+</label>
+<input class="w-full px-3 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none shadow-sm" id="SecondAdvantageTitle" name="SecondAdvantageTitle" placeholder="Örn: Sıfır Gizli Ücret &amp; Şeffaf Fiyat" required="" type="text"/>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold" for="SecondAdvantageDescription">
+                2. Avantaj Açıklaması <span class="text-error">*</span>
+</label>
+<textarea class="w-full px-3 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none shadow-sm resize-none" id="SecondAdvantageDescription" name="SecondAdvantageDescription" placeholder="Sözleşmede ne gördüyseniz o; depozito iadesi ve faturalandırmada tam şeffaflık." required="" rows="2"></textarea>
+</div>
+</div>
+</div>
+<!-- Form Submission Action Row -->
+<div class="flex items-center justify-end gap-space-sm pt-space-md mt-space-xs">
+<a class="px-space-lg py-2.5 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container font-label-nav-item text-label-nav-item transition-all" href="/Abouts">
+            Vazgeç
+          </a>
+<button class="inline-flex items-center gap-space-xs px-space-xl py-2.5 rounded-lg bg-primary-container text-on-primary hover:bg-primary font-label-nav-item text-label-nav-item font-semibold shadow-md transition-all" onclick="saveAboutEntity()" type="button">
+<span class="material-symbols-outlined text-[18px]">add_task</span>
+<span>İçeriği Kaydet</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Entity Integration & Showcase Notice -->
+<div class="bg-surface-container rounded-xl p-space-md flex items-start gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[22px]">public</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<h3 class="font-headline-md text-headline-md text-on-surface">Entity &amp; Vitrin Entegrasyon Bildirimi</h3>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest font-table-header text-table-header text-primary font-semibold">Aktif Görünüm</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Kaydedilen bilgiler web arayüzünde <span class="font-semibold text-on-surface">"Biz Kimiz / Hakkımızda"</span> ana bileşeni olarak işlenir. Title ve Description genel kurum vizyonunu temsil ederken, iki avantaj öğesi görsel rozetler eşliğinde yan yana ziyaretçilere güven aşılar.
+          </p>
+</div>
+</div>
+</div>
+<!-- Right Column: Interactive Live Showcase Preview & Strategic Guidance (4 Cols) -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<!-- Live Showcase Preview Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md sticky top-20">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-badge text-label-badge text-on-surface uppercase tracking-wider">Canlı Vitrin Önizleme</span>
+</div>
+<span class="font-table-header text-table-header text-secondary">Web Sitesi Simülasyonu</span>
+</div>
+<!-- Simulated Web Component Viewport -->
+<div class="rounded-xl bg-surface p-space-md shadow-inner flex flex-col gap-space-md relative overflow-hidden">
+<div class="flex items-center justify-between text-secondary">
+<span class="font-label-nav-header text-label-nav-header text-primary uppercase">RENTAL DENEYİMİ</span>
+<span class="material-symbols-outlined text-[16px] text-outline">travel_explore</span>
+</div>
+<!-- Live Title -->
+<div class="flex flex-col gap-space-xs">
+<h3 class="font-headline-lg text-headline-lg text-on-surface leading-snug" id="prevTitle">
+              Türkiye'nin En Güvenilir ve Yenilikçi Araç Kiralama Deneyimi
+            </h3>
+<!-- Live Description -->
+<p class="font-body-sm text-body-sm text-secondary leading-relaxed line-clamp-4" id="prevDesc">
+              RentAdmin olarak 2012 yılından bu yana bireysel ve kurumsal kiralama çözümlerinde müşteri memnuniyetini en üst seviyede tutuyoruz. Güçlü filomuz ile daima yanınızdayız.
+            </p>
+</div>
+<!-- Feature Advantage Cards Simulation -->
+<div class="flex flex-col gap-space-xs mt-space-xs">
+<!-- Simulated Advantage 1 -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex items-start gap-space-sm transition-all hover:translate-x-1">
+<div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-label-nav-item text-label-nav-item font-semibold text-on-surface" id="prevAdv1Title">
+                  7/24 Kesintisiz Yol Desteği
+                </h4>
+<p class="font-body-sm text-body-sm text-secondary" id="prevAdv1Desc">
+                  Türkiye genelinde tüm yolculuklarınızda anında çekici ve ikame araç güvencesi.
+                </p>
+</div>
+</div>
+<!-- Simulated Advantage 2 -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex items-start gap-space-sm transition-all hover:translate-x-1">
+<div class="w-8 h-8 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">security</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-label-nav-item text-label-nav-item font-semibold text-on-surface" id="prevAdv2Title">
+                  Sıfır Gizli Ücret &amp; Şeffaf Fiyat
+                </h4>
+<p class="font-body-sm text-body-sm text-secondary" id="prevAdv2Desc">
+                  Sözleşmede ne gördüyseniz o; depozito iadesi ve faturalandırmada tam şeffaflık.
+                </p>
+</div>
+</div>
+</div>
+<div class="pt-space-xs flex items-center justify-between text-outline font-table-header text-table-header">
+<span>Önizleme Sürümü 1.4</span>
+<span class="flex items-center gap-1 text-tertiary font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+              Canlı Senkronize
+            </span>
+</div>
+</div>
+<!-- Section: Guidelines & Best Practices -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<div class="flex items-center gap-space-xs text-on-surface font-label-nav-item text-label-nav-item font-semibold">
+<span class="material-symbols-outlined text-primary text-[18px]">lightbulb</span>
+<span>İçerik Yazım Rehberi &amp; İpuçları</span>
+</div>
+<div class="space-y-space-sm">
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col gap-1">
+<span class="font-label-badge text-label-badge text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">priority_high</span>
+                1. Vurucu Başlık &amp; SEO
+              </span>
+<p class="font-body-sm text-body-sm text-secondary">
+                Başlığın 40-70 karakter aralığında tutulması arama motorlarında indekslemeyi ve ziyaretçi algısını güçlendirir.
+              </p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col gap-1">
+<span class="font-label-badge text-label-badge text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">check</span>
+                2. Somut Değer Önerisi
+              </span>
+<p class="font-body-sm text-body-sm text-secondary">
+                Avantaj alanlarında soyut övgüler yerine hız, garanti, kasko kapsamı veya maliyet avantajı gibi somut gerçekleri öne çıkarın.
+              </p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col gap-1">
+<span class="font-label-badge text-label-badge text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">feed</span>
+                3. Tekil Kayıt Prensibi
+              </span>
+<p class="font-body-sm text-body-sm text-secondary">
+                Hakkımızda tablosu ana sayfada genellikle tek aktif kayıt üzerinden tüketilir; eski içeriğin üzerine geçileceğini unutmayınız.
+              </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

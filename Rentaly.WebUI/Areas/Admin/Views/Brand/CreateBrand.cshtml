@@ -1,0 +1,227 @@
+﻿@model List<Rentaly.EntityLayer.Entities.Brand>
+@{
+    ViewData["Title"] = "CreateBrand";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Yeni Marka Ekle", "Filoya yeni bir araç markası tanımlayın.", "Markalar", "", "Listeye Dön", true, "/Admin/Brand/BrandList/"))
+}
+<!-- 2. Ana İçerik Grid (2 Kolon Form + 1 Kolon Canlı Önizleme) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- SOL / ORTA: Form ve Bilgilendirme Alanı (8 Kolon) -->
+<div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-space-lg">
+<!-- Kart 1: Marka Tanımlama Formu -->
+<form class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md lg:p-space-lg flex flex-col gap-space-lg" id="brandForm" onsubmit="event.preventDefault();">
+<!-- Form Header -->
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">military_tech</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">Marka Tanımlama</span>
+<span class="font-body-sm text-body-sm text-secondary">Üretici adı ve görsel kimlik parametreleri</span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
+            Temel Bilgi
+          </span>
+</div>
+<!-- Form Elemanları -->
+<div class="flex flex-col gap-space-md">
+<!-- Marka Adı -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-nav-item text-label-nav-item text-on-surface flex items-center justify-between" for="brandNameInput">
+<span>Marka Adı <span class="text-error font-bold">*</span></span>
+<span class="font-body-sm text-body-sm text-secondary">Zorunlu Alan</span>
+</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">branding_watermark</span>
+<input class="w-full pl-11 pr-space-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline outline-none focus:bg-surface-container focus:ring-2 focus:ring-primary/20 transition-all" id="brandNameInput" placeholder="Örn: Renault, BMW, Mercedes-Benz, Tesla, Audi" required="" type="text"/>
+</div>
+<p class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-outline">info</span>
+              Üreticinin resmi ticari adını girin. Bu ad sözleşmelerde ve rezervasyonlarda listelenecektir.
+            </p>
+</div>
+<!-- Marka Logosu URL -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-nav-item text-label-nav-item text-on-surface flex items-center justify-between" for="brandLogoInput">
+<span>Marka Logo URL Bağlantısı</span>
+<span class="font-body-sm text-body-sm text-secondary">İsteğe Bağlı</span>
+</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">link</span>
+<input class="w-full pl-11 pr-space-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline outline-none focus:bg-surface-container focus:ring-2 focus:ring-primary/20 transition-all" id="brandLogoInput" placeholder="https://cdn.rentadmin.com/brands/bmw-logo.svg" type="url"/>
+</div>
+<p class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-outline">image</span>
+              Şeffaf arka planlı SVG veya yüksek çözünürlüklü PNG formatında logo URL'si önerilir.
+            </p>
+</div>
+<!-- Hızlı Seçim Rozetleri -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<span class="font-table-header text-table-header text-secondary uppercase tracking-wider">Hızlı Doldur / Popüler Markalar</span>
+<div class="flex flex-wrap gap-2 pt-1">
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:bg-surface-variant hover:text-on-surface font-body-sm text-body-sm transition-colors" onclick="setQuickBrand('Mercedes-Benz', 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&amp;fit=crop&amp;w=160&amp;q=80')" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+                Mercedes-Benz
+              </button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:bg-surface-variant hover:text-on-surface font-body-sm text-body-sm transition-colors" onclick="setQuickBrand('BMW', 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&amp;fit=crop&amp;w=160&amp;q=80')" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+                BMW
+              </button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:bg-surface-variant hover:text-on-surface font-body-sm text-body-sm transition-colors" onclick="setQuickBrand('Renault', 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&amp;fit=crop&amp;w=160&amp;q=80')" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+                Renault
+              </button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:bg-surface-variant hover:text-on-surface font-body-sm text-body-sm transition-colors" onclick="setQuickBrand('Tesla', 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&amp;fit=crop&amp;w=160&amp;q=80')" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+                Tesla
+              </button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:bg-surface-variant hover:text-on-surface font-body-sm text-body-sm transition-colors" onclick="setQuickBrand('Audi', 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&amp;fit=crop&amp;w=160&amp;q=80')" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+                Audi
+              </button>
+</div>
+</div>
+</div>
+<!-- Aksiyon Barı -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-md mt-space-sm bg-surface-container-lowest">
+<div class="flex items-center gap-1.5 text-secondary font-body-sm text-body-sm">
+<span class="text-error font-bold">*</span>
+<span>ile işaretli alanlar zorunludur</span>
+</div>
+<div class="flex items-center gap-space-sm w-full sm:w-auto justify-end">
+<button class="px-space-md py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-nav-item text-label-nav-item transition-colors" onclick="resetForm()" type="button">
+              Vazgeç
+            </button>
+<button class="inline-flex items-center justify-center gap-space-xs px-space-lg py-2.5 bg-primary-container text-on-primary rounded-lg font-label-nav-item text-label-nav-item shadow-sm hover:opacity-95 active:scale-[0.98] transition-all" onclick="saveBrandMock()" type="submit">
+<span class="material-symbols-outlined text-[20px]">check</span>
+<span>Markayı Kaydet</span>
+</button>
+</div>
+</div>
+</form>
+<!-- Kart 2: Entity İlişkisi & Mimari Bilgilendirme -->
+<div class="bg-surface-container-low rounded-xl p-space-md lg:p-space-md flex flex-col sm:flex-row items-start gap-space-md shadow-sm">
+<div class="w-10 h-10 rounded-lg bg-secondary-container text-on-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">account_tree</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-headline-md text-headline-md text-on-surface">Entity İlişkisi: Brand → CarModels</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-primary font-table-header text-table-header uppercase">1 : N İlişki</span>
+</div>
+<p class="font-body-md text-body-md text-secondary leading-relaxed">
+            Yeni eklenen marka veritabanına kaydedildikten sonra doğrudan <strong>Araç Modelleri</strong> ve <strong>Yeni Araç Ekle</strong> ekranlarındaki marka açılır menülerine otomatik olarak yansıtılacaktır. Her araç modeli zorunlu olarak bir markaya bağlıdır.
+          </p>
+</div>
+</div>
+</div>
+<!-- SAĞ: Canlı Önizleme & Rehber (4 Kolon) -->
+<div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-space-lg">
+<!-- Canlı Önizleme Kartı -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md lg:p-space-md flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">visibility</span>
+<span class="font-headline-md text-headline-md text-on-surface">Canlı Önizleme</span>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-badge text-label-badge animate-pulse">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed"></span>
+            CANLI
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary">
+          Markalar listesindeki ve seçim kartındaki anlık görünümü simüle eder.
+        </p>
+<!-- Önizleme Bileşeni: Marka Kartı -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex flex-col items-center justify-center text-center gap-space-sm transition-all duration-300">
+<!-- Logo Alanı -->
+<div class="w-20 h-20 rounded-2xl bg-surface-container-lowest shadow-sm flex items-center justify-center overflow-hidden transition-all duration-300" id="previewLogoBox">
+<span class="material-symbols-outlined text-outline text-[40px]" id="previewDefaultIcon">directions_car</span>
+<img alt="Brand Logo" class="w-full h-full object-contain p-2 hidden" data-alt="Official high-resolution modern automotive brand manufacturer emblem badge in silver metallic chrome finish, centered on a neutral crisp studio background with studio lighting" id="previewLogoImg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDD85_Zfl9uT6ZtLLl3yhmejeRuvw0Hdbu6GtIYi1n7H2a1hqB59wmWHVeFSlN4BSnKJIZ1K0r9YuBEhK0GjihAXSUCpXAZPgNAh70OrT0BWvP3PsY0GHh1CoqqZld_95X7rhymFk4G5Iswv_LetgcHLUb_hUUqlDAZGlOVWJkLIL1Gd3ls7fa7-J0w6Giq6jMB7jZVCb777-TDFp8MiZjS7jtT_3bzRh799YTflIdz3m5JQrpiNcr-Aw"/>
+</div>
+<!-- Marka İsmi ve İstatistikler -->
+<div class="flex flex-col gap-0.5">
+<span class="font-headline-md text-headline-md text-on-surface tracking-tight font-bold" id="previewBrandName">
+              Marka Belirtilmedi
+            </span>
+<span class="font-body-sm text-body-sm text-secondary">
+              0 Model Bağlı • 0 Araç Kayıtlı
+            </span>
+</div>
+<!-- Rozet -->
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-primary font-table-header text-table-header uppercase tracking-wider">
+            Yeni Tanımlanıyor
+          </span>
+</div>
+<!-- Simülasyon: Data Table Satırı Önizlemesi -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<span class="font-table-header text-table-header text-secondary uppercase tracking-wider">Tablodaki Satır Görünümü</span>
+<div class="bg-surface-container-low rounded-lg p-space-sm flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-8 h-8 rounded-lg bg-surface-container-lowest flex items-center justify-center overflow-hidden shrink-0 shadow-sm" id="previewMiniLogoBox">
+<span class="material-symbols-outlined text-outline text-[18px]" id="previewMiniDefaultIcon">military_tech</span>
+<img alt="Mini Logo" class="w-full h-full object-contain p-1 hidden" data-alt="Minimalist miniature automotive brand icon badge high detail vector styling" id="previewMiniLogoImg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCHpohcPvDMGG8c3djwK7TXebsOIj9FxhvWyXMyKLbSa2NWoJWkGCyBk_faDU_5PCvIqUWuVj09gmcWpz84D5d1BsewraipDTcBVgmZAHhGu27D4-OseRayyjkkcCIGDPZh0wd6WC1QHgVIRmPdiIlhLate01VoSgFGscu72yRpl3orSImDkSXh9s9xYso4yvEZe3QfgF15bDZylY3-RwAeoo_O2y1JzpS_WHSG1pBExeM5bryqOYWpw"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-nav-item text-label-nav-item text-on-surface font-semibold truncate" id="previewTableBrandName">
+                  Marka Adı
+                </span>
+<span class="font-table-header text-table-header text-secondary">
+                  #NEW • 0 Model
+                </span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-tertiary-container font-label-badge text-label-badge shrink-0">
+              Aktif
+            </span>
+</div>
+</div>
+<div class="pt-space-xs flex items-center justify-between text-secondary font-body-sm text-body-sm">
+<span>İlişkili Tablo:</span>
+<span class="font-mono text-[11px] bg-surface-container px-2 py-0.5 rounded text-on-surface">Brand → CarModel</span>
+</div>
+</div>
+<!-- Kart 3: Marka İpuçları & Rehber -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md lg:p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[20px]">lightbulb</span>
+<span class="font-headline-md text-headline-md text-on-surface">Marka İpuçları</span>
+</div>
+<ul class="flex flex-col gap-space-sm text-secondary font-body-sm text-body-sm pt-space-xs">
+<li class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-full bg-surface-container text-primary font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">1</div>
+<div>
+<strong class="text-on-surface font-semibold">İsim Formatı:</strong> Marka adını üreticinin orijinal kurumsal yazımıyla kaydedin (Örn: <em>BMW</em>, <em>Mercedes-Benz</em>, <em>Renault</em>).
+            </div>
+</li>
+<li class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-full bg-surface-container text-primary font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">2</div>
+<div>
+<strong class="text-on-surface font-semibold">Logo Formatı:</strong> Vektörel SVG veya transparan PNG formatları koyu/açık temalarda ve sözleşme dökümlerinde en net sonucu verir.
+            </div>
+</li>
+<li class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-full bg-surface-container text-primary font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">3</div>
+<div>
+<strong class="text-on-surface font-semibold">İlişkisel Bütünlük:</strong> Marka silinmeden önce bağlı modellerin başka markaya aktarılması veya filodan pasife alınması zorunludur.
+            </div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Bildirim Toast (Gizli / Dinamik) -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 bg-inverse-surface text-inverse-on-surface px-space-md py-space-sm rounded-xl shadow-xl" id="toastNotification">
+<div class="w-8 h-8 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+</div>
+<div class="flex flex-col pr-space-sm">
+<span class="font-label-nav-item text-label-nav-item font-semibold text-inverse-on-surface" id="toastTitle">Kayıt Başarılı</span>
+<span class="font-body-sm text-body-sm text-secondary-fixed-dim" id="toastMsg">Marka başarıyla veritabanına eklendi.</span>
+</div>
+</div>

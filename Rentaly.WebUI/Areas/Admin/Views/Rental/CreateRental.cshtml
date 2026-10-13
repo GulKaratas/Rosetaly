@@ -1,0 +1,352 @@
+﻿@using Rentaly.DtoLayer.RentalDtos
+@model List<ResultRentalDto>
+@{
+    ViewData["Title"] = "CreateRental";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Yeni Kiralama Ekle", "Sisteme manuel kiralama kaydı ve rezervasyonu ekleyin.", "Kiralamalar", "", "Listeye Dön", true, "/Admin/Rental/RentalList/"))
+}
+
+<!-- MAIN 2-COLUMN GRID (SOL FORM, SAĞ ÖNİZLEME) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- SOL KOLON: FORM ADIMLARI (8 COLS) -->
+<div class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- HIZLI HAZIR PROFİL ŞABLONLARI -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-nav-item text-label-nav-item">
+<span class="material-symbols-outlined text-primary text-[20px]">bolt</span>
+<span class="font-semibold text-on-surface">Hızlı Senaryo Doldur:</span>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-badge text-label-badge hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center gap-1.5" id="btnPresetCorp" type="button">
+<span class="material-symbols-outlined text-[15px]">corporate_fare</span>
+<span>Kurumsal Filo (Megane)</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-badge text-label-badge hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center gap-1.5" id="btnPresetVIP" type="button">
+<span class="material-symbols-outlined text-[15px]">diamond</span>
+<span>VIP Yönetici (BMW 320i)</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-badge text-label-badge hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center gap-1.5" id="btnPresetTourist" type="button">
+<span class="material-symbols-outlined text-[15px]">flight</span>
+<span>Turist Bireysel (Clio)</span>
+</button>
+</div>
+</div>
+<form class="flex flex-col gap-space-lg" id="rentalForm" onsubmit="event.preventDefault();">
+<!-- 1. KART: ARAÇ VE MÜŞTERİ SEÇİMİ -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-primary-container/10 text-primary flex items-center justify-center font-bold">1</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Araç &amp; Müşteri Seçimi</h2>
+<p class="font-body-sm text-body-sm text-outline">Kiralama sözleşmesinin taraf ve araç kimlikleri (CarId, CustomerId)</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-surface-container text-outline text-[11px] font-semibold tracking-wider uppercase">Zorunlu Alanlar</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md pt-2">
+<!-- CustomerId -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center gap-1" for="customerId">
+                Kiracı Müşteri (CustomerId) <span class="text-error">*</span>
+</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low px-3.5 py-2.5 rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer" id="customerId" name="CustomerId" required="">
+<option disabled="" selected="" value="">Müşteri seçiniz veya arayınız...</option>
+<option data-license="8 Yıl (B Sınıfı)" data-name="Ahmet Yılmaz" data-tc="28394819201" data-verified="true" value="101">Ahmet Yılmaz (TC: 2839**** - Ehliyet: 8 Yıl ✓ Doğrulandı)</option>
+<option data-license="5 Yıl (B Sınıfı)" data-name="Ayşe Kaya" data-tc="19482019482" data-verified="true" value="102">Ayşe Kaya (TC: 1948**** - Ehliyet: 5 Yıl ✓ Doğrulandı)</option>
+<option data-license="12 Yıl (A2/B)" data-name="Volkan Demir" data-tc="49302948204" data-verified="true" value="103">Volkan Demir (TC: 4930**** - Ehliyet: 12 Yıl ✓ Kurumsal)</option>
+<option data-license="3 Yıl (Intl.)" data-name="John Christopher" data-tc="P9842104" data-verified="true" value="104">John Christopher (Pasaport: P984**** ✓ Doğrulandı)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-outline text-[18px]">expand_more</span>
+</div>
+<div class="flex items-center gap-2 pt-1 text-[12px] text-tertiary" id="customerBadgeRow">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+<span id="customerStatusText">Müşteri ehliyet ve KABİS kontrolü hazır</span>
+</div>
+</div>
+<!-- CarId -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center gap-1" for="carId">
+                Kiralanacak Araç (CarId) <span class="text-error">*</span>
+</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low px-3.5 py-2.5 rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer" id="carId" name="CarId" required="">
+<option disabled="" selected="" value="">Müsait araç seçiniz...</option>
+<option data-alt-desc="A sleek white Renault Megane modern sedan parked in front of a contemporary architectural building, corporate aesthetic, clean lighting" data-brand="Renault Megane 1.5 dCi" data-fuel="Dizel / Otomatik" data-img="placeholder" data-plate="34 VR 8901" data-price="1450" value="201">34 VR 8901 - Renault Megane Sedan (1.450 ₺/gün) - Müsait</option>
+<option data-alt-desc="Deep metallic blue BMW 3 Series sedan parked in a sleek urban showroom setting with pristine ambient studio reflections" data-brand="BMW 320i M Sport" data-fuel="Benzin / Otomatik" data-img="placeholder" data-plate="34 KRT 552" data-price="3800" value="202">34 KRT 552 - BMW 320i Sedan (3.800 ₺/gün) - Müsait</option>
+<option data-alt-desc="Metallic titanium silver Renault Clio hatchback resting in a modern delivery bay, bright corporate lighting, pristine condition" data-brand="Renault Clio 1.0 TCe" data-fuel="Benzin / Manuel" data-img="placeholder" data-plate="06 AG 3341" data-price="1100" value="203">06 AG 3341 - Renault Clio (1.100 ₺/gün) - Müsait</option>
+<option data-alt-desc="Pearl white Peugeot 3008 SUV vehicle stationed outdoors in a clean business park area with sharp contrast and dynamic daylight" data-brand="Peugeot 3008 GT" data-fuel="Dizel / EAT8" data-img="placeholder" data-plate="35 BCL 788" data-price="2600" value="204">35 BCL 788 - Peugeot 3008 GT (2.600 ₺/gün) - Müsait</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-outline text-[18px]">expand_more</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="text-[12px] text-outline" id="carQuickSpecs">Seçilen araç durumu: Kontrol bekleniyor</span>
+<span class="font-semibold text-[12px] text-primary" id="carQuickPrice">-</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 2. KART: ŞUBELER VE TARİH ARALIĞI -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-primary-container/10 text-primary flex items-center justify-center font-bold">2</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Teslimat Şubeleri &amp; Tarih Aralığı</h2>
+<p class="font-body-sm text-body-sm text-outline">Lokasyon transferi ve zaman planlaması (Pickup/Return Branch &amp; Date)</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-secondary-container/60 text-secondary font-label-badge text-label-badge">Operasyon</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md pt-2">
+<!-- PickupBranchId -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center gap-1" for="pickupBranchId">
+                Alış Şubesi (PickupBranchId) <span class="text-error">*</span>
+</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low px-3.5 py-2.5 rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer" id="pickupBranchId" name="PickupBranchId" required="">
+<option selected="" value="1">Merkez Ofis (Levent / İstanbul)</option>
+<option value="2">İstanbul Havalimanı (IST - Dış Hatlar)</option>
+<option value="3">Sabiha Gökçen Havalimanı (SAW)</option>
+<option value="4">Ankara Esenboğa Şubesi</option>
+<option value="5">İzmir Adnan Menderes Şubesi</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-outline text-[18px]">expand_more</span>
+</div>
+</div>
+<!-- ReturnBranchId -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center gap-1" for="returnBranchId">
+                İade Şubesi (ReturnBranchId) <span class="text-error">*</span>
+</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low px-3.5 py-2.5 rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer" id="returnBranchId" name="ReturnBranchId" required="">
+<option selected="" value="1">Merkez Ofis (Levent / İstanbul)</option>
+<option value="2">İstanbul Havalimanı (IST - Dış Hatlar)</option>
+<option value="3">Sabiha Gökçen Havalimanı (SAW)</option>
+<option value="4">Ankara Esenboğa Şubesi</option>
+<option value="5">İzmir Adnan Menderes Şubesi</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-outline text-[18px]">expand_more</span>
+</div>
+</div>
+<!-- PickupDate -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center gap-1" for="pickupDate">
+                Alış Tarihi &amp; Saati (PickupDate) <span class="text-error">*</span>
+</label>
+<input class="bg-surface-container-low px-3.5 py-2.5 rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20" id="pickupDate" name="PickupDate" required="" type="datetime-local"/>
+</div>
+<!-- ReturnDate -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center gap-1" for="returnDate">
+                İade Tarihi &amp; Saati (ReturnDate) <span class="text-error">*</span>
+</label>
+<input class="bg-surface-container-low px-3.5 py-2.5 rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20" id="returnDate" name="ReturnDate" required="" type="datetime-local"/>
+</div>
+</div>
+<!-- Farklı Şube İade Uyarısı / Bilgilendirme -->
+<div class="hidden p-3 rounded-lg bg-surface-container-high/60 flex items-start gap-2.5" id="diffBranchNotice">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">swap_driving_apps</span>
+<div class="flex flex-col text-body-sm font-body-sm">
+<span class="font-semibold text-on-surface">Farklı Şube İade Transferi Uygulandı</span>
+<span class="text-outline">Araç alış şubesinden farklı bir lokasyona teslim edileceği için tek yön transfer bedeli (+650 ₺) hesaba dahil edilecektir.</span>
+</div>
+</div>
+</div>
+<!-- 3. KART: FİYATLANDIRMA, DEPOZİTO & STATÜ (TotalPrice, Status) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-primary-container/10 text-primary flex items-center justify-center font-bold">3</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Fiyatlandırma &amp; Depozito Hesaplama</h2>
+<p class="font-body-sm text-body-sm text-outline">KDV, sigorta ekleri ve sözleşme kayıt tutarı (TotalPrice, Status)</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-tertiary/10 text-tertiary font-label-badge text-label-badge font-semibold">Mali Tablo</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md pt-2">
+<!-- Sigorta Paketi -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold" for="insuranceType">Kasko / Sigorta Paketi</label>
+<select class="bg-surface-container-low px-3.5 py-2.5 rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer" id="insuranceType">
+<option value="0">Standart Zorunlu Kasko (Dahil)</option>
+<option value="250">Tam Güvence Paketi (+250 ₺/gün)</option>
+<option value="450">Süper Mini Hasar + Cam/Far (+450 ₺/gün)</option>
+</select>
+</div>
+<!-- Kiralama Başlangıç Statüsü (Status) -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center gap-1" for="rentalStatus">
+                Kiralama Durumu (Status) <span class="text-error">*</span>
+</label>
+<select class="bg-surface-container-low px-3.5 py-2.5 rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer" id="rentalStatus" name="Status" required="">
+<option value="Rezervasyon">Rezervasyon (Onay Bekliyor)</option>
+<option selected="" value="Aktif">Teslim Edildi / Aktif</option>
+<option value="Beklemede">Evrak Doğrulama Bekliyor</option>
+</select>
+</div>
+<!-- Total Price Readonly Input -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold" for="totalPrice">Kayıt Tutarı (TotalPrice)</label>
+<div class="relative">
+<input class="w-full bg-surface-container-high px-3.5 py-2.5 rounded-lg font-headline-md text-headline-md text-primary font-bold focus:outline-none cursor-not-allowed text-right pr-9" id="totalPriceInput" name="TotalPrice" readonly="" type="text" value="0.00"/>
+<span class="absolute right-3.5 top-2.5 font-bold text-on-surface-variant font-body-md text-body-md">₺</span>
+</div>
+</div>
+</div>
+<!-- Hesap Dökümü Tablosu / Fiyat Şeridi -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-6 flex flex-col gap-2 mt-2">
+<div class="flex items-center justify-between text-body-sm font-body-sm text-outline">
+<span id="calcDaysSummary">Hesaplanan Süre: 0 Gün</span>
+<span id="calcSubtotal">Ara Toplam: 0 ₺</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm text-outline">
+<span id="calcExtrasSummary">Ek Hizmet &amp; Tek Yön Bedeli:</span>
+<span id="calcExtrasTotal">0 ₺</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm text-outline">
+<span>KDV (%20 Kanuni Matrah):</span>
+<span id="calcVatTotal">0 ₺</span>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-surface-dim font-body-lg text-body-lg font-bold text-on-surface">
+<span>Net Ödeme Tutarı (KDV Dahil):</span>
+<span class="text-primary text-headline-md font-headline-md" id="calcFinalSummary">0 ₺</span>
+</div>
+</div>
+<!-- Aksiyon Butonları -->
+<div class="flex items-center justify-end gap-space-md pt-space-sm">
+<button class="px-5 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-nav-item text-label-nav-item transition-all" id="btnResetForm" type="button">
+              Vazgeç / Temizle
+            </button>
+<button class="px-6 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-nav-item text-label-nav-item shadow-sm transition-all flex items-center gap-2" id="btnSubmitRental" type="submit">
+<span class="material-symbols-outlined text-[18px]">key</span>
+<span>Kiralamayı Başlat &amp; Kaydet</span>
+</button>
+</div>
+</div>
+</form>
+</div>
+<!-- SAĞ KOLON: CANLI SÖZLEŞME ÖNİZLEMESİ & OPERASYON REHBERİ (4 COLS) -->
+<div class="lg:col-span-4 flex flex-col gap-space-lg">
+<!-- CANLI SÖZLEŞME KARTI -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-6 overflow-hidden flex flex-col">
+<!-- Üst Başlık & Araç Görseli -->
+<div class="relative w-full h-44 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A sleek modern rental vehicle parked in front of a glass building, modern automotive photo, studio softbox lighting" id="previewCarImg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy_GIJcbwWDC-YJyESp5E-Z2nn7THyurT6XQZNqemBlL6NezB__KXlbwtOrp9xZgHuNxet7SxL_RVX4nrZkeu7rm9zDfK_GiADp-H0U-RjMOQApNgPjauPjYmDRVvNtOQeMOG8TCwGmPoFGH-MFDHL5IcjL2cZzWLVaQXAx455sozJvxxu1QukemLsvRc7LUEB3HXyPRBLwTqOfmOifzeama3cEs0YjRXXQtohhd1I0wYEVDxrJOvQZA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-transparent flex items-end p-4">
+<div class="flex items-center justify-between w-full">
+<div class="flex flex-col">
+<span class="text-on-primary font-headline-md text-headline-md leading-tight drop-shadow-sm font-bold" id="previewCarBrand">Renault Megane</span>
+<span class="text-primary-fixed font-table-header text-table-header uppercase tracking-wider" id="previewCarPlate">34 VR 8901</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-tertiary border border-tertiary/20 font-label-badge text-label-badge" id="previewBadgeStatus">Aktif</span>
+</div>
+</div>
+</div>
+<!-- Canlı Bilgi Gövdesi -->
+<div class="p-space-md flex flex-col gap-space-md">
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-table-header text-table-header text-outline uppercase">Kiracı Müşteri</span>
+<span class="font-label-nav-item text-label-nav-item text-on-surface font-semibold" id="previewCustomerName">Ahmet Yılmaz</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-tertiary text-[18px]">verified</span>
+</div>
+<!-- Teslim Güzergahı -->
+<div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-low/60 text-body-sm font-body-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">arrow_circle_up</span>
+<div class="flex flex-col flex-1">
+<span class="text-outline text-[11px] uppercase font-semibold">Alış (Teslim Alma)</span>
+<span class="text-on-surface font-medium" id="previewPickupInfo">Merkez Ofis - 01.05.2025 10:00</span>
+</div>
+</div>
+<div class="flex items-center gap-2 pt-1 border-t border-surface-dim">
+<span class="material-symbols-outlined text-secondary text-[18px]">arrow_circle_down</span>
+<div class="flex flex-col flex-1">
+<span class="text-outline text-[11px] uppercase font-semibold">İade (Teslim Etme)</span>
+<span class="text-on-surface font-medium" id="previewReturnInfo">Merkez Ofis - 05.05.2025 10:00</span>
+</div>
+</div>
+</div>
+<!-- Özet Metrikler -->
+<div class="grid grid-cols-2 gap-2 text-center">
+<div class="p-2.5 rounded-lg bg-surface-container-low">
+<span class="font-table-header text-table-header text-outline uppercase block">Toplam Gün</span>
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface" id="previewTotalDays">4 Gün</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low">
+<span class="font-table-header text-table-header text-outline uppercase block">Toplam Bedel</span>
+<span class="font-headline-lg text-headline-lg font-bold text-primary" id="previewTotalPrice">6.960 ₺</span>
+</div>
+</div>
+</div>
+</div>
+<!-- TABLO SATIRI GÖRÜNÜMÜ SİMÜLASYONU (#NEW) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-6 shadow-sm flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-table-header text-table-header text-outline uppercase tracking-wider">Tablo Veri Kaydı Eşleşmesi</span>
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-badge text-label-badge font-bold">#NEW ENTITY</span>
+</div>
+<div class="p-2.5 rounded-lg bg-inverse-surface text-inverse-on-surface text-[12px] font-mono leading-relaxed overflow-x-auto">
+<div><span class="text-primary-fixed">RentalId:</span> <span class="text-tertiary-fixed">#Auto_Increment</span></div>
+<div><span class="text-primary-fixed">CarId:</span> <span class="text-surface-bright" id="metaCarId">201</span> | <span class="text-primary-fixed">CustomerId:</span> <span class="text-surface-bright" id="metaCustomerId">101</span></div>
+<div><span class="text-primary-fixed">Branches:</span> <span id="metaBranches">#1 ➔ #1</span></div>
+<div><span class="text-primary-fixed">TotalPrice:</span> <span class="text-tertiary-fixed-dim font-bold" id="metaPrice">6,960.00 ₺</span></div>
+<div><span class="text-primary-fixed">Status:</span> <span class="text-amber-300" id="metaStatus">Aktif</span></div>
+</div>
+</div>
+<!-- KİRALAMA İŞ AKIŞI REHBERİ (OPERASYONEL KONTROL LİSTESİ) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-6 shadow-sm flex flex-col gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">task_alt</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Kiralama İş Akışı &amp; Mevzuat</h3>
+</div>
+<div class="flex flex-col gap-2.5 text-body-sm font-body-sm">
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded-full bg-surface-container text-primary flex items-center justify-center text-[11px] font-bold mt-0.5 shrink-0">1</span>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">KABİS Emniyet Bildirimi</span>
+<span class="text-outline text-[12px]">Sözleşme tamamlandığı an Emniyet Genel Müdürlüğü KABİS sistemine otomatik kayıt düşer.</span>
+</div>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded-full bg-surface-container text-primary flex items-center justify-center text-[11px] font-bold mt-0.5 shrink-0">2</span>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Provizyon Depozito Blokesi</span>
+<span class="text-outline text-[12px]">Kredi kartından teminat bedeli (minimum 2.500 ₺) POS üzerinden bloke alınmalıdır.</span>
+</div>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded-full bg-surface-container text-primary flex items-center justify-center text-[11px] font-bold mt-0.5 shrink-0">3</span>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Teslim &amp; Hasar Tutanağı</span>
+<span class="text-outline text-[12px]">Teslim anında mevcut km ve yakıt seviyesi dijital imza ile tabletten onaylatılır.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BİLDİRİM TOAST MODAL SİMÜLASYONU -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-inverse-surface text-inverse-on-surface px-5 py-4 rounded-xl shadow-xl" id="successToast">
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-semibold font-label-nav-item text-label-nav-item">Kiralama Kaydı Başarıyla Oluşturuldu</span>
+<span class="text-[12px] text-outline-variant">KABİS entegrasyonu onaylandı. Araç teslimata hazır.</span>
+</div>
+</div>
+</div>

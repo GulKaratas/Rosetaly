@@ -10,7 +10,7 @@ namespace Rentaly.DtoLayer.CarDtos
     public class ResultCarDto
     {
         public int CarId { get; set; }
-
+        public int BrandId { get; set; }
         public string BrandName { get; set; } 
         public string ModelName { get; set; } 
         public string CategoryName { get; set; } 

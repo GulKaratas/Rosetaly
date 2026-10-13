@@ -1,0 +1,448 @@
+/* ==========================================================================
+   RENTADMIN - ORTAK STYLE.CSS (Bootstrap 5 Entegreli Admin Yönetim Paneli)
+   ========================================================================== */
+
+:root {
+    --admin-primary: #2563eb;
+    --admin-primary-hover: #1d4ed8;
+    --admin-primary-light: #eff4ff;
+    --admin-sidebar-bg: #0f172a;
+    --admin-sidebar-text: #94a3b8;
+    --admin-sidebar-hover: #1e293b;
+    --admin-sidebar-active: #2563eb;
+    --admin-body-bg: #f8fafc;
+    --admin-card-bg: #ffffff;
+    --admin-border-color: #e2e8f0;
+    --admin-text-main: #0f172a;
+    --admin-text-muted: #64748b;
+    --admin-radius: 0.625rem; /* 10px */
+}
+
+/* Genel Gövde */
+body {
+    background-color: var(--admin-body-bg);
+    color: var(--admin-text-main);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+}
+
+/* --------------------------------------------------------------------------
+   SIDEBAR (Sol Menü)
+   -------------------------------------------------------------------------- */
+.admin-sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background-color: var(--admin-sidebar-bg);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1040;
+    overflow-y: auto;
+}
+
+.sidebar-brand {
+    padding: 1.5rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-brand-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: var(--admin-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.25rem;
+}
+
+.sidebar-brand-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.sidebar-brand-subtitle {
+    font-size: 0.72rem;
+    color: var(--admin-sidebar-text);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.sidebar-heading {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    padding: 1.25rem 1.25rem 0.5rem;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0 0.75rem;
+    margin: 0;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.75rem;
+    color: var(--admin-sidebar-text);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.15s ease-in-out;
+}
+
+    .sidebar-link:hover {
+        background-color: var(--admin-sidebar-hover);
+        color: #ffffff;
+    }
+
+    .sidebar-link.active {
+        background-color: var(--admin-sidebar-active);
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .sidebar-link i {
+        font-size: 1.1rem;
+        width: 20px;
+        text-align: center;
+    }
+
+/* --------------------------------------------------------------------------
+   ANA İÇERİK & ÜST BAŞLIK (Topbar)
+   -------------------------------------------------------------------------- */
+.admin-main-wrapper {
+    margin-left: 260px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-topbar {
+    height: 70px;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--admin-border-color);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+.topbar-search {
+    max-width: 480px;
+    width: 100%;
+}
+
+    .topbar-search .form-control {
+        background-color: #f1f5f9;
+        border: 1px solid transparent;
+        border-radius: 0.5rem;
+        padding-left: 2.5rem;
+        font-size: 0.875rem;
+    }
+
+        .topbar-search .form-control:focus {
+            background-color: #ffffff;
+            border-color: var(--admin-primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+.admin-content {
+    padding: 2rem;
+    flex: 1;
+}
+
+/* Sayfa Başlığı ve Butonlar */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--admin-text-main);
+    margin-bottom: 0.25rem;
+}
+
+.page-breadcrumb {
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   YÖNETİM KARTI & FİLTRELER
+   -------------------------------------------------------------------------- */
+.admin-card {
+    background-color: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    border: 1px solid var(--admin-border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.card-filter-bar {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--admin-border-color);
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.card-filter-bar .form-control,
+.card-filter-bar .form-select {
+    border-radius: 0.5rem;
+    border: 1px solid var(--admin-border-color);
+    font-size: 0.875rem;
+    padding: 0.5rem 0.875rem;
+}
+
+    .card-filter-bar .form-control:focus,
+    .card-filter-bar .form-select:focus {
+        border-color: var(--admin-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+/* --------------------------------------------------------------------------
+   TABLO STİLLERİ (Data Table)
+   -------------------------------------------------------------------------- */
+.admin-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    margin-bottom: 0;
+    border-collapse: collapse;
+}
+
+    .admin-table thead th {
+        background-color: #f8fafc;
+        color: #475569;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.875rem 1.25rem;
+        border-bottom: 1px solid var(--admin-border-color);
+        white-space: nowrap;
+    }
+
+    .admin-table tbody td {
+        padding: 1rem 1.25rem;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--admin-border-color);
+        font-size: 0.875rem;
+        color: #334155;
+    }
+
+    .admin-table tbody tr:hover {
+        background-color: #f8faff;
+    }
+
+    .admin-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Checkbox */
+    .admin-table .form-check-input {
+        width: 1.15rem;
+        height: 1.15rem;
+        border-color: #cbd5e1;
+        border-radius: 0.25rem;
+    }
+
+        .admin-table .form-check-input:checked {
+            background-color: var(--admin-primary);
+            border-color: var(--admin-primary);
+        }
+
+/* Küçük Kimlik / Plaka / Kod Rozeti */
+.badge-code {
+    font-family: monospace;
+    font-weight: 600;
+    font-size: 0.8rem;
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.375rem;
+    border: 1px solid #bfdbfe;
+    display: inline-block;
+}
+
+/* Durum Rozetleri (Badges) */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.775rem;
+    font-weight: 600;
+}
+
+.badge-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.badge-status-success {
+    background-color: #ecfdf5;
+    color: #047857;
+}
+
+    .badge-status-success .badge-status-dot {
+        background-color: #10b981;
+    }
+
+.badge-status-primary {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+}
+
+    .badge-status-primary .badge-status-dot {
+        background-color: #3b82f6;
+    }
+
+.badge-status-warning {
+    background-color: #fffbeb;
+    color: #b45309;
+}
+
+    .badge-status-warning .badge-status-dot {
+        background-color: #f59e0b;
+    }
+
+.badge-status-danger {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+
+    .badge-status-danger .badge-status-dot {
+        background-color: #ef4444;
+    }
+
+/* Aksiyon Butonları */
+.table-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    border: 1px solid transparent;
+    background-color: transparent;
+    color: #64748b;
+    transition: all 0.15s ease;
+}
+
+    .btn-action:hover {
+        background-color: #f1f5f9;
+        color: var(--admin-text-main);
+    }
+
+    .btn-action.btn-action-delete:hover {
+        background-color: #fee2e2;
+        color: #dc2626;
+    }
+
+/* --------------------------------------------------------------------------
+   SAYFALAMA & ALT BİLGİ (Pagination)
+   -------------------------------------------------------------------------- */
+.card-table-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--admin-border-color);
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.pagination-info {
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+}
+
+.admin-pagination {
+    margin-bottom: 0;
+    gap: 0.25rem;
+}
+
+    .admin-pagination .page-link {
+        border-radius: 0.375rem;
+        border: 1px solid var(--admin-border-color);
+        color: #475569;
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+        .admin-pagination .page-link:hover {
+            background-color: #f1f5f9;
+            color: var(--admin-text-main);
+        }
+
+    .admin-pagination .page-item.active .page-link {
+        background-color: var(--admin-primary);
+        border-color: var(--admin-primary);
+        color: #ffffff;
+    }
+
+/* --------------------------------------------------------------------------
+   DUYARLILIK (Responsive)
+   -------------------------------------------------------------------------- */
+@@media (max-width: 992px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+        .admin-sidebar.show {
+            transform: translateX(0);
+        }
+
+    .admin-main-wrapper {
+        margin-left: 0;
+    }
+}

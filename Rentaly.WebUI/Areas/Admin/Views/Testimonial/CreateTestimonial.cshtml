@@ -1,0 +1,277 @@
+﻿@model Rentaly.DtoLayer.Testimonial.CreateTestimonialDto
+@{
+    ViewData["Title"] = "CreateTestimonial";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Yeni Yorum Ekle", "Sitede sergilenmek üzere yeni bir müşteri referansı veya yorumu ekleyin.", "Yorumlar", "", "Listeye Dön", true, "/Admin/Testimonial/TestimonialList/"))
+}
+
+<form asp-action="CreateTestimonial" method="post">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Sol & Orta Sütun: Form Alanları (2 Kolon) -->
+        <div class="lg:col-span-2 flex flex-col gap-6">
+            
+            <!-- 1. Müşteri & Yorum Bilgileri Kartı -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between pb-4 mb-6 border-b border-outline-variant">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-primary-container/10 text-primary flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">rate_review</span>
+                        </div>
+                        <div>
+                            <h2 class="text-headline-md font-headline-md text-on-surface font-semibold">Müşteri ve Referans Detayları</h2>
+                            <p class="text-body-sm text-secondary mt-0.5">Yorum sahibinin adı, unvanı, profil fotoğrafı ve değerlendirme metni</p>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-surface-container-high text-primary">Vitrin İçeriği</span>
+                </div>
+                
+                <div class="flex flex-col gap-5">
+                    <!-- Ad Soyad & Unvan / Meslek (2 Kolon) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- ClientName -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-xs font-semibold text-secondary uppercase tracking-wider" asp-for="ClientName">
+                                    Müşteri Ad Soyad <span class="text-error">*</span>
+                                </label>
+                                <span class="text-xs text-outline font-mono">Zorunlu Alan</span>
+                            </div>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[18px]">person</span>
+                                <input asp-for="ClientName" type="text" required placeholder="Adınız" id="inputClientName"
+                                       class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                            </div>
+                            <span asp-validation-for="ClientName" class="text-error text-xs mt-1 block"></span>
+                        </div>
+                        
+                        <!-- Title (Unvan / Şirket) -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-xs font-semibold text-secondary uppercase tracking-wider" asp-for="Title">
+                                    Meslek / Unvan <span class="text-error">*</span>
+                                </label>
+                                <span class="text-xs text-outline font-mono">Zorunlu Alan</span>
+                            </div>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[18px]">badge</span>
+                                <input asp-for="Title" type="text" required placeholder="Mesleğiniz" id="inputTitle"
+                                       class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                            </div>
+                            <span asp-validation-for="Title" class="text-error text-xs mt-1 block"></span>
+                        </div>
+                    </div>
+
+                    <!-- ImageUrl (Profil Fotoğrafı) -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-semibold text-secondary uppercase tracking-wider" asp-for="ImageUrl">
+                                Müşteri Profil Fotoğrafı URL'si
+                            </label>
+                            <span class="text-[11px] text-outline">İsteğe Bağlı (Boşsa Avatar Üretilir)</span>
+                        </div>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[18px]">add_photo_alternate</span>
+                            <input asp-for="ImageUrl" type="url" placeholder="Resim Adresiniz" id="inputImageUrl"
+                                   class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                        </div>
+                        <span asp-validation-for="ImageUrl" class="text-error text-xs mt-1 block"></span>
+                        <p class="text-xs text-secondary mt-1.5 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px] text-outline">info</span>
+                            Kare (1:1) formatta, net ve optimize edilmiş portre fotoğraf bağlantısı girilmesi önerilir.
+                        </p>
+                    </div>
+
+                    <!-- Comment (Yorum Metni) -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-semibold text-secondary uppercase tracking-wider" asp-for="Comment">
+                                Müşteri Değerlendirme Yorumu <span class="text-error">*</span>
+                            </label>
+                            <span class="text-xs text-outline font-mono" id="commentCharCount">0 / 500 Karakter</span>
+                        </div>
+                        <div class="relative">
+                            <textarea asp-for="Comment" rows="4" maxlength="500" required id="inputComment"
+                                      placeholder="Yorumunuz"
+                                      class="w-full p-3.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all resize-none leading-relaxed"></textarea>
+                        </div>
+                        <span asp-validation-for="Comment" class="text-error text-xs mt-1 block"></span>
+                    </div>
+
+                    <!-- Hızlı Doldur / Örnek Referans Şablonları -->
+                    <div class="pt-3 border-t border-outline-variant">
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-2">
+                            Hızlı Doldur / Örnek Müşteri Yorumları
+                        </label>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <button type="button" onclick="setQuickTestimonial('Canan Dağdeviren', 'Kurumsal İletişim Direktörü', 'Sabiha Gökçen Havalimanı teslimatında araç tertemiz ve tam vaktinde hazırlandı. Müşteri temsilcilerinin nezaketi ve mobil sözleşme kolaylığı harikaydı, kesinlikle tavsiye ediyorum.', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80')"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container-high transition-colors text-xs text-on-surface">
+                                <span class="material-symbols-outlined text-[15px] text-primary">add_circle</span>
+                                <span>Canan D. (Havalimanı)</span>
+                            </button>
+                            <button type="button" onclick="setQuickTestimonial('Murat Öztürk', 'Finans Müdürü', 'Şirketimizin aylık filo kiralama ihtiyacında hızlı ve esnek çözümler sundular. BMW 320i kiraladık, araç kondisyonu mükemmeldi.', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80')"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container-high transition-colors text-xs text-on-surface">
+                                <span class="material-symbols-outlined text-[15px] text-primary">add_circle</span>
+                                <span>Murat Ö. (Kurumsal Filo)</span>
+                            </button>
+                            <button type="button" onclick="setQuickTestimonial('Elif Kaya', 'Girişimci & Seyahat Yazarı', 'Antalya tatilimiz için Tesla Model Y kiraladık. Şarj desteği ve teslimat hızı muazzamdı. Bir sonraki kiralama için adresimiz belli.', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80')"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container-high transition-colors text-xs text-on-surface">
+                                <span class="material-symbols-outlined text-[15px] text-primary">add_circle</span>
+                                <span>Elif K. (Elektrikli)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alt Aksiyon & Bilgilendirme -->
+                <div class="flex items-center justify-between pt-6 mt-6 border-t border-outline-variant">
+                    <span class="text-xs text-secondary"><strong class="text-error">*</strong> ile işaretli alanlar zorunludur</span>
+                    <div class="flex items-center gap-3">
+                        <a href="/Admin/Testimonial/TestimonialList" class="px-5 py-2.5 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-low text-sm font-medium transition-colors">
+                            Vazgeç
+                        </a>
+                        <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary text-on-primary font-semibold text-sm shadow-sm hover:bg-primary-container transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">check</span>
+                            Yorumu Kaydet
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Site Yayını & Entegrasyon Bilgilendirme Kartı -->
+            <div class="bg-surface-container-low border border-outline-variant rounded-xl p-5 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">public</span>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <h4 class="text-sm font-semibold text-on-surface">Web Sitesi Entegrasyonu: Vitrin Referansları</h4>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-surface-container text-primary">HOME PAGE SLIDER</span>
+                    </div>
+                    <p class="text-xs text-secondary leading-relaxed">
+                        Kaydedilen yorumlar otomatik olarak web sitesinin ana sayfasında yer alan <strong>"Mutlu Müşterilerimiz Ne Diyor?"</strong> slider bölümünde gösterilir.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Sütun: Canlı Önizleme & Rehber (1 Kolon) -->
+        <div class="flex flex-col gap-6">
+            <!-- Canlı Önizleme Kartı -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant">
+                    <div class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-secondary">
+                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                        Canlı Vitrin Önizleme
+                    </div>
+                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-tertiary-fixed/30 px-2 py-0.5 rounded-full">
+                        CANLI
+                    </span>
+                </div>
+                
+                <!-- Önizleme Kartı -->
+                <div class="p-5 rounded-xl bg-surface-container-low border border-outline-variant flex flex-col mb-5 relative shadow-xs">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center text-amber-500 gap-0.5 text-sm">
+                            <span class="material-symbols-outlined text-[18px]">star</span>
+                            <span class="material-symbols-outlined text-[18px]">star</span>
+                            <span class="material-symbols-outlined text-[18px]">star</span>
+                            <span class="material-symbols-outlined text-[18px]">star</span>
+                            <span class="material-symbols-outlined text-[18px]">star</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[28px] text-primary/30">format_quote</span>
+                    </div>
+                    <p id="previewComment" class="text-xs text-on-surface leading-relaxed italic min-h-[50px]">
+                        &ldquo;Müşteri değerlendirme metni henüz girilmedi. Sol taraftan yorum yazmaya başladığınızda burada canlı olarak belirecektir.&rdquo;
+                    </p>
+                    <div class="mt-4 pt-3 border-t border-outline-variant/60 flex items-center gap-3">
+                        <div id="previewAvatarBox" class="w-11 h-11 rounded-full bg-primary/10 text-primary border border-outline-variant flex items-center justify-center font-bold text-sm overflow-hidden shrink-0">
+                            SY
+                        </div>
+                        <div class="min-w-0">
+                            <div id="previewClientName" class="font-bold text-on-surface text-sm truncate">Müşteri Ad Soyad</div>
+                            <div id="previewTitle" class="text-xs text-secondary truncate">Meslek / Unvan</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tablodaki Satır Görünümü -->
+                <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-2">Tablodaki Satır Görünümü</div>
+                <div class="border border-outline-variant rounded-lg overflow-hidden bg-surface-container-lowest text-xs">
+                    <div class="p-3 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div id="previewTableAvatar" class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[11px] overflow-hidden shrink-0">
+                                SY
+                            </div>
+                            <div class="min-w-0">
+                                <span id="previewTableName" class="font-medium text-on-surface block truncate">Müşteri Ad Soyad</span>
+                                <span id="previewTableTitle" class="text-[10px] text-outline font-mono truncate">Unvan • #NEW</span>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 shrink-0">Yayında</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function setQuickTestimonial(name, title, comment, imageUrl) {
+            document.getElementById('inputClientName').value = name;
+            document.getElementById('inputTitle').value = title;
+            document.getElementById('inputComment').value = comment;
+            document.getElementById('inputImageUrl').value = imageUrl;
+            updateTestimonialPreview();
+        }
+
+        const nameInput = document.getElementById('inputClientName');
+        const titleInput = document.getElementById('inputTitle');
+        const commentInput = document.getElementById('inputComment');
+        const imageInput = document.getElementById('inputImageUrl');
+        
+        const previewClientName = document.getElementById('previewClientName');
+        const previewTitle = document.getElementById('previewTitle');
+        const previewComment = document.getElementById('previewComment');
+        const previewAvatarBox = document.getElementById('previewAvatarBox');
+        const previewTableName = document.getElementById('previewTableName');
+        const previewTableTitle = document.getElementById('previewTableTitle');
+        const previewTableAvatar = document.getElementById('previewTableAvatar');
+        const commentCharCount = document.getElementById('commentCharCount');
+
+        function updateTestimonialPreview() {
+            const nameVal = nameInput.value.trim() || 'Müşteri Ad Soyad';
+            const titleVal = titleInput.value.trim() || 'Meslek / Unvan';
+            const commentVal = commentInput.value.trim() || 'Müşteri değerlendirme metni henüz girilmedi...';
+            const imgVal = imageInput.value.trim();
+
+            previewClientName.textContent = nameVal;
+            previewTableName.textContent = nameVal;
+            previewTitle.textContent = titleVal;
+            previewTableTitle.textContent = `${titleVal} • #NEW`;
+            previewComment.innerHTML = `&ldquo;${commentVal}&rdquo;`;
+
+            if (commentCharCount && commentInput) {
+                commentCharCount.textContent = `${commentInput.value.length} / 500 Karakter`;
+            }
+
+            const initials = nameVal.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'MŞ';
+            if (imgVal) {
+                previewAvatarBox.innerHTML = `<img src="${imgVal}" class="w-full h-full object-cover" onerror="this.parentElement.textContent='${initials}'" />`;
+                previewTableAvatar.innerHTML = `<img src="${imgVal}" class="w-full h-full object-cover" onerror="this.parentElement.textContent='${initials}'" />`;
+            } else {
+                previewAvatarBox.textContent = initials;
+                previewTableAvatar.textContent = initials;
+            }
+        }
+
+        nameInput?.addEventListener('input', updateTestimonialPreview);
+        titleInput?.addEventListener('input', updateTestimonialPreview);
+        commentInput?.addEventListener('input', updateTestimonialPreview);
+        imageInput?.addEventListener('input', updateTestimonialPreview);
+    </script>
+}

@@ -1,0 +1,42 @@
+﻿@model (string Title, string Description, string BreadcrumbCurrent, string CreateUrl, string ButtonText, bool IsDetailOrCreate, string BackUrl)
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <div class="flex items-center gap-2 text-xs text-secondary mb-1">
+            <a href="/Admin/Dashboard" class="hover:text-primary transition-colors">Dashboard</a>
+            <span>/</span>
+            <span class="text-secondary">Filo</span>
+            <span>/</span>
+            @if (Model.IsDetailOrCreate)
+            {
+                <a href="@Model.BackUrl" class="hover:text-primary transition-colors">@Model.BreadcrumbCurrent</a>
+                <span>/</span>
+                <span class="text-on-surface font-medium">@Model.Title</span>
+            }
+            else
+            {
+                <span class="text-on-surface font-medium">@Model.BreadcrumbCurrent</span>
+            }
+        </div>
+        <h1 class="text-headline-xl font-headline-xl text-on-surface font-bold tracking-tight">@Model.Title</h1>
+        <p class="text-body-sm text-secondary mt-1">@Model.Description</p>
+    </div>
+    <div>
+        @if (Model.IsDetailOrCreate)
+        {
+            <!-- Listeye Dön Butonu (Ekleme/Düzenleme sayfaları için) -->
+            <a href="@Model.BackUrl" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors text-sm font-medium shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Listeye Dön
+            </a>
+        }
+        else
+        {
+            <!-- Yeni Ekle Butonu (Liste sayfaları için) -->
+            <a href="@Model.CreateUrl" class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-primary-container text-on-primary font-label-nav-item text-label-nav-item shadow-sm hover:opacity-95 transition-all">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                <span>@Model.ButtonText</span>
+            </a>
+        }
+    </div>
+</div>

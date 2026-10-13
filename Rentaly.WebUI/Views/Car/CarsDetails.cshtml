@@ -1,0 +1,256 @@
+@model GetCarByIdDto
+
+@{
+    ViewData["Title"] = "Araç Detayı";
+    Layout = "~/Views/Shared/_UILayout.cshtml";
+}
+
+<style>
+    .car-detail-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .car-detail-photo {
+        display: flex;
+        flex-direction: column;
+        min-height: 460px;
+        height: 100%;
+    }
+
+    .car-detail-photo .car-thumb {
+        flex: 1;
+        height: auto;
+        min-height: 460px;
+        border-radius: 18px;
+    }
+
+    .car-detail-photo .car-thumb img {
+        display: block;
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .car-detail-title {
+        font-size: 1.85rem;
+        line-height: 1.15;
+        margin-bottom: 8px;
+    }
+
+    .car-detail-spec {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 16px;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--border-color);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.95rem;
+    }
+
+    .car-detail-spec span {
+        color: #8e9aab;
+    }
+
+    .car-detail-spec strong {
+        color: #fff;
+        font-weight: 700;
+        text-align: right;
+    }
+
+    .car-detail-spec:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .car-detail-rate {
+        text-align: center;
+        padding: 28px 20px;
+    }
+
+    .car-detail-rate .price-val {
+        font-size: 2.4rem;
+        margin-top: 6px;
+    }
+
+    .car-detail-side {
+        position: sticky;
+        top: 96px;
+    }
+
+    @@media (max-width: 991px) {
+        .car-detail-photo,
+        .car-detail-photo .car-thumb {
+            height: 260px;
+            min-height: 260px;
+        }
+
+        .car-detail-side {
+            position: static;
+        }
+    }
+</style>
+
+<section class="section-padding" style="margin-top: 76px;">
+    <div class="container">
+        <a asp-controller="Car" asp-action="CarList" class="text-decoration-none text-white-50 d-inline-flex align-items-center gap-2 mb-4">
+            <i class="fa fa-arrow-left"></i> Araç listesine dön
+        </a>
+
+        @if (Model == null)
+        {
+            <div class="car-card p-5 text-center">
+                <i class="fa fa-car text-primary-custom fs-2 mb-3"></i>
+                <h4 class="mb-2">Araç bulunamadı</h4>
+                <p class="mb-0">Bu kayıt listede yok ya da kaldırılmış.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-5">
+                    <div class="car-card car-detail-card car-detail-photo h-100">
+                        <div class="car-thumb">
+                            @if (Model.IsAvailable)
+                            {
+                                <span class="car-status-available">
+                                    <i class="fa fa-check"></i> Müsait
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="car-status-locked">
+                                    <i class="fa fa-lock"></i> Rezerve Edildi
+                                </span>
+                            }
+
+                            <img alt="@Model.DisplayName" class="img-fluid" src="@Model.DisplayImageUrl" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <span class="section-subtitle">@(string.IsNullOrWhiteSpace(Model.CategoryName) ? "Filo" : Model.CategoryName)</span>
+                    <div class="d-flex align-items-start justify-content-between gap-3">
+                        <h2 class="section-title car-detail-title">@Model.DisplayName</h2>
+                        <span class="badge bg-dark text-warning p-2">
+                            <i class="fa fa-star"></i> @Model.Rating.ToString("0.0")
+                        </span>
+                    </div>
+                    <p class="text-white-50 mb-3">Model yılı @Model.Year • @Model.FuelType</p>
+
+                    <h4 class="mb-2">Özellikler</h4>
+                    @if (!string.IsNullOrWhiteSpace(Model.CategoryName))
+                    {
+                        <div class="car-detail-spec">
+                            <span>Kategori</span>
+                            <strong>@Model.CategoryName</strong>
+                        </div>
+                    }
+                    <div class="car-detail-spec">
+                        <span>Koltuk</span>
+                        <strong>@Model.SeatCount kişi</strong>
+                    </div>
+                    <div class="car-detail-spec">
+                        <span>Bagaj</span>
+                        <strong>@Model.LuggageCount bavul</strong>
+                    </div>
+                    <div class="car-detail-spec">
+                        <span>Yakıt</span>
+                        <strong>@Model.FuelType</strong>
+                    </div>
+                    <div class="car-detail-spec">
+                        <span>Vites</span>
+                        <strong>@Model.Transmission</strong>
+                    </div>
+                    <div class="car-detail-spec">
+                        <span>Yıl</span>
+                        <strong>@Model.Year</strong>
+                    </div>
+                    <div class="car-detail-spec">
+                        <span>Kilometre</span>
+                        <strong>@Model.Kilometer.ToString("N0") km</strong>
+                    </div>
+                    <div class="car-detail-spec">
+                        <span>Performans</span>
+                        <strong>@(string.IsNullOrWhiteSpace(Model.PerformanceInfo) ? "Standart" : Model.PerformanceInfo)</strong>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.PlateNumber))
+                    {
+                        <div class="car-detail-spec">
+                            <span>Plaka</span>
+                            <strong>@Model.PlateNumber</strong>
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.BranchName))
+                    {
+                        <div class="car-detail-spec">
+                            <span>Şube</span>
+                            <strong>@Model.BranchName</strong>
+                        </div>
+                    }
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="car-detail-side">
+                        <div class="car-card car-detail-card mb-3">
+                            <div class="car-body car-detail-rate">
+                                <p class="text-white-50 mb-0">Günlük fiyat</p>
+                                <div class="price-val">
+                                    ₺@Model.DailyPrice.ToString("N0")
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="car-card car-detail-card">
+                            <div class="car-body">
+                                <h4 class="mb-3">Bu aracı kirala</h4>
+                                <div class="car-detail-spec">
+                                    <span>Depozito</span>
+                                    <strong>₺@Model.DepositAmount.ToString("N0")</strong>
+                                </div>
+
+                                @if (Model.IsAvailable)
+                                {
+                                    <button type="button"
+                                            class="btn btn-custom-primary w-100 mt-3"
+                                            id="bookDetailCar"
+                                            data-car="@Model.DisplayName"
+                                            data-price="₺@Model.DailyPrice.ToString("N0")">
+                                        <i class="fa fa-lock"></i> Rezerve Et
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-secondary w-100 mt-3" disabled>
+                                        <i class="fa fa-ban"></i> Uygun Değil
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<script>
+    (function () {
+        const button = document.getElementById('bookDetailCar');
+        if (!button) {
+            return;
+        }
+
+        button.addEventListener('click', function () {
+            if (typeof lockAndBookCar !== 'function') {
+                return;
+            }
+
+            lockAndBookCar(button.dataset.car || '', button.dataset.price || '');
+        });
+    })();
+</script>

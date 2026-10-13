@@ -1,10 +1,11 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Rentaly.DtoLayer.About;
 using Rentaly.DtoLayer.BranchDtos;
 using Rentaly.DtoLayer.CarDtos;
 using Rentaly.DtoLayer.CategoryDtos;
 using Rentaly.DtoLayer.CustomerDtos;
 using Rentaly.DtoLayer.FAQDtos;
+using Rentaly.DtoLayer.RentalDtos;
 using Rentaly.DtoLayer.Testimonial;
 using Rentaly.EntityLayer.Entities;
 using System;
@@ -34,10 +35,17 @@ namespace Rentaly.BusinessLayer.Mapping
             CreateMap<Category, UpdateCategoryDto>().ReverseMap();
             CreateMap<Category, GetCategoryByIdDto>().ReverseMap();
 
-            CreateMap<Car, ResultCarDto>().ReverseMap();
+            CreateMap<Car, ResultCarDto>()
+           .ForMember(d => d.BrandName, o => o.MapFrom(s => s.CarModel.Brand.BrandName))
+           .ForMember(d => d.ModelName, o => o.MapFrom(s => s.CarModel.ModelName))
+           .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.CategoryName));
+            CreateMap<Car, GetCarByIdDto>()
+           .ForMember(d => d.BrandName, o => o.MapFrom(s => s.CarModel.Brand.BrandName))
+           .ForMember(d => d.ModelName, o => o.MapFrom(s => s.CarModel.ModelName))
+           .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.CategoryName));
+
             CreateMap<Car, CreateCarDto>().ReverseMap();
             CreateMap<Car, UpdateCarDto>().ReverseMap();
-            CreateMap<Car, GetCarByIdDto>().ReverseMap();
 
             CreateMap<About, ResultAboutDto>().ReverseMap();
             CreateMap<About, CreateAboutDto>().ReverseMap();
@@ -53,6 +61,11 @@ namespace Rentaly.BusinessLayer.Mapping
             CreateMap<FAQ, CreateFAQDto>().ReverseMap();
             CreateMap<FAQ, UpdateFAQDto>().ReverseMap();
             CreateMap<FAQ, GetFAQByIdDto>().ReverseMap();
+
+            CreateMap<Rental, ResultRentalDto>().ReverseMap();
+            CreateMap<Rental, CreateRentalDto>().ReverseMap();
+            CreateMap<Rental, UpdateRentalDto>().ReverseMap();
+            CreateMap<Rental, GetRentalByIdDto>().ReverseMap();
         }
     }
 }

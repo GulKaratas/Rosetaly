@@ -5,1109 +5,349 @@
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
-
-<style>
-    /* ── Create Car Page ── */
-
-    /* Breadcrumb / step indicator */
-    .form-steps {
-        display: flex;
-        gap: 0;
-        margin-bottom: 28px;
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-sm);
-        overflow: hidden;
-    }
-
-    .form-step {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 14px 20px;
-        font-size: 13px;
-        font-weight: 600;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        color: var(--text-muted);
-        border-right: 1px solid var(--border);
-        cursor: pointer;
-        transition: var(--transition);
-        position: relative;
-    }
-
-        .form-step:last-child { border-right: none; }
-
-        .form-step.active {
-            color: var(--primary);
-            background: var(--primary-light);
-        }
-
-        .form-step.done {
-            color: #059669;
-            background: #f0fdf4;
-        }
-
-    .step-num {
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 800;
-        background: var(--border);
-        color: var(--text-muted);
-        flex-shrink: 0;
-        transition: var(--transition);
-    }
-
-    .form-step.active .step-num {
-        background: var(--primary);
-        color: #fff;
-    }
-
-    .form-step.done .step-num {
-        background: #059669;
-        color: #fff;
-    }
-
-    /* Section cards */
-    .form-section {
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-sm);
-        margin-bottom: 20px;
-        overflow: hidden;
-        display: none;
-    }
-
-        .form-section.active { display: block; }
-
-    .form-section-header {
-        padding: 16px 22px;
-        border-bottom: 1px solid var(--border);
-        background: #fafbfc;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .section-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 15px;
-        flex-shrink: 0;
-    }
-
-    .form-section-title {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 14.5px;
-        font-weight: 800;
-        color: var(--text-main);
-    }
-
-    .form-section-subtitle {
-        font-size: 12.5px;
-        color: var(--text-muted);
-        margin-top: 1px;
-    }
-
-    .form-section-body {
-        padding: 24px 22px;
-    }
-
-    /* Form grid */
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 18px 22px;
-    }
-
-    .form-grid-3 {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px 22px;
-    }
-
-    .col-span-2 { grid-column: span 2; }
-    .col-span-3 { grid-column: span 3; }
-
-    /* Field */
-    .form-field { display: flex; flex-direction: column; gap: 7px; }
-
-    .form-label {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-main);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-        .form-label .req { color: var(--danger); font-size: 14px; line-height: 1; }
-
-        .form-label .hint {
-            margin-left: auto;
-            font-size: 11.5px;
-            font-weight: 400;
-            color: var(--text-muted);
-        }
-
-    .form-control-custom {
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius-sm);
-        padding: 10px 14px;
-        font-size: 13.5px;
-        font-family: 'DM Sans', sans-serif;
-        color: var(--text-main);
-        background: var(--body-bg);
-        outline: none;
-        transition: var(--transition);
-        width: 100%;
-    }
-
-        .form-control-custom:focus {
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(26,86,219,0.09);
-        }
-
-        .form-control-custom.is-invalid {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 3px rgba(239,68,68,0.08);
-        }
-
-        .form-control-custom.is-valid {
-            border-color: #10b981;
-            box-shadow: 0 0 0 3px rgba(16,185,129,0.08);
-        }
-
-    select.form-control-custom {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 14px center;
-        padding-right: 36px;
-    }
-
-    .field-hint {
-        font-size: 11.5px;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .field-error {
-        font-size: 12px;
-        color: var(--danger);
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    /* Toggle switch */
-    .toggle-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 16px;
-        background: var(--body-bg);
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius-sm);
-        transition: var(--transition);
-        cursor: pointer;
-    }
-
-        .toggle-row:hover { border-color: var(--primary); }
-
-    .toggle-info { display: flex; align-items: center; gap: 10px; }
-
-    .toggle-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-    }
-
-    .toggle-title { font-size: 13.5px; font-weight: 600; color: var(--text-main); }
-    .toggle-sub   { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
-
-    .custom-switch {
-        position: relative;
-        width: 44px;
-        height: 24px;
-        flex-shrink: 0;
-    }
-
-        .custom-switch input { opacity: 0; width: 0; height: 0; }
-
-        .custom-switch .slider {
-            position: absolute;
-            inset: 0;
-            background: var(--border);
-            border-radius: 24px;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-            .custom-switch .slider::before {
-                content: '';
-                position: absolute;
-                width: 18px;
-                height: 18px;
-                left: 3px;
-                top: 3px;
-                background: #fff;
-                border-radius: 50%;
-                transition: var(--transition);
-                box-shadow: 0 1px 3px rgba(0,0,0,.2);
-            }
-
-        .custom-switch input:checked + .slider { background: var(--primary); }
-        .custom-switch input:checked + .slider::before { transform: translateX(20px); }
-
-    /* Image upload */
-    .image-upload-area {
-        border: 2px dashed var(--border);
-        border-radius: var(--radius-sm);
-        padding: 28px 20px;
-        text-align: center;
-        cursor: pointer;
-        transition: var(--transition);
-        background: var(--body-bg);
-        position: relative;
-    }
-
-        .image-upload-area:hover,
-        .image-upload-area.dragover {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
-
-    .upload-icon {
-        width: 52px;
-        height: 52px;
-        background: var(--primary-light);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        color: var(--primary);
-        margin: 0 auto 12px;
-    }
-
-    /* Image preview */
-    .img-preview-wrap {
-        display: none;
-        position: relative;
-        border-radius: var(--radius-sm);
-        overflow: hidden;
-        border: 1.5px solid var(--border);
-    }
-
-        .img-preview-wrap img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            display: block;
-        }
-
-    .img-preview-remove {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        width: 30px;
-        height: 30px;
-        background: rgba(0,0,0,0.55);
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        transition: var(--transition);
-        backdrop-filter: blur(4px);
-    }
-
-        .img-preview-remove:hover { background: var(--danger); }
-
-    /* Live preview card */
-    .preview-card {
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-sm);
-        overflow: hidden;
-        position: sticky;
-        top: 80px;
-    }
-
-    .preview-card-header {
-        padding: 14px 18px;
-        border-bottom: 1px solid var(--border);
-        background: #fafbfc;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .preview-card-img {
-        height: 150px;
-        background: linear-gradient(135deg, #f0f4ff, #e8efff);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 48px;
-        color: var(--primary);
-        opacity: .2;
-        overflow: hidden;
-    }
-
-        .preview-card-img img { width: 100%; height: 100%; object-fit: cover; opacity: 1; }
-
-    .preview-card-body { padding: 14px 16px; }
-
-    .preview-plate {
-        display: inline-block;
-        background: #f1f5f9;
-        border: 1px solid var(--border);
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 11px;
-        font-weight: 800;
-        padding: 3px 8px;
-        border-radius: 5px;
-        letter-spacing: 1px;
-        margin-bottom: 8px;
-    }
-
-    .preview-title {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 15px;
-        font-weight: 800;
-        color: var(--text-main);
-        margin-bottom: 10px;
-    }
-
-    .preview-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
-
-    .preview-chip {
-        background: var(--body-bg);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 3px 9px;
-        font-size: 11.5px;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-        .preview-chip i { font-size: 10px; color: var(--primary); }
-
-    .preview-price {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 20px;
-        font-weight: 800;
-        color: var(--primary);
-    }
-
-    .preview-price-label { font-size: 11px; color: var(--text-muted); }
-
-    /* Form action bar */
-    .form-action-bar {
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 16px 22px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        box-shadow: var(--shadow-sm);
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    .btn-step-next {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 24px;
-        background: var(--primary);
-        color: #fff;
-        border: none;
-        border-radius: var(--radius-sm);
-        font-size: 13.5px;
-        font-weight: 700;
-        font-family: 'DM Sans', sans-serif;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-        .btn-step-next:hover { background: #1447c0; }
-
-    .btn-step-prev {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 20px;
-        background: var(--body-bg);
-        color: var(--text-main);
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius-sm);
-        font-size: 13.5px;
-        font-weight: 600;
-        font-family: 'DM Sans', sans-serif;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-        .btn-step-prev:hover { border-color: var(--primary); color: var(--primary); }
-
-    .btn-submit-final {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 28px;
-        background: #059669;
-        color: #fff;
-        border: none;
-        border-radius: var(--radius-sm);
-        font-size: 13.5px;
-        font-weight: 700;
-        font-family: 'DM Sans', sans-serif;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-        .btn-submit-final:hover { background: #047857; }
-
-    /* Progress bar */
-    .form-progress {
-        height: 3px;
-        background: var(--border);
-        border-radius: 99px;
-        margin-bottom: 24px;
-        overflow: hidden;
-    }
-
-    .form-progress-bar {
-        height: 100%;
-        background: var(--primary);
-        border-radius: 99px;
-        transition: width 0.4s ease;
-    }
-
-    @@media (max-width: 767px) {
-        .form-grid    { grid-template-columns: 1fr; }
-        .form-grid-3  { grid-template-columns: 1fr 1fr; }
-        .col-span-2   { grid-column: span 1; }
-        .col-span-3   { grid-column: span 2; }
-    }
-
-    @@media (max-width: 575px) {
-        .form-grid-3  { grid-template-columns: 1fr; }
-        .col-span-3   { grid-column: span 1; }
-        .form-steps   { flex-wrap: wrap; }
-    }
-</style>
-
-<!-- ═══ Page Header ═══ -->
-<div class="page-header">
-    <div>
-        <h1 class="page-title">Yeni Araç Ekle</h1>
-        <p class="page-subtitle">Araç envanterine yeni bir kayıt oluşturun.</p>
-    </div>
-    <a href="/Car/List" class="btn-action btn-detail">
-        <i class="fa-solid fa-arrow-left"></i> Araç Listesine Dön
-    </a>
-</div>
-
-<!-- ═══ Progress ═══ -->
-<div class="form-progress">
-    <div class="form-progress-bar" id="progressBar" style="width:33%"></div>
-</div>
-
-<!-- ═══ Step Indicator ═══ -->
-<div class="form-steps" id="formSteps">
-    <div class="form-step active" id="step-tab-1" onclick="goStep(1)">
-        <div class="step-num" id="step-num-1">1</div>
-        <div>
-            <div>Temel Bilgiler</div>
-            <div style="font-size:11px;font-weight:400;color:inherit;opacity:.75;">Plaka, VIN, Kategori</div>
-        </div>
-    </div>
-    <div class="form-step" id="step-tab-2" onclick="goStep(2)">
-        <div class="step-num" id="step-num-2">2</div>
-        <div>
-            <div>Araç Detayları</div>
-            <div style="font-size:11px;font-weight:400;color:inherit;opacity:.75;">Yıl, KM, Yakıt, Koltuk</div>
-        </div>
-    </div>
-    <div class="form-step" id="step-tab-3" onclick="goStep(3)">
-        <div class="step-num" id="step-num-3">3</div>
-        <div>
-            <div>Fiyat & Durum</div>
-            <div style="font-size:11px;font-weight:400;color:inherit;opacity:.75;">Fiyat, Depozito, Aktiflik</div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-4">
-    <!-- ═══ Form ═══ -->
-    <div class="col-12 col-lg-8">
-        <form asp-action="CreateCar" asp-controller="Car" method="post" id="carCreateForm">
-            @Html.AntiForgeryToken()
-
-            <!-- ══════════════════════
-                 BÖLÜM 1 — Temel Bilgiler
-            ══════════════════════ -->
-            <div class="form-section active" id="section-1">
-                <div class="form-section-header">
-                    <div class="section-icon" style="background:#e8efff;color:var(--primary);">
-                        <i class="fa-solid fa-id-card"></i>
-                    </div>
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Yeni Araç Ekle", "Filoya yeni bir araç ve detay bilgilerini tanımlayın.", "Araçlar", "", "Listeye Dön", true, "/Admin/Car/CarList/"))
+}
+
+<form asp-action="CreateCar" method="post" enctype="multipart/form-data">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Sol & Orta Sütun: Form Alanları (2 Kolon) -->
+        <div class="lg:col-span-2 flex flex-col gap-6">
+            
+            <!-- 1. Temel Tanımlama & Ruhsat Bilgileri -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-2 pb-4 mb-5 border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-primary text-[22px]">badge</span>
+                    <h2 class="text-headline-md font-headline-md text-on-surface font-semibold">Temel Tanımlama & Ruhsat Bilgileri</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Plaka -->
                     <div>
-                        <div class="form-section-title">Temel Bilgiler</div>
-                        <div class="form-section-subtitle">Aracın kimlik ve sınıflandırma bilgileri</div>
-                    </div>
-                </div>
-                <div class="form-section-body">
-                    <div class="form-grid">
-
-                        <!-- Plaka -->
-                        <div class="form-field">
-                            <label asp-for="PlateNumber" class="form-label">
-                                <i class="fa-solid fa-rectangle-list" style="color:var(--primary);"></i>
-                                Plaka <span class="req">*</span>
-                                <span class="hint">Örn: 34 ABC 123</span>
-                            </label>
-                            <input asp-for="PlateNumber"
-                                   class="form-control-custom"
-                                   placeholder="34 ABC 123"
-                                   maxlength="15"
-                                   oninput="updatePreview()"
-                                   style="text-transform:uppercase;letter-spacing:1.5px;font-weight:700;" />
-                            <span asp-validation-for="PlateNumber" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                        <!-- VIN / Şasi No -->
-                        <div class="form-field">
-                            <label asp-for="VIN" class="form-label">
-                                <i class="fa-solid fa-barcode" style="color:var(--primary);"></i>
-                                Şasi No (VIN)
-                                <span class="hint">17 karakter</span>
-                            </label>
-                            <input asp-for="VIN"
-                                   class="form-control-custom"
-                                   placeholder="WVWZZZ1JZ3W000001"
-                                   maxlength="17"
-                                   oninput="this.value=this.value.toUpperCase()" />
-                            <span asp-validation-for="VIN" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                        <!-- Kategori -->
-                        <div class="form-field">
-                            <label asp-for="CategoryId" class="form-label">
-                                <i class="fa-solid fa-tags" style="color:var(--primary);"></i>
-                                Kategori <span class="req">*</span>
-                            </label>
-                            <select asp-for="CategoryId"
-                                    asp-items="ViewBag.Categories"
-                                    class="form-control-custom"
-                                    onchange="updatePreview()">
-                                <option value="">— Kategori Seçin —</option>
-                            </select>
-                            <span asp-validation-for="CategoryId" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                        <!-- Şube -->
-                        <div class="form-field">
-                            <label asp-for="BranchId" class="form-label">
-                                <i class="fa-solid fa-building" style="color:var(--primary);"></i>
-                                Şube <span class="req">*</span>
-                            </label>
-                            <select asp-for="BranchId"
-                                    asp-items="ViewBag.Branches"
-                                    class="form-control-custom">
-                                <option value="">— Şube Seçin —</option>
-                            </select>
-                            <span asp-validation-for="BranchId" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                        <!-- Marka -->
-                        <div class="form-field">
-                            <label for="BrandId" class="form-label">
-                                <i class="fa-solid fa-copyright" style="color:var(--primary);"></i>
-                                Marka <span class="req">*</span>
-                            </label>
-                            <select id="BrandId" name="BrandId" class="form-control-custom" onchange="filterModels()">
-                                <option value="">— Marka Seçin —</option>
-                                @foreach (var brand in (IEnumerable<Rentaly.EntityLayer.Entities.Brand>)ViewBag.Brands)
-                                {
-                                    <option value="@brand.BrandId" selected="@(ViewBag.SelectedBrandId?.ToString() == brand.BrandId.ToString() ? "selected" : null)">@brand.BrandName</option>
-                                }
-                            </select>
-                        </div>
-
-                        <!-- Model -->
-                        <div class="form-field">
-                            <label asp-for="CarModelId" class="form-label">
-                                <i class="fa-solid fa-car" style="color:var(--primary);"></i>
-                                Model <span class="req">*</span>
-                            </label>
-                            <select asp-for="CarModelId" class="form-control-custom" onchange="updatePreview()">
-                                <option value="">— Model Seçin —</option>
-                                @foreach (var carModel in (IEnumerable<Rentaly.EntityLayer.Entities.CarModel>)ViewBag.CarModels)
-                                {
-                                    <option value="@carModel.CarModelId" data-brand-id="@carModel.BrandId" selected="@(Model?.CarModelId == carModel.CarModelId ? "selected" : null)">@carModel.ModelName</option>
-                                }
-                            </select>
-                            <span asp-validation-for="CarModelId" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- ══════════════════════
-                 BÖLÜM 2 — Araç Detayları
-            ══════════════════════ -->
-            <div class="form-section" id="section-2">
-                <div class="form-section-header">
-                    <div class="section-icon" style="background:#fff4ed;color:#f97316;">
-                        <i class="fa-solid fa-screwdriver-wrench"></i>
-                    </div>
-                    <div>
-                        <div class="form-section-title">Araç Detayları</div>
-                        <div class="form-section-subtitle">Teknik özellikler ve donanım bilgileri</div>
-                    </div>
-                </div>
-                <div class="form-section-body">
-                    <div class="form-grid-3">
-
-                        <!-- Yıl -->
-                        <div class="form-field">
-                            <label asp-for="Year" class="form-label">
-                                <i class="fa-solid fa-calendar" style="color:var(--primary);"></i>
-                                Model Yılı <span class="req">*</span>
-                            </label>
-                            <input asp-for="Year"
-                                   type="number"
-                                   class="form-control-custom"
-                                   placeholder="2024"
-                                   min="1990"
-                                   max="2030"
-                                   oninput="updatePreview()" />
-                            <span asp-validation-for="Year" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                        <!-- KM -->
-                        <div class="form-field">
-                            <label asp-for="Kilometer" class="form-label">
-                                <i class="fa-solid fa-gauge-high" style="color:var(--primary);"></i>
-                                Kilometre <span class="req">*</span>
-                            </label>
-                            <input asp-for="Kilometer"
-                                   type="number"
-                                   class="form-control-custom"
-                                   placeholder="0"
-                                   min="0"
-                                   oninput="updatePreview()" />
-                            <span asp-validation-for="Kilometer" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                        <!-- Yakıt -->
-                        <div class="form-field">
-                            <label asp-for="FuelType" class="form-label">
-                                <i class="fa-solid fa-gas-pump" style="color:var(--primary);"></i>
-                                Yakıt Tipi <span class="req">*</span>
-                            </label>
-                            <select asp-for="FuelType" class="form-control-custom" onchange="updatePreview()">
-                                <option value="">— Seçin —</option>
-                                <option value="Benzin">⛽ Benzin</option>
-                                <option value="Dizel">🔧 Dizel</option>
-                                <option value="Elektrik">⚡ Elektrik</option>
-                                <option value="Hibrit">🌿 Hibrit</option>
-                                <option value="LPG">🔥 LPG</option>
-                            </select>
-                            <span asp-validation-for="FuelType" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                        <!-- Koltuk Sayısı -->
-                        <div class="form-field">
-                            <label asp-for="SeatCount" class="form-label">
-                                <i class="fa-solid fa-user-group" style="color:var(--primary);"></i>
-                                Koltuk Sayısı <span class="req">*</span>
-                            </label>
-                            <input asp-for="SeatCount"
-                                   type="number"
-                                   class="form-control-custom"
-                                   placeholder="5"
-                                   min="1"
-                                   max="20"
-                                   oninput="updatePreview()" />
-                            <span asp-validation-for="SeatCount" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                        <!-- Bagaj -->
-                        <div class="form-field">
-                            <label asp-for="LuggageCount" class="form-label">
-                                <i class="fa-solid fa-suitcase-rolling" style="color:var(--primary);"></i>
-                                Bagaj Kapasitesi <span class="req">*</span>
-                            </label>
-                            <input asp-for="LuggageCount"
-                                   type="number"
-                                   class="form-control-custom"
-                                   placeholder="2"
-                                   min="0"
-                                   max="10"
-                                   oninput="updatePreview()" />
-                            <span asp-validation-for="LuggageCount" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                        <!-- Görsel URL -->
-                        <div class="form-field col-span-3">
-                            <label asp-for="ImageUrl" class="form-label">
-                                <i class="fa-solid fa-image" style="color:var(--primary);"></i>
-                                Görsel URL
-                                <span class="hint">İsteğe bağlı</span>
-                            </label>
-                            <input asp-for="ImageUrl"
-                                   type="url"
-                                   class="form-control-custom"
-                                   placeholder="https://example.com/car.jpg"
-                                   oninput="previewImageFromUrl(this.value)" />
-                            <span class="field-hint">
-                                <i class="fa-solid fa-circle-info"></i>
-                                Doğrudan görsel bağlantısı girin (jpg, png, webp)
-                            </span>
-                            <!-- Önizleme -->
-                            <div class="img-preview-wrap" id="imgPreviewWrap" style="margin-top:8px;">
-                                <img id="imgPreviewImg" src="" alt="Araç Görseli" />
-                                <button type="button" class="img-preview-remove" onclick="clearImagePreview()">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- ══════════════════════
-                 BÖLÜM 3 — Fiyat & Durum
-            ══════════════════════ -->
-            <div class="form-section" id="section-3">
-                <div class="form-section-header">
-                    <div class="section-icon" style="background:#f0fdf4;color:#059669;">
-                        <i class="fa-solid fa-turkish-lira-sign"></i>
-                    </div>
-                    <div>
-                        <div class="form-section-title">Fiyat & Durum</div>
-                        <div class="form-section-subtitle">Kiralama ücreti, depozito ve aktiflik durumu</div>
-                    </div>
-                </div>
-                <div class="form-section-body">
-                    <div class="form-grid" style="margin-bottom:22px;">
-
-                        <!-- Günlük Fiyat -->
-                        <div class="form-field">
-                            <label asp-for="DailyPrice" class="form-label">
-                                <i class="fa-solid fa-turkish-lira-sign" style="color:var(--primary);"></i>
-                                Günlük Fiyat (₺) <span class="req">*</span>
-                            </label>
-                            <div style="position:relative;">
-                                <input asp-for="DailyPrice"
-                                       type="number"
-                                       step="0.01"
-                                       class="form-control-custom"
-                                       placeholder="0.00"
-                                       min="0"
-                                       style="padding-right:42px;"
-                                       oninput="updatePreview()" />
-                                <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-muted);font-weight:700;">₺</span>
-                            </div>
-                            <span asp-validation-for="DailyPrice" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                        <!-- Depozito -->
-                        <div class="form-field">
-                            <label asp-for="DepositAmount" class="form-label">
-                                <i class="fa-solid fa-shield-halved" style="color:var(--primary);"></i>
-                                Depozito (₺) <span class="req">*</span>
-                            </label>
-                            <div style="position:relative;">
-                                <input asp-for="DepositAmount"
-                                       type="number"
-                                       step="0.01"
-                                       class="form-control-custom"
-                                       placeholder="0.00"
-                                       min="0"
-                                       style="padding-right:42px;" />
-                                <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-muted);font-weight:700;">₺</span>
-                            </div>
-                            <span asp-validation-for="DepositAmount" class="field-error">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                            </span>
-                        </div>
-
-                    </div>
-
-                    <!-- Toggle'lar -->
-                    <div style="display:flex;flex-direction:column;gap:12px;">
-
-                        <!-- Müsaitlik -->
-                        <label class="toggle-row" for="IsAvailable">
-                            <div class="toggle-info">
-                                <div class="toggle-icon" style="background:#d1fae5;color:#059669;">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                </div>
-                                <div>
-                                    <div class="toggle-title">Araç Müsait</div>
-                                    <div class="toggle-sub">Araç kiralamaya hazır durumda mı?</div>
-                                </div>
-                            </div>
-                            <label class="custom-switch">
-                                <input asp-for="IsAvailable" type="checkbox" />
-                                <span class="slider"></span>
-                            </label>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="PlateNumber">
+                            Plaka <span class="text-error">*</span>
                         </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary-container text-on-primary">TR</span>
+                            <input asp-for="PlateNumber" type="text" placeholder="34 ABC 789" required
+                                   class="w-full pl-12 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                        </div>
+                        <span asp-validation-for="PlateNumber" class="text-error text-xs mt-1 block"></span>
+                    </div>
 
-                        <!-- Aktif -->
-                        <label class="toggle-row" for="IsActive">
-                            <div class="toggle-info">
-                                <div class="toggle-icon" style="background:#e8efff;color:var(--primary);">
-                                    <i class="fa-solid fa-power-off"></i>
-                                </div>
-                                <div>
-                                    <div class="toggle-title">Aktif</div>
-                                    <div class="toggle-sub">Araç sistemde aktif olarak görünecek mi?</div>
-                                </div>
-                            </div>
-                            <label class="custom-switch">
-                                <input asp-for="IsActive" type="checkbox" checked />
-                                <span class="slider"></span>
-                            </label>
+                    <!-- Şasi No / VIN -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-semibold text-secondary uppercase tracking-wider" asp-for="VIN">Şasi No / VIN</label>
+                            <span class="text-[11px] text-outline">İsteğe Bağlı</span>
+                        </div>
+                        <input asp-for="VIN" type="text" maxlength="17" placeholder="17 haneli şasi no giriniz"
+                               class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                        <span asp-validation-for="VIN" class="text-error text-xs mt-1 block"></span>
+                    </div>
+
+                    <!-- Model Yılı -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="Year">
+                            Model Yılı <span class="text-error">*</span>
                         </label>
+                        <select asp-for="Year" required
+                                class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all">
+                            @for (int y = DateTime.Now.Year + 1; y >= 2015; y--)
+                            {
+                                <option value="@y">@y</option>
+                            }
+                        </select>
+                    </div>
 
+                    <!-- Mevcut Kilometre -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="Kilometer">
+                            Mevcut Kilometre <span class="text-error">*</span>
+                        </label>
+                        <div class="relative">
+                            <input asp-for="Kilometer" type="number" min="0" placeholder="Örn: 24500" required
+                                   class="w-full pl-4 pr-12 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                            <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-outline">km</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ══════════════════════
-                 Action Bar
-            ══════════════════════ -->
-            <div class="form-action-bar">
-                <div style="display:flex;align-items:center;gap:8px;">
-                    <button type="button" class="btn-step-prev" id="btnPrev" onclick="prevStep()" style="display:none;">
-                        <i class="fa-solid fa-chevron-left"></i> Geri
-                    </button>
-                    <a href="/Car/List" class="btn-step-prev">
-                        <i class="fa-solid fa-xmark"></i> Vazgeç
-                    </a>
+            <!-- 2. İlişkisel Veriler & Lokasyon -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-2 pb-4 mb-5 border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-primary text-[22px]">hub</span>
+                    <h2 class="text-headline-md font-headline-md text-on-surface font-semibold">İlişkisel Veriler & Lokasyon</h2>
                 </div>
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <span id="stepLabel" style="font-size:12.5px;color:var(--text-muted);">Adım 1 / 3</span>
-                    <button type="button" class="btn-step-next" id="btnNext" onclick="nextStep()">
-                        Devam Et <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                    <button type="submit" class="btn-submit-final" id="btnSubmit" style="display:none;">
-                        <i class="fa-solid fa-check"></i> Aracı Kaydet
-                    </button>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Araç Modeli -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="CarModelId">
+                            Araç Modeli <span class="text-error">*</span>
+                        </label>
+                        <select asp-for="CarModelId" asp-items="ViewBag.CarModels" required
+                                class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all">
+                            <option value="">Model Seçiniz</option>
+                        </select>
+                    </div>
+
+                    <!-- Kategori -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="CategoryId">
+                            Kategori / Segment <span class="text-error">*</span>
+                        </label>
+                        <select asp-for="CategoryId" asp-items="ViewBag.Categories" required
+                                class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all">
+                            <option value="">Kategori Seçiniz</option>
+                        </select>
+                    </div>
+
+                    <!-- Bulunduğu Şube -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="BranchId">
+                            Bulunduğu Şube <span class="text-error">*</span>
+                        </label>
+                        <select asp-for="BranchId" asp-items="ViewBag.Branches" required
+                                class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all">
+                            <option value="">Şube Seçiniz</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-        </form>
-    </div>
-
-    <!-- ═══ Canlı Önizleme ═══ -->
-    <div class="col-12 col-lg-4 d-none d-lg-block">
-        <div class="preview-card">
-            <div class="preview-card-header">
-                <i class="fa-solid fa-eye"></i> Canlı Önizleme
-            </div>
-            <div class="preview-card-img" id="previewImgBox">
-                <i class="fa-solid fa-car-side"></i>
-            </div>
-            <div class="preview-card-body">
-                <div class="preview-plate" id="previewPlate">— — —</div>
-                <div class="preview-title" id="previewTitle">Araç Adı</div>
-                <div class="preview-chips" id="previewChips">
-                    <span class="preview-chip"><i class="fa-solid fa-calendar"></i> <span id="pc-year">—</span></span>
-                    <span class="preview-chip"><i class="fa-solid fa-gauge-high"></i> <span id="pc-km">—</span> km</span>
-                    <span class="preview-chip"><i class="fa-solid fa-gas-pump"></i> <span id="pc-fuel">—</span></span>
-                    <span class="preview-chip"><i class="fa-solid fa-user-group"></i> <span id="pc-seat">—</span> kişi</span>
-                    <span class="preview-chip"><i class="fa-solid fa-suitcase-rolling"></i> <span id="pc-luggage">—</span> bavul</span>
+            <!-- 3. Teknik Özellikler & Kapasite -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-2 pb-4 mb-5 border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-primary text-[22px]">tune</span>
+                    <h2 class="text-headline-md font-headline-md text-on-surface font-semibold">Teknik Özellikler & Kapasite</h2>
                 </div>
-                <div class="preview-price" id="previewPrice">— ₺</div>
-                <div class="preview-price-label">/ günlük kiralama</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <!-- Yakıt Türü -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="FuelType">
+                            Yakıt Türü <span class="text-error">*</span>
+                        </label>
+                        <select asp-for="FuelType" required
+                                class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all">
+                            <option value="Benzin">Benzin</option>
+                            <option value="Dizel">Dizel</option>
+                            <option value="Hibrit">Hibrit</option>
+                            <option value="Elektrik">Elektrik</option>
+                        </select>
+                    </div>
+
+                    <!-- Şanzıman -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="Transmission">
+                            Şanzıman <span class="text-error">*</span>
+                        </label>
+                        <select asp-for="Transmission" required
+                                class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all">
+                            <option value="Otomatik">Otomatik</option>
+                            <option value="Manuel">Manuel</option>
+                            <option value="Yarı Otomatik">Yarı Otomatik</option>
+                        </select>
+                    </div>
+
+                    <!-- Koltuk Sayısı -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="SeatCount">
+                            Koltuk Sayısı <span class="text-error">*</span>
+                        </label>
+                        <div class="relative">
+                            <input asp-for="SeatCount" type="number" min="1" max="15" value="5" required
+                                   class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">airline_seat_recline_normal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Bagaj Kapasitesi -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="LuggageCount">
+                            Bagaj Kapasitesi (Valiz) <span class="text-error">*</span>
+                        </label>
+                        <div class="relative">
+                            <input asp-for="LuggageCount" type="number" min="0" max="10" value="3" required
+                                   class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">luggage</span>
+                        </div>
+                    </div>
+
+                    <!-- Motor & Performans Bilgisi -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-semibold text-secondary uppercase tracking-wider" asp-for="PerformanceInfo">Performans / Motor</label>
+                            <span class="text-[11px] text-outline">İsteğe Bağlı</span>
+                        </div>
+                        <input asp-for="PerformanceInfo" type="text" placeholder="Örn: 1.5 dCi 115 HP veya Dual Motor AWD"
+                               class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Fiyatlandırma & Depozito -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-2 pb-4 mb-5 border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-primary text-[22px]">payments</span>
+                    <h2 class="text-headline-md font-headline-md text-on-surface font-semibold">Fiyatlandırma & Güvence Bedeli</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Günlük Kiralama Fiyatı -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="DailyPrice">
+                            Günlük Kiralama Fiyatı <span class="text-error">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base font-bold text-primary">₺</span>
+                            <input asp-for="DailyPrice" type="number" step="0.01" min="0" placeholder="1850.00" required
+                                   class="w-full pl-9 pr-14 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-semibold text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                            <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-outline font-medium">/ Gün</span>
+                        </div>
+                    </div>
+
+                    <!-- Güvence Bedeli / Depozito -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="DepositAmount">
+                            Güvence Bedeli / Depozito <span class="text-error">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base font-bold text-secondary">₺</span>
+                            <input asp-for="DepositAmount" type="number" step="0.01" min="0" placeholder="5000.00" required
+                                   class="w-full pl-9 pr-20 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm font-semibold text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                            <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-outline font-medium">Tek Sefer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Görsel URL -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-2 pb-4 mb-5 border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-primary text-[22px]">image</span>
+                    <h2 class="text-headline-md font-headline-md text-on-surface font-semibold">Araç Görseli</h2>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5" asp-for="ImageUrl">Görsel URL Bağlantısı</label>
+                    <div class="flex gap-2">
+                        <div class="relative flex-1">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">link</span>
+                            <input asp-for="ImageUrl" type="url" placeholder="https://cdn.rentadmin.com/cars/megane-sedan.jpg"
+                                   class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Aksiyon Butonları -->
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <button type="reset" class="px-5 py-2.5 rounded-lg border border-outline-variant text-secondary hover:bg-surface-container-low text-sm font-medium transition-colors">
+                    Formu Temizle
+                </button>
+                <a href="/Cars" class="px-5 py-2.5 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-low text-sm font-medium transition-colors">
+                    Vazgeç
+                </a>
+                <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-semibold text-sm shadow-sm hover:bg-primary transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Aracı Kaydet
+                </button>
             </div>
         </div>
+
+        <!-- Sağ Sütun: Canlı Önizleme & Rehber Bilgisi -->
+        <div class="flex flex-col gap-6">
+            
+            <!-- Canlı Vitrin Kartı Simülasyonu -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant">
+                    <div class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-secondary">
+                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                        Canlı Kart Önizleme
+                    </div>
+                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-tertiary-fixed/30 px-2 py-0.5 rounded-full">
+                        <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Müsait
+                    </span>
+                </div>
+
+                <div class="border border-outline-variant rounded-xl overflow-hidden bg-surface-container-low">
+                    <div class="relative h-44 bg-surface-container-high flex items-center justify-center overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=600&q=80"
+                             alt="Önizleme" class="w-full h-full object-cover" />
+                        <span class="absolute top-2.5 left-2.5 bg-inverse-surface/80 backdrop-blur-sm text-inverse-on-surface text-[11px] font-semibold px-2 py-0.5 rounded">
+                            Segment / Model
+                        </span>
+                        <span class="absolute bottom-2.5 right-2.5 bg-inverse-surface/80 backdrop-blur-sm text-inverse-on-surface text-[11px] font-semibold px-2 py-0.5 rounded">
+                            2024 Model
+                        </span>
+                    </div>
+
+                    <div class="p-4 bg-surface-container-lowest">
+                        <div class="flex items-start justify-between mb-1">
+                            <div>
+                                <h3 class="font-bold text-on-surface text-base">Renault Megane Sedan</h3>
+                                <span class="text-xs text-secondary font-mono">34 ABC 789</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-primary font-bold text-lg">1.850 ₺</span>
+                                <span class="text-[11px] text-outline block">/ gün</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 py-3 my-3 border-y border-outline-variant text-center">
+                            <div class="text-xs text-secondary flex flex-col items-center gap-0.5">
+                                <span class="material-symbols-outlined text-[16px]">local_gas_station</span>
+                                <span>Dizel</span>
+                            </div>
+                            <div class="text-xs text-secondary flex flex-col items-center gap-0.5">
+                                <span class="material-symbols-outlined text-[16px]">settings</span>
+                                <span>Otomatik</span>
+                            </div>
+                            <div class="text-xs text-secondary flex flex-col items-center gap-0.5">
+                                <span class="material-symbols-outlined text-[16px]">airline_seat_recline_normal</span>
+                                <span>5 Kişilik</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs text-secondary">
+                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> İstanbul - Kadıköy</span>
+                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">speed</span> 0 km</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kayıt & Doğrulama Rehberi -->
+            <div class="bg-surface-container-low border border-outline-variant rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3 text-primary">
+                    <span class="material-symbols-outlined text-[20px]">info</span>
+                    <h4 class="text-sm font-semibold text-on-surface">Kayıt & Doğrulama Kuralları</h4>
+                </div>
+                <ul class="text-xs text-secondary space-y-2 leading-relaxed">
+                    <li class="flex items-start gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+                        <span><strong>Plaka:</strong> Sistemde benzersiz olmalıdır; mükerrer plaka girişine izin verilmez.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+                        <span><strong>Şasi No (VIN):</strong> Araç sigorta ve kasko takip entegrasyonu için önerilir.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+                        <span><strong>Güvence Bedeli:</strong> Kiralama anında müşterinin kredi kartından otomatik provizyon olarak bloke edilir.</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
     </div>
-</div>
+</form>
 
-<script>
-    /* ══════════════════════════════════
-       Car Create — Multi-Step + Preview
-    ══════════════════════════════════ */
-
-    let currentStep = 1;
-    const TOTAL_STEPS = 3;
-
-    // ── Step Navigation ──
-    function goStep(step) {
-        if (step < 1 || step > TOTAL_STEPS) return;
-
-        // Güncelle
-        document.getElementById(`section-${currentStep}`).classList.remove('active');
-        document.getElementById(`step-tab-${currentStep}`).classList.remove('active');
-        if (step > currentStep) {
-            document.getElementById(`step-tab-${currentStep}`).classList.add('done');
-            document.getElementById(`step-num-${currentStep}`).innerHTML = '<i class="fa-solid fa-check" style="font-size:11px;"></i>';
-        } else {
-            document.getElementById(`step-tab-${currentStep}`).classList.remove('done');
-            document.getElementById(`step-num-${currentStep}`).textContent = currentStep;
-        }
-
-        currentStep = step;
-        document.getElementById(`section-${currentStep}`).classList.add('active');
-        document.getElementById(`step-tab-${currentStep}`).classList.remove('done');
-        document.getElementById(`step-tab-${currentStep}`).classList.add('active');
-        document.getElementById(`step-num-${currentStep}`).textContent = currentStep;
-
-        // Butonlar
-        document.getElementById('btnPrev').style.display   = currentStep > 1 ? '' : 'none';
-        document.getElementById('btnNext').style.display   = currentStep < TOTAL_STEPS ? '' : 'none';
-        document.getElementById('btnSubmit').style.display = currentStep === TOTAL_STEPS ? '' : 'none';
-        document.getElementById('stepLabel').textContent   = `Adım ${currentStep} / ${TOTAL_STEPS}`;
-
-        // Progress bar
-        document.getElementById('progressBar').style.width = `${(currentStep / TOTAL_STEPS) * 100}%`;
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function nextStep() { goStep(currentStep + 1); }
-    function prevStep() { goStep(currentStep - 1); }
-
-    // ── Canlı Önizleme ──
-    function updatePreview() {
-        const plate    = document.getElementById('PlateNumber')?.value  || '— — —';
-        const year     = document.getElementById('Year')?.value         || '—';
-        const km       = document.getElementById('Kilometer')?.value;
-        const fuel     = document.getElementById('FuelType')?.value     || '—';
-        const seat     = document.getElementById('SeatCount')?.value    || '—';
-        const luggage  = document.getElementById('LuggageCount')?.value || '—';
-        const price    = document.getElementById('DailyPrice')?.value;
-
-        // Kategori metni
-        const catSel   = document.getElementById('CategoryId');
-        const catText  = catSel?.selectedIndex > 0 ? catSel.options[catSel.selectedIndex].text : '—';
-
-        // Model metni
-        const modSel   = document.getElementById('CarModelId');
-        const modText  = modSel?.selectedIndex > 0 ? modSel.options[modSel.selectedIndex].text : '';
-
-        document.getElementById('previewPlate').textContent = plate.toUpperCase() || '— — —';
-        document.getElementById('previewTitle').textContent = modText ? `${catText} — ${modText}` : catText;
-        document.getElementById('pc-year').textContent      = year;
-        document.getElementById('pc-km').textContent        = km ? parseInt(km).toLocaleString('tr-TR') : '—';
-        document.getElementById('pc-fuel').textContent      = fuel;
-        document.getElementById('pc-seat').textContent      = seat;
-        document.getElementById('pc-luggage').textContent   = luggage;
-        document.getElementById('previewPrice').textContent = price
-            ? parseFloat(price).toLocaleString('tr-TR', { minimumFractionDigits: 0 }) + ' ₺'
-            : '— ₺';
-    }
-
-    function filterModels() {
-        const brandId = document.getElementById('BrandId')?.value || '';
-        const modelSelect = document.getElementById('CarModelId');
-        if (!modelSelect) return;
-
-        [...modelSelect.options].forEach(option => {
-            if (!option.value) {
-                option.hidden = false;
-                return;
-            }
-            option.hidden = brandId !== '' && option.dataset.brandId !== brandId;
-        });
-
-        if (modelSelect.selectedOptions[0]?.hidden) {
-            modelSelect.value = '';
-        }
-        updatePreview();
-    }
-
-    // ── Görsel URL önizleme ──
-    function previewImageFromUrl(url) {
-        const wrap = document.getElementById('imgPreviewWrap');
-        const img  = document.getElementById('imgPreviewImg');
-        const box  = document.getElementById('previewImgBox');
-
-        if (!url) { clearImagePreview(); return; }
-
-        img.src = url;
-        img.onload = () => {
-            wrap.style.display = 'block';
-            box.innerHTML = `<img src="${url}" alt="Önizleme" style="width:100%;height:100%;object-fit:cover;" />`;
-        };
-        img.onerror = () => clearImagePreview();
-    }
-
-    function clearImagePreview() {
-        document.getElementById('imgPreviewWrap').style.display = 'none';
-        document.getElementById('imgPreviewImg').src = '';
-        document.getElementById('ImageUrl').value = '';
-        document.getElementById('previewImgBox').innerHTML = '<i class="fa-solid fa-car-side"></i>';
-    }
-
-    // ── İlk yükleme ──
-    document.addEventListener('DOMContentLoaded', () => {
-        goStep(1);
-        filterModels();
-        updatePreview();
-    });
-</script>
 

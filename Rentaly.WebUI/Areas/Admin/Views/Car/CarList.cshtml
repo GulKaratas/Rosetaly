@@ -1,1085 +1,376 @@
-﻿@model List<Rentaly.EntityLayer.Entities.Car>
+@model List<Rentaly.EntityLayer.Entities.Car>
 
 @{
     ViewData["Title"] = "CarList";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
-
-
-
-
-<style>
-    /* ── Car List Page ── */
-    .car-toolbar {
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 14px 18px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        box-shadow: var(--shadow-sm);
-        margin-bottom: 20px;
-    }
-
-    .car-search-wrap {
-        position: relative;
-        flex: 1;
-        min-width: 200px;
-    }
-
-        .car-search-wrap i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 14px;
-            pointer-events: none;
-        }
-
-        .car-search-wrap input {
-            width: 100%;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 9px 12px 9px 36px;
-            font-size: 13.5px;
-            font-family: 'DM Sans', sans-serif;
-            color: var(--text-main);
-            background: var(--body-bg);
-            outline: none;
-            transition: var(--transition);
-        }
-
-            .car-search-wrap input:focus {
-                border-color: var(--primary);
-                background: #fff;
-                box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
-            }
-
-    /* ── Mini Stat Cards ── */
-    .mini-stat {
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 16px 20px;
-        box-shadow: var(--shadow-sm);
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        transition: var(--transition);
-    }
-
-        .mini-stat:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-
-    .mini-stat-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        flex-shrink: 0;
-    }
-
-    .mini-stat-val {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 24px;
-        font-weight: 800;
-        color: var(--text-main);
-        line-height: 1;
-    }
-
-    .mini-stat-label {
-        font-size: 12.5px;
-        color: var(--text-muted);
-        margin-top: 3px;
-    }
-
-    /* ── Car Cards Grid ── */
-    .cars-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 18px;
-        margin-bottom: 20px;
-    }
-
-    .car-card {
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-sm);
-        overflow: hidden;
-        transition: var(--transition);
-        display: flex;
-        flex-direction: column;
-    }
-
-        .car-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-3px);
-            border-color: var(--primary);
-        }
-
-    /* Card image area */
-    .car-card-img {
-        position: relative;
-        height: 170px;
-        background: linear-gradient(135deg, #f0f4ff 0%, #e8efff 100%);
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-        .car-card-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-
-        .car-card:hover .car-card-img img {
-            transform: scale(1.04);
-        }
-
-    .car-card-img-placeholder {
-        font-size: 56px;
-        color: var(--primary);
-        opacity: 0.2;
-    }
-
-    /* Badges on image */
-    .car-badge-available {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 11.5px;
-        font-weight: 700;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .badge-available {
-        background: #d1fae5;
-        color: #065f46;
-    }
-
-    .badge-unavailable {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-    .car-badge-year {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0,0,0,0.55);
-        color: #fff;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 11.5px;
-        font-weight: 700;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        backdrop-filter: blur(4px);
-    }
-
-    /* Card body */
-    .car-card-body {
-        padding: 16px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .car-card-title-row {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 8px;
-    }
-
-    .car-card-title {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 15px;
-        font-weight: 800;
-        color: var(--text-main);
-        line-height: 1.3;
-    }
-
-    .car-card-plate {
-        background: #f1f5f9;
-        border: 1px solid var(--border);
-        color: var(--text-main);
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 11px;
-        font-weight: 800;
-        padding: 3px 8px;
-        border-radius: 5px;
-        letter-spacing: 1px;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-
-    /* Specs row */
-    .car-specs {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-    }
-
-    .car-spec-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: var(--body-bg);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 4px 10px;
-        font-size: 12px;
-        color: var(--text-muted);
-        font-weight: 500;
-        white-space: nowrap;
-    }
-
-        .car-spec-chip i {
-            font-size: 11px;
-            color: var(--primary);
-        }
-
-    /* Fuel badge */
-    .fuel-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 3px 9px;
-        border-radius: 20px;
-        font-size: 11.5px;
-        font-weight: 600;
-    }
-
-    .fuel-benzin    { background: #fff4ed; color: #c2410c; }
-    .fuel-dizel     { background: #f0fdf4; color: #166534; }
-    .fuel-elektrik  { background: #eff6ff; color: #1d4ed8; }
-    .fuel-hibrit    { background: #f0fdf4; color: #065f46; }
-    .fuel-lpg       { background: #fdf4ff; color: #6b21a8; }
-    .fuel-default   { background: #f1f5f9; color: #475569; }
-
-    /* Price + km row */
-    .car-card-price-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-top: 10px;
-        border-top: 1px solid var(--border);
-    }
-
-    .car-price {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .car-price-val {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 18px;
-        font-weight: 800;
-        color: var(--primary);
-    }
-
-    .car-price-label {
-        font-size: 11px;
-        color: var(--text-muted);
-        margin-top: 1px;
-    }
-
-    .car-km {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 12.5px;
-        color: var(--text-muted);
-    }
-
-        .car-km i { font-size: 11px; }
-
-    /* Card footer actions */
-    .car-card-footer {
-        padding: 12px 16px;
-        border-top: 1px solid var(--border);
-        background: #fafbfc;
-        display: flex;
-        gap: 8px;
-    }
-
-    .tbl-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 7px 13px;
-        border-radius: var(--radius-sm);
-        font-size: 12.5px;
-        font-weight: 600;
-        font-family: 'DM Sans', sans-serif;
-        cursor: pointer;
-        transition: var(--transition);
-        border: none;
-        text-decoration: none;
-        flex: 1;
-        justify-content: center;
-    }
-
-    .tbl-btn-detail {
-        background: var(--primary-light);
-        color: var(--primary);
-    }
-
-        .tbl-btn-detail:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-
-    .tbl-btn-edit {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-        .tbl-btn-edit:hover {
-            background: var(--warning);
-            color: #fff;
-        }
-
-    .tbl-btn-delete {
-        background: #fee2e2;
-        color: var(--danger);
-    }
-
-        .tbl-btn-delete:hover {
-            background: var(--danger);
-            color: #fff;
-        }
-
-    /* Empty state */
-    .empty-state {
-        padding: 64px 20px;
-        text-align: center;
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-sm);
-    }
-
-    .empty-icon {
-        width: 72px;
-        height: 72px;
-        background: var(--primary-light);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 28px;
-        color: var(--primary);
-        margin: 0 auto 18px;
-    }
-
-    /* Pagination */
-    .paging-wrap {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 4px;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .paging-info {
-        font-size: 13px;
-        color: var(--text-muted);
-    }
-
-    .paging-btns {
-        display: flex;
-        gap: 4px;
-    }
-
-    .page-btn {
-        width: 32px;
-        height: 32px;
-        border: 1px solid var(--border);
-        background: #fff;
-        border-radius: var(--radius-sm);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        color: var(--text-main);
-        font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-        .page-btn:hover {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .page-btn.active {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: #fff;
-        }
-
-        .page-btn:disabled {
-            opacity: .4;
-            cursor: not-allowed;
-        }
-
-    /* View toggle */
-    .view-toggle {
-        display: flex;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        overflow: hidden;
-    }
-
-    .view-btn {
-        width: 36px;
-        height: 36px;
-        border: none;
-        background: #fff;
-        color: var(--text-muted);
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-    }
-
-        .view-btn.active {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .view-btn:hover:not(.active) {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-
-    /* ── List View (alternative) ── */
-    .cars-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-
-    .car-list-item {
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-sm);
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 14px 16px;
-        transition: var(--transition);
-    }
-
-        .car-list-item:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
-            border-color: var(--primary);
-        }
-
-    .car-list-thumb {
-        width: 80px;
-        height: 60px;
-        border-radius: 8px;
-        background: linear-gradient(135deg, #f0f4ff, #e8efff);
-        overflow: hidden;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-        .car-list-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .car-list-thumb i  { font-size: 24px; color: var(--primary); opacity: .25; }
-
-    .car-list-info { flex: 1; min-width: 0; }
-    .car-list-title { font-weight: 700; font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif; }
-    .car-list-sub   { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-    .car-list-price {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 16px;
-        font-weight: 800;
-        color: var(--primary);
-        white-space: nowrap;
-    }
-
-    .car-list-actions { display: flex; gap: 6px; flex-shrink: 0; }
-
-    @@media (max-width: 575px) {
-        .cars-grid { grid-template-columns: 1fr; }
-
-        .car-list-thumb { width: 60px; height: 48px; }
-
-        .car-list-price { display: none; }
-    }
-</style>
-
-<!-- ═══ Page Header ═══ -->
-<div class="page-header">
-    <div>
-        <h1 class="page-title">Araç Listesi</h1>
-        <p class="page-subtitle">Araç envanterini görüntüleyin ve yönetin.</p>
-    </div>
-    <a href="/Car/Create" class="btn-primary-custom">
-        <i class="fa-solid fa-plus"></i> Yeni Araç
-    </a>
-</div>
-
-<!-- ═══ Mini İstatistikler ═══ -->
-<div class="row g-3 mb-4">
-    <div class="col-6 col-md-3">
-        <div class="mini-stat">
-            <div class="mini-stat-icon" style="background:#e8efff;color:var(--primary);">
-                <i class="fa-solid fa-car-side"></i>
-            </div>
-            <div>
-                <div class="mini-stat-val">@Model.Count()</div>
-                <div class="mini-stat-label">Toplam Araç</div>
-            </div>
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Araçlar", "Filodaki tüm araçların anlık durum ve envanter listesi", "Araçlar", "/Admin/Car/CreateCar/", "Yeni Araç Ekle", false, ""))
+}
+
+<div class="card bg-surface-container-lowest rounded-xl shadow-sm flex flex-col overflow-hidden">
+    <!-- Card Header: Search & Multi-Filters Toolbar -->
+    <div class="p-space-md bg-surface-container-lowest flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-gutter-sm">
+        <!-- Live Quick Search -->
+        <div class="relative flex-1 min-w-[260px]">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+            <input class="w-full pl-9 pr-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface placeholder:text-outline outline-none focus:bg-surface-container transition-colors" placeholder="Plaka, Marka veya Model ara..." type="text">
+        </div>
+        <!-- Filter Dropdown Selectors -->
+        <div class="flex items-center flex-wrap gap-space-xs">
+            <!-- Marka Filtresi -->
+            <select class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
+                <option value="">Tüm Markalar</option>
+                <option value="renault">Renault</option>
+                <option value="volkswagen">Volkswagen</option>
+                <option value="peugeot">Peugeot</option>
+                <option value="bmw">BMW</option>
+                <option value="ford">Ford</option>
+                <option value="tesla">Tesla</option>
+            </select>
+            <!-- Kategori Filtresi -->
+            <select class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
+                <option value="">Tüm Kategoriler</option>
+                <option value="ekonomi">Ekonomi</option>
+                <option value="konfor">Konfor</option>
+                <option value="suv">SUV &amp; Crossover</option>
+                <option value="luks">Lüks &amp; Premium</option>
+                <option value="ticari">Ticari / Minivan</option>
+                <option value="elektrikli">Elektrikli</option>
+            </select>
+            <!-- Şube Filtresi -->
+            <select class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
+                <option value="">Tüm Şubeler</option>
+                <option value="kadikoy">İstanbul - Kadıköy</option>
+                <option value="havalimani">İstanbul - Havalimanı</option>
+                <option value="levent">İstanbul - Levent</option>
+                <option value="cankaya">Ankara - Çankaya</option>
+                <option value="adnanmenderes">İzmir - Adnan Menderes</option>
+                <option value="nilufer">Bursa - Nilüfer</option>
+            </select>
+            <!-- Durum Filtresi -->
+            <select class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
+                <option value="">Tüm Durumlar</option>
+                <option value="musait">Müsait</option>
+                <option value="kirada">Kirada</option>
+                <option value="rezerve">Rezerve</option>
+                <option value="bakimda">Bakımda</option>
+            </select>
         </div>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="mini-stat">
-            <div class="mini-stat-icon" style="background:#d1fae5;color:#059669;">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
-            <div>
-                <div class="mini-stat-val" style="color:#059669;">@Model.Count(c => c.IsAvailable)</div>
-                <div class="mini-stat-label">Müsait</div>
-            </div>
-        </div>
+    <!-- Table Section -->
+    <div class="w-full overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-surface-container-low text-secondary uppercase font-table-header text-table-header">
+                    <th class="py-3 px-3 w-10 text-center" scope="col">
+                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
+                    </th>
+                    <th class="py-3 px-3" scope="col">Araç Bilgisi &amp; Görsel</th>
+                    <th class="py-3 px-3" scope="col">Plaka</th>
+                    <th class="py-3 px-3" scope="col">Marka / Model</th>
+                    <th class="py-3 px-3" scope="col">Kategori</th>
+                    <th class="py-3 px-3" scope="col">Şube</th>
+                    <th class="py-3 px-3" scope="col">Günlük Fiyat</th>
+                    <th class="py-3 px-3" scope="col">Durum</th>
+                    <th class="py-3 px-3 text-right" scope="col">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y-0 text-on-surface font-table-cell text-table-cell">
+                <!-- Row 1: Renault Megane -->
+                <tr class="hover:bg-surface-container-low/60 transition-colors">
+                    <td class="py-3 px-3 text-center">
+                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
+                    </td>
+                    <td class="py-3 px-3">
+                        <div class="flex items-center gap-space-sm">
+                            <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" data-alt="Modern silver metallic Renault Megane sedan parked inside a brightly lit clean studio with soft shadows, 4k automobile photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9V1AqidMV_rfMluW_LrOIFzUHRUASXVxD4KOs3BIIEATSfGy6UmWtREe7sxiUpSgWAUoP7MUz1DJmn9sxV7_p8PONaO08pezuCQibfCoKp-1c5cdWeUI4N4NfI9iRNhy74Aij-qHCdErW2Ma77cSv-Kv4SPjEy0mW739TiDC7p1dNWV5ta5qvAMJSo5GnAdkVJwfT59xQcrAUCun06Ieot-LXvdTfLL4m1fL3HXxVIeXhjcjrEV3GaQ">
+                            <div class="flex flex-col min-w-0">
+                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Renault Megane Sedan</span>
+                                <span class="text-secondary text-[11px] truncate">1.5 dCi • Otomatik • Dizel</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">34 ABC 789</span>
+                    </td>
+                    <td class="py-3 px-3 text-on-surface-variant font-medium">Renault / Megane</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
+                            <span class="material-symbols-outlined text-[14px]">local_gas_station</span> Ekonomi
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-secondary">İstanbul - Kadıköy</td>
+                    <td class="py-3 px-3 font-semibold text-on-surface">1.850 ₺</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-badge text-label-badge font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Müsait
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <div class="inline-flex items-center justify-end gap-1">
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Row 2: Volkswagen Passat -->
+                <tr class="hover:bg-surface-container-low/60 transition-colors">
+                    <td class="py-3 px-3 text-center">
+                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
+                    </td>
+                    <td class="py-3 px-3">
+                        <div class="flex items-center gap-space-sm">
+                            <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" data-alt="Deep blue executive Volkswagen Passat saloon luxury car in corporate urban driveway with crisp reflections and soft evening light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxNgVvfYROxvJgP0NkGky5oXl85IBrvHVSnGH4Zu8aQ2HUlWBKG-HGDjDH0H_DK86KNmviveo85jzMuiQcjIZeYnWoduCSwFn78uIxA9HCZZCO8A8A0nvEIGaUeXdUSOO9jhb4kW4EhdcPzMX5w2_HSRUMXm_zn0qbf1UlwiAOOStuZzPKo-Y2JYfEisP9qyoVmGHo4gyhgPqBZYKe3iN0scKIBc16QHDg7_jXV4iMOUAvgSLw7IYuDA">
+                            <div class="flex flex-col min-w-0">
+                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Volkswagen Passat</span>
+                                <span class="text-secondary text-[11px] truncate">1.5 TSI • DSG • Benzin</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">34 XYZ 123</span>
+                    </td>
+                    <td class="py-3 px-3 text-on-surface-variant font-medium">Volkswagen / Passat</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
+                            <span class="material-symbols-outlined text-[14px]">airline_seat_recline_extra</span> Konfor
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-secondary">İstanbul - Havalimanı</td>
+                    <td class="py-3 px-3 font-semibold text-on-surface">2.900 ₺</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-fixed font-label-badge text-label-badge font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Kirada
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <div class="inline-flex items-center justify-end gap-1">
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Row 3: Peugeot 3008 -->
+                <tr class="hover:bg-surface-container-low/60 transition-colors">
+                    <td class="py-3 px-3 text-center">
+                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
+                    </td>
+                    <td class="py-3 px-3">
+                        <div class="flex items-center gap-space-sm">
+                            <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" data-alt="Pearl white Peugeot 3008 SUV parked on asphalt road under soft overcast morning daylight, high detail automotive design shot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmRKB49TgFi2PsS2XT9xAfdk91nhuS51CrVB4sKA3MzPafQoAj0aCIybTigeIawpaoGX_c0qYNdc_5svWEabqP3FGqUHgA4A04x0LUoGPERO14u_u7787Xljo_ckIOW3lEdKji68ajrukyK4C6eu9VFaYsIjm-GnhplnLqpVnR-ibje5FbekWHKW2m05mDzpGEwBAdJ-BWHOPVQLtDDB-yNZLFIwlsO464IWlCbmNHnfx1meYyJhd5HQ">
+                            <div class="flex flex-col min-w-0">
+                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Peugeot 3008 Allure</span>
+                                <span class="text-secondary text-[11px] truncate">1.2 PureTech • EAT8 • Benzin</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">06 ANK 456</span>
+                    </td>
+                    <td class="py-3 px-3 text-on-surface-variant font-medium">Peugeot / 3008</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
+                            <span class="material-symbols-outlined text-[14px]">terrain</span> SUV &amp; Crossover
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-secondary">Ankara - Çankaya</td>
+                    <td class="py-3 px-3 font-semibold text-on-surface">3.400 ₺</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-fixed font-label-badge text-label-badge font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Kirada
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <div class="inline-flex items-center justify-end gap-1">
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Row 4: BMW 320i -->
+                <tr class="hover:bg-surface-container-low/60 transition-colors">
+                    <td class="py-3 px-3 text-center">
+                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
+                    </td>
+                    <td class="py-3 px-3">
+                        <div class="flex items-center gap-space-sm">
+                            <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" data-alt="Sporty metallic grey BMW 320i M Sport sedan parked against sleek modern architecture building with elegant glass panels, 4k resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdq1zi0Q_ZkuEmQLZvY9etH5YxSp99yJg8qWEUBRSaCF4eIPpjqhYdPAaerTLpTT1cNv1uF6mqmER-HWa19pz5_Bpv5QWG_-UO75E3IsPwIoXPACiJq6X-vD6S8SMZP4tQq3MoUTItOpSLkl9_PX2aGAMOaKEZ9wfD8RhmrfPDJJiRJXfInW65ODpayiWTk-cfOnSDwBkWTrs0KoUaGBF--FQw1paJDJ8SiltTyOHgi8RwFs49MaGOtg">
+                            <div class="flex flex-col min-w-0">
+                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">BMW 320i M Sport</span>
+                                <span class="text-secondary text-[11px] truncate">2.0 Turbo • Steptronic • Benzin</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">35 IZM 999</span>
+                    </td>
+                    <td class="py-3 px-3 text-on-surface-variant font-medium">BMW / 3 Serisi</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
+                            <span class="material-symbols-outlined text-[14px]">diamond</span> Lüks &amp; Premium
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-secondary">İzmir - Adnan Menderes</td>
+                    <td class="py-3 px-3 font-semibold text-on-surface">5.200 ₺</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-badge text-label-badge font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Müsait
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <div class="inline-flex items-center justify-end gap-1">
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Row 5: Ford Tourneo -->
+                <tr class="hover:bg-surface-container-low/60 transition-colors">
+                    <td class="py-3 px-3 text-center">
+                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
+                    </td>
+                    <td class="py-3 px-3">
+                        <div class="flex items-center gap-space-sm">
+                            <div class="w-12 h-9 rounded-lg bg-surface-container flex items-center justify-center text-secondary shrink-0">
+                                <span class="material-symbols-outlined text-[20px]">airport_shuttle</span>
+                            </div>
+                            <div class="flex flex-col min-w-0">
+                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Ford Tourneo Courier</span>
+                                <span class="text-secondary text-[11px] truncate">1.5 TDCi • Manuel • Dizel</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">16 BUR 321</span>
+                    </td>
+                    <td class="py-3 px-3 text-on-surface-variant font-medium">Ford / Tourneo</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
+                            <span class="material-symbols-outlined text-[14px]">local_shipping</span> Ticari / Minivan
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-secondary">Bursa - Nilüfer</td>
+                    <td class="py-3 px-3 font-semibold text-on-surface">1.600 ₺</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-error-container text-error font-label-badge text-label-badge font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-error"></span> Bakımda
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <div class="inline-flex items-center justify-end gap-1">
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Row 6: Tesla Model Y -->
+                <tr class="hover:bg-surface-container-low/60 transition-colors">
+                    <td class="py-3 px-3 text-center">
+                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
+                    </td>
+                    <td class="py-3 px-3">
+                        <div class="flex items-center gap-space-sm">
+                            <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" data-alt="Red multi-coat Tesla Model Y parked in a sleek charging station pavilion with dramatic cinematic highlights, 8k render." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkc2BUgohtXySug-Q-MSQ8fg_sKU_6ntzOWBDmxv4L6ohpv9CBFiqUX44-8_0b1H6wjFvQWAJp1I2BBK0aQBS1NCQ73x6KqX5aEOEi70Jf6EjD9rKPntsEbAJ4tKx_l85nlwkeXI0bZ8X2TRHuOcPg9YN2yjrSnrjDFjh7qi6VrQKJy7K4FGfZ4VOHLhdegB1_T1DknsbcnLe2QLVfPKHKbnEN-CvCFUjC5lgtr3wMAb8yUeXY6AP25w">
+                            <div class="flex flex-col min-w-0">
+                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Tesla Model Y Long Range</span>
+                                <span class="text-secondary text-[11px] truncate">Dual Motor AWD • Elektrikli</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-3">
+                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">34 EV 2024</span>
+                    </td>
+                    <td class="py-3 px-3 text-on-surface-variant font-medium">Tesla / Model Y</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
+                            <span class="material-symbols-outlined text-[14px]">electric_car</span> Elektrikli
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-secondary">İstanbul - Levent</td>
+                    <td class="py-3 px-3 font-semibold text-on-surface">6.500 ₺</td>
+                    <td class="py-3 px-3">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-badge text-label-badge font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Rezerve
+                        </span>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <div class="inline-flex items-center justify-end gap-1">
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="mini-stat">
-            <div class="mini-stat-icon" style="background:#fee2e2;color:var(--danger);">
-                <i class="fa-solid fa-circle-xmark"></i>
-            </div>
-            <div>
-                <div class="mini-stat-val" style="color:var(--danger);">@Model.Count(c => !c.IsAvailable)</div>
-                <div class="mini-stat-label">Müsait Değil</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="mini-stat">
-            <div class="mini-stat-icon" style="background:#fff4ed;color:var(--accent);">
-                <i class="fa-solid fa-turkish-lira-sign"></i>
-            </div>
-            <div>
-                <div class="mini-stat-val" style="color:var(--accent);font-size:18px;">
-                    @(Model.Any() ? Model.Average(c => c.DailyPrice).ToString("N0") : "0") ₺
-                </div>
-                <div class="mini-stat-label">Ort. Günlük Fiyat</div>
-            </div>
+    <!-- Card Footer: Pagination Controls & Record Info -->
+    <div class="p-space-md bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-md">
+        <span class="font-body-sm text-body-sm text-secondary">
+            Toplam <strong class="text-on-surface font-semibold">148</strong> kayıttan <strong>1-6</strong> arası gösteriliyor
+        </span>
+        <div class="inline-flex items-center gap-1">
+            <button class="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-container-low text-outline opacity-50 cursor-not-allowed" disabled="" type="button">
+                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            </button>
+            <button class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-container text-on-primary font-body-sm text-body-sm font-semibold shadow-sm" type="button">
+                1
+            </button>
+            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-on-surface font-body-sm text-body-sm transition-colors" type="button">
+                2
+            </button>
+            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-on-surface font-body-sm text-body-sm transition-colors" type="button">
+                3
+            </button>
+            <span class="px-1 text-outline">...</span>
+            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-on-surface font-body-sm text-body-sm transition-colors" type="button">
+                25
+            </button>
+            <button class="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors" type="button">
+                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </button>
         </div>
     </div>
 </div>
-
-<!-- ═══ Toolbar ═══ -->
-<div class="car-toolbar">
-    <div class="car-search-wrap">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="carSearch" placeholder="Plaka, model ara…" oninput="filterCars()" />
-    </div>
-
-    <select class="filter-select" id="filterAvailable" onchange="filterCars()" style="min-width:145px;">
-        <option value="all">Tüm Araçlar</option>
-        <option value="available">Müsait</option>
-        <option value="unavailable">Müsait Değil</option>
-    </select>
-
-    <select class="filter-select" id="filterFuel" onchange="filterCars()" style="min-width:130px;">
-        <option value="all">Tüm Yakıtlar</option>
-        <option value="Benzin">Benzin</option>
-        <option value="Dizel">Dizel</option>
-        <option value="Elektrik">Elektrik</option>
-        <option value="Hibrit">Hibrit</option>
-        <option value="LPG">LPG</option>
-    </select>
-
-    <select class="filter-select" id="sortSelect" onchange="filterCars()" style="min-width:175px;">
-        <option value="id-asc">ID — Artan</option>
-        <option value="id-desc">ID — Azalan</option>
-        <option value="price-asc">Fiyat — Düşükten Yükseğe</option>
-        <option value="price-desc">Fiyat — Yüksekten Düşüğe</option>
-        <option value="year-desc">Yıl — Yeniden Eskiye</option>
-        <option value="km-asc">KM — Az'dan Çok'a</option>
-    </select>
-
-    <div class="view-toggle">
-        <button class="view-btn active" id="btnGridView" onclick="setView('grid')" title="Kart Görünümü">
-            <i class="fa-solid fa-grip"></i>
-        </button>
-        <button class="view-btn" id="btnListView" onclick="setView('list')" title="Liste Görünümü">
-            <i class="fa-solid fa-list"></i>
-        </button>
-    </div>
-
-    <button class="btn-action btn-detail" onclick="resetCarFilters()" style="flex:none;padding:9px 14px;font-size:13px;white-space:nowrap;">
-        <i class="fa-solid fa-rotate-left"></i> Sıfırla
-    </button>
-</div>
-
-<!-- ═══ Kart Grid Görünümü ═══ -->
-<div class="cars-grid" id="carsGrid">
-    @foreach (var car in Model)
-    {
-        var fuelClass = car.FuelType?.ToLower() switch {
-            "benzin"   => "fuel-benzin",
-            "dizel"    => "fuel-dizel",
-            "elektrik" => "fuel-elektrik",
-            "hibrit"   => "fuel-hibrit",
-            "lpg"      => "fuel-lpg",
-            _          => "fuel-default"
-        };
-        var fuelIcon = car.FuelType?.ToLower() switch {
-            "benzin"   => "fa-gas-pump",
-            "dizel"    => "fa-gas-pump",
-            "elektrik" => "fa-bolt",
-            "hibrit"   => "fa-leaf",
-            "lpg"      => "fa-fire-flame-simple",
-            _          => "fa-gas-pump"
-        };
-
-        <div class="car-card"
-             data-id="@car.CarId"
-             data-plate="@car.PlateNumber?.ToLower()"
-             data-fuel="@car.FuelType"
-             data-available="@car.IsAvailable.ToString().ToLower()"
-             data-price="@car.DailyPrice"
-             data-year="@car.Year"
-             data-km="@car.Kilometer">
-
-            <!-- Resim -->
-            <div class="car-card-img">
-                @if (!string.IsNullOrEmpty(car.ImageUrl))
-                {
-                    <img src="@car.ImageUrl" alt="Araç Görseli" loading="lazy" />
-                }
-                else
-                {
-                    <div class="car-card-img-placeholder">
-                        <i class="fa-solid fa-car-side"></i>
-                    </div>
-                }
-
-                <span class="car-badge-available @(car.IsAvailable ? "badge-available" : "badge-unavailable")">
-                    <i class="fa-solid @(car.IsAvailable ? "fa-circle-check" : "fa-circle-xmark")"></i>
-                    @(car.IsAvailable ? "Müsait" : "Müsait Değil")
-                </span>
-                <span class="car-badge-year">@car.Year</span>
-            </div>
-
-            <!-- Gövde -->
-            <div class="car-card-body">
-                <!-- Başlık + Plaka -->
-                <div class="car-card-title-row">
-                    <div class="car-card-title">
-                        @(car.Category?.CategoryName ?? "—") &nbsp;#@car.CarId
-                    </div>
-                    <span class="car-card-plate">@car.PlateNumber</span>
-                </div>
-
-                <!-- Özellikler -->
-                <div class="car-specs">
-                    <span class="car-spec-chip">
-                        <i class="fa-solid fa-user-group"></i> @car.SeatCount Kişilik
-                    </span>
-                    <span class="car-spec-chip">
-                        <i class="fa-solid fa-suitcase-rolling"></i> @car.LuggageCount Bavul
-                    </span>
-                    <span class="car-spec-chip @fuelClass" style="border:none;">
-                        <i class="fa-solid @fuelIcon"></i> @car.FuelType
-                    </span>
-                </div>
-
-                <!-- Fiyat + KM -->
-                <div class="car-card-price-row">
-                    <div class="car-price">
-                        <span class="car-price-val">@car.DailyPrice.ToString("N0") ₺</span>
-                        <span class="car-price-label">/ günlük</span>
-                    </div>
-                    <div class="car-km">
-                        <i class="fa-solid fa-gauge-high"></i>
-                        @car.Kilometer.ToString("N0") km
-                    </div>
-                </div>
-            </div>
-
-            <!-- Aksiyonlar -->
-            <div class="car-card-footer">
-                <a href="/Car/Detail/@car.CarId" class="tbl-btn tbl-btn-detail">
-                    <i class="fa-solid fa-eye"></i> Detay
-                </a>
-                <a href="/Car/Edit/@car.CarId" class="tbl-btn tbl-btn-edit">
-                    <i class="fa-solid fa-pen-to-square"></i> Düzenle
-                </a>
-                <button class="tbl-btn tbl-btn-delete"
-                        onclick="openDeleteModal(@car.CarId, '@car.PlateNumber')">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-            </div>
-        </div>
-    }
-</div>
-
-<!-- ═══ Liste Görünümü ═══ -->
-<div class="cars-list" id="carsList" style="display:none;">
-    @foreach (var car in Model)
-    {
-        var fuelClass = car.FuelType?.ToLower() switch {
-            "benzin"   => "fuel-benzin",
-            "dizel"    => "fuel-dizel",
-            "elektrik" => "fuel-elektrik",
-            "hibrit"   => "fuel-hibrit",
-            "lpg"      => "fuel-lpg",
-            _          => "fuel-default"
-        };
-        var fuelIcon = car.FuelType?.ToLower() switch {
-            "benzin"   => "fa-gas-pump",
-            "dizel"    => "fa-gas-pump",
-            "elektrik" => "fa-bolt",
-            "hibrit"   => "fa-leaf",
-            "lpg"      => "fa-fire-flame-simple",
-            _          => "fa-gas-pump"
-        };
-
-        <div class="car-list-item"
-             data-id="@car.CarId"
-             data-plate="@car.PlateNumber?.ToLower()"
-             data-fuel="@car.FuelType"
-             data-available="@car.IsAvailable.ToString().ToLower()"
-             data-price="@car.DailyPrice"
-             data-year="@car.Year"
-             data-km="@car.Kilometer">
-
-            <div class="car-list-thumb">
-                @if (!string.IsNullOrEmpty(car.ImageUrl))
-                {
-                    <img src="@car.ImageUrl" alt="Araç" loading="lazy" />
-                }
-                else
-                {
-                    <i class="fa-solid fa-car-side"></i>
-                }
-            </div>
-
-            <div class="car-list-info">
-                <div class="car-list-title">
-                    @(car.Category?.CategoryName ?? "—") — @car.PlateNumber
-                </div>
-                <div class="car-list-sub" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
-                    <span>@car.Year</span>
-                    <span>·</span>
-                    <span>@car.Kilometer.ToString("N0") km</span>
-                    <span>·</span>
-                    <span class="fuel-badge @fuelClass" style="padding:1px 7px;font-size:11px;">
-                        <i class="fa-solid @fuelIcon"></i> @car.FuelType
-                    </span>
-                    <span>·</span>
-                    <span style="color:@(car.IsAvailable ? "#059669" : "var(--danger)");font-weight:600;font-size:12px;">
-                        @(car.IsAvailable ? "Müsait" : "Müsait Değil")
-                    </span>
-                </div>
-            </div>
-
-            <div class="car-list-price">@car.DailyPrice.ToString("N0") ₺ / gün</div>
-
-            <div class="car-list-actions">
-                <a href="/Car/Detail/@car.CarId" class="tbl-btn tbl-btn-detail" style="flex:none;padding:7px 10px;">
-                    <i class="fa-solid fa-eye"></i>
-                </a>
-                <a href="/Car/Edit/@car.CarId" class="tbl-btn tbl-btn-edit" style="flex:none;padding:7px 10px;">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </a>
-                <button class="tbl-btn tbl-btn-delete" style="flex:none;padding:7px 10px;"
-                        onclick="openDeleteModal(@car.CarId, '@car.PlateNumber')">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-            </div>
-        </div>
-    }
-</div>
-
-<!-- Boş Durum -->
-<div class="empty-state" id="emptyState" style="display:none;">
-    <div class="empty-icon"><i class="fa-solid fa-car-side"></i></div>
-    <h6 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;margin-bottom:6px;">Araç Bulunamadı</h6>
-    <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:14px;">
-        Arama veya filtre kriterinizle eşleşen araç yok.
-    </p>
-    <button class="btn-primary-custom" onclick="resetCarFilters()">
-        <i class="fa-solid fa-rotate-left"></i> Filtreyi Temizle
-    </button>
-</div>
-
-<!-- Pagination -->
-<div class="paging-wrap" id="pagingWrap" style="display:none;">
-    <div class="paging-info" id="pagingInfo">—</div>
-    <div class="paging-btns" id="pagingBtns"></div>
-</div>
-
-<!-- ═══════════════════════════════
-     SİL ONAY MODAL
-═══════════════════════════════ -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <div style="width:34px;height:34px;background:#fee2e2;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--danger);font-size:15px;">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </div>
-                    <h5 class="modal-title">Araç Sil</h5>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div style="display:flex;gap:14px;align-items:flex-start;">
-                    <div style="width:46px;height:46px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--danger);font-size:20px;flex-shrink:0;">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                    </div>
-                    <div>
-                        <p style="margin:0;font-size:14.5px;color:var(--text-main);line-height:1.5;">
-                            <strong id="deleteCarPlate">bu aracı</strong> silmek istediğinizden emin misiniz?
-                        </p>
-                        <p style="margin:6px 0 0;font-size:13px;color:var(--text-muted);">
-                            Bu işlem geri alınamaz. İlgili kira kayıtları etkilenebilir.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel-form" data-bs-dismiss="modal"
-                        style="display:inline-flex;align-items:center;gap:6px;">
-                    <i class="fa-solid fa-xmark"></i> Vazgeç
-                </button>
-                <form id="deleteForm" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" id="deleteCarId" name="id" />
-                    <button type="submit"
-                            style="display:inline-flex;align-items:center;gap:7px;background:var(--danger);color:#fff;border:none;border-radius:var(--radius-sm);padding:9px 22px;font-size:13.5px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:var(--transition);">
-                        <i class="fa-solid fa-trash-can"></i> Evet, Sil
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
-
-<script>
-    /* ══════════════════════════════════════════
-       Car List Page Scripts
-    ══════════════════════════════════════════ */
-
-    let currentView = 'grid';
-    let currentPage = 1;
-    const PAGE_SIZE  = 12;
-
-    // ── Tüm kartları / liste itemlarını al ──
-    const allCards = () => [...document.querySelectorAll('#carsGrid .car-card, #carsList .car-list-item')];
-    const visibleCards = () => allCards().filter(c => c.style.display !== 'none');
-
-    // ── Görünüm değiştir ──
-    function setView(v) {
-        currentView = v;
-        document.getElementById('carsGrid').style.display = v === 'grid' ? 'grid' : 'none';
-        document.getElementById('carsList').style.display = v === 'list' ? 'flex'  : 'none';
-        document.getElementById('btnGridView').classList.toggle('active', v === 'grid');
-        document.getElementById('btnListView').classList.toggle('active', v === 'list');
-        currentPage = 1;
-        applyFilters();
-    }
-
-    // ── Filtrele + Sırala ──
-    function filterCars() {
-        currentPage = 1;
-        applyFilters();
-    }
-
-    function applyFilters() {
-        const q         = document.getElementById('carSearch').value.toLowerCase().trim();
-        const available = document.getElementById('filterAvailable').value;
-        const fuel      = document.getElementById('filterFuel').value;
-        const sort      = document.getElementById('sortSelect').value;
-
-        // Grid kartları
-        const gridCards = [...document.querySelectorAll('#carsGrid .car-card')];
-        // Liste itemları
-        const listItems = [...document.querySelectorAll('#carsList .car-list-item')];
-
-        const filterItem = (item) => {
-            const plate     = item.dataset.plate     || '';
-            const fuelVal   = item.dataset.fuel      || '';
-            const isAvail   = item.dataset.available === 'true';
-
-            const matchQ    = !q || plate.includes(q) || item.dataset.id.includes(q);
-            const matchAvail = available === 'all'
-                || (available === 'available'   &&  isAvail)
-                || (available === 'unavailable' && !isAvail);
-            const matchFuel = fuel === 'all' || fuelVal === fuel;
-
-            return matchQ && matchAvail && matchFuel;
-        };
-
-        // Her iki görünüme filtre uygula
-        gridCards.forEach(c => c.setAttribute('data-show', filterItem(c) ? '1' : '0'));
-        listItems.forEach(c => c.setAttribute('data-show', filterItem(c) ? '1' : '0'));
-
-        // Sırala (aktif görünüm üzerinde)
-        const [sortField, sortDir] = sort.split('-');
-        const sortItems = (list) => {
-            list.sort((a, b) => {
-                let va, vb;
-                if      (sortField === 'id')    { va = parseInt(a.dataset.id);    vb = parseInt(b.dataset.id); }
-                else if (sortField === 'price') { va = parseFloat(a.dataset.price); vb = parseFloat(b.dataset.price); }
-                else if (sortField === 'year')  { va = parseInt(a.dataset.year);  vb = parseInt(b.dataset.year); }
-                else if (sortField === 'km')    { va = parseInt(a.dataset.km);    vb = parseInt(b.dataset.km); }
-                if (va < vb) return sortDir === 'asc' ? -1 :  1;
-                if (va > vb) return sortDir === 'asc' ?  1 : -1;
-                return 0;
-            });
-        };
-
-        sortItems(gridCards);
-        sortItems(listItems);
-
-        const gridParent = document.getElementById('carsGrid');
-        const listParent = document.getElementById('carsList');
-        gridCards.forEach(c => gridParent.appendChild(c));
-        listItems.forEach(c => listParent.appendChild(c));
-
-        buildPaging();
-    }
-
-    // ── Sıfırla ──
-    function resetCarFilters() {
-        document.getElementById('carSearch').value        = '';
-        document.getElementById('filterAvailable').value  = 'all';
-        document.getElementById('filterFuel').value       = 'all';
-        document.getElementById('sortSelect').value       = 'id-asc';
-        currentPage = 1;
-        applyFilters();
-        showToast('Filtreler sıfırlandı.', 'info');
-    }
-
-    // ── Pagination ──
-    function buildPaging() {
-        const activeItems = currentView === 'grid'
-            ? [...document.querySelectorAll('#carsGrid .car-card')]
-            : [...document.querySelectorAll('#carsList .car-list-item')];
-
-        const filtered = activeItems.filter(c => c.getAttribute('data-show') === '1');
-        const total    = filtered.length;
-        const pages    = Math.max(1, Math.ceil(total / PAGE_SIZE));
-        if (currentPage > pages) currentPage = pages;
-
-        // Hepsini gizle önce
-        activeItems.forEach(c => c.style.display = 'none');
-
-        // Sayfadakileri göster
-        filtered.forEach((c, i) => {
-            if (i >= (currentPage - 1) * PAGE_SIZE && i < currentPage * PAGE_SIZE) {
-                c.style.display = '';
-            }
-        });
-
-        // Diğer görünümdeki item'ları da filtrele (show/hide)
-        const inactiveItems = currentView === 'grid'
-            ? [...document.querySelectorAll('#carsList .car-list-item')]
-            : [...document.querySelectorAll('#carsGrid .car-card')];
-        inactiveItems.forEach(c => c.style.display = 'none');
-
-        document.getElementById('emptyState').style.display = total === 0 ? 'block' : 'none';
-
-        const info = document.getElementById('pagingInfo');
-        const from = total === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
-        const to   = Math.min(currentPage * PAGE_SIZE, total);
-        info.textContent = total > 0 ? `${from}–${to} / toplam ${total} araç` : '0 araç';
-
-        const btns = document.getElementById('pagingBtns');
-        btns.innerHTML = '';
-
-        const prev = makePageBtn('<i class="fa-solid fa-chevron-left" style="font-size:11px;"></i>', () => goPage(currentPage - 1));
-        if (currentPage === 1) prev.disabled = true;
-        btns.appendChild(prev);
-
-        for (let p = 1; p <= pages; p++) {
-            const btn = makePageBtn(p, () => goPage(p));
-            if (p === currentPage) btn.classList.add('active');
-            btns.appendChild(btn);
-        }
-
-        const next = makePageBtn('<i class="fa-solid fa-chevron-right" style="font-size:11px;"></i>', () => goPage(currentPage + 1));
-        if (currentPage === pages) next.disabled = true;
-        btns.appendChild(next);
-
-        document.getElementById('pagingWrap').style.display = total <= PAGE_SIZE && pages === 1 ? 'none' : 'flex';
-    }
-
-    function makePageBtn(html, fn) {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'page-btn';
-        b.innerHTML = html;
-        b.addEventListener('click', fn);
-        return b;
-    }
-
-    function goPage(p) {
-        const filtered = (currentView === 'grid'
-            ? [...document.querySelectorAll('#carsGrid .car-card')]
-            : [...document.querySelectorAll('#carsList .car-list-item')]
-        ).filter(c => c.getAttribute('data-show') === '1');
-        const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-        currentPage = Math.max(1, Math.min(pages, p));
-        buildPaging();
-    }
-
-    // ── Sil Modal ──
-    function openDeleteModal(id, plate) {
-        document.getElementById('deleteCarPlate').textContent = `"${plate}"`;
-        document.getElementById('deleteCarId').value          = id;
-        document.getElementById('deleteForm').action          = `/Car/Delete/${id}`;
-        new bootstrap.Modal(document.getElementById('deleteModal')).show();
-    }
-
-    // ── İlk yükleme ──
-    document.addEventListener('DOMContentLoaded', () => {
-        applyFilters();
-
-        @if (TempData["Success"] != null)
-        {
-            <text>showToast('@TempData["Success"]', 'success');</text>
-        }
-        @if (TempData["Error"] != null)
-        {
-            <text>showToast('@TempData["Error"]', 'danger');</text>
-        }
-    });
-</script>
-

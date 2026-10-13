@@ -47,6 +47,9 @@ builder.Services.AddScoped<IOurFeatureDal, EfOurFeatureDal>();
 builder.Services.AddScoped<IFAQDal, EfFAQDal>();
 builder.Services.AddScoped<IFAQService, FAQManager>();
 
+builder.Services.AddScoped<IRentalDal, EfRentalDal>();
+builder.Services.AddScoped<IRentalService, RentalManager>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

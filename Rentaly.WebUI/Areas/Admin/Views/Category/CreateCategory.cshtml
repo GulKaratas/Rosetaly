@@ -1,610 +1,271 @@
-﻿@model Rentaly.EntityLayer.Entities.Category
+@model Rentaly.EntityLayer.Entities.Category
 @{
     ViewData["Title"] = "CreateCategory";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Yeni Kategori Ekle", "Araç filosuna yeni bir kategori tanımlayın.", "Kategoriler", "", "Listeye Dön", true, "/Admin/Category/CategoryList/"))
+}
+<form asp-action="CreateCategory" method="post">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
+        <!-- Sol & Orta Sütun: Kategori Form Alanı (2 Kolon) -->
+        <div class="lg:col-span-2 flex flex-col gap-6">
 
-<style>
-/* ── Create Category Page ── */
-.form-section {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 20px;
-    overflow: hidden;
-    transition: var(--transition);
-}
-.form-section:hover { box-shadow: var(--shadow-md); }
-
-.section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 22px;
-    border-bottom: 1px solid var(--border);
-    background: #fafbfc;
-}
-.section-icon {
-    width: 36px; height: 36px;
-    border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; flex-shrink: 0;
-}
-.section-title {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 14px; font-weight: 700;
-    color: var(--text-main); margin: 0;
-}
-.section-subtitle {
-    font-size: 12px; color: var(--text-muted); margin: 0; margin-top: 1px;
-}
-.section-body { padding: 22px; }
-
-/* Form */
-.f-label {
-    font-size: 13px; font-weight: 600;
-    color: var(--text-main); margin-bottom: 7px;
-    display: flex; align-items: center; gap: 5px;
-}
-.f-label .req { color: var(--danger); font-size: 14px; line-height: 1; }
-
-.f-control {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    font-size: 13.5px;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text-main);
-    background: #fff;
-    outline: none;
-    transition: var(--transition);
-}
-.f-control:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
-}
-.f-control.is-invalid {
-    border-color: var(--danger);
-    box-shadow: 0 0 0 3px rgba(239,68,68,0.08);
-}
-.f-control.is-valid {
-    border-color: var(--success);
-    box-shadow: 0 0 0 3px rgba(16,185,129,0.08);
-}
-.f-error {
-    font-size: 12px; color: var(--danger);
-    margin-top: 5px; display: none;
-    align-items: center; gap: 4px;
-}
-.f-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
-.char-count { font-size: 11.5px; color: var(--text-muted); text-align: right; margin-top: 4px; }
-
-/* Icon grid */
-.icon-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
-    gap: 8px;
-}
-.icon-radio { display: none; }
-.icon-radio + label {
-    width: 100%; aspect-ratio: 1;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; cursor: pointer;
-    transition: var(--transition);
-    color: var(--text-muted);
-    background: #fafbfc;
-}
-.icon-radio + label:hover {
-    border-color: var(--primary);
-    background: var(--primary-light);
-    color: var(--primary);
-    transform: scale(1.05);
-}
-.icon-radio:checked + label {
-    border-color: var(--primary);
-    background: var(--primary);
-    color: #fff;
-    box-shadow: 0 3px 8px rgba(26,86,219,0.3);
-}
-
-/* Color swatch */
-.color-swatches { display: flex; flex-wrap: wrap; gap: 10px; }
-.swatch-radio { display: none; }
-.swatch-radio + label {
-    width: 34px; height: 34px;
-    border-radius: 50%; cursor: pointer;
-    border: 3px solid transparent;
-    outline: 2px solid transparent;
-    transition: var(--transition);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; color: transparent;
-}
-.swatch-radio + label:hover { transform: scale(1.12); }
-.swatch-radio:checked + label {
-    border-color: #fff;
-    outline-color: var(--text-main);
-    color: #fff;
-}
-
-/* Preview card */
-.preview-card {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px 20px;
-    text-align: center;
-    transition: var(--transition);
-}
-.preview-icon-wrap {
-    width: 72px; height: 72px;
-    border-radius: 18px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 30px;
-    margin: 0 auto 14px;
-    transition: var(--transition);
-}
-.preview-name {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 18px; font-weight: 800;
-    color: var(--text-main); margin-bottom: 6px;
-    min-height: 26px;
-    transition: var(--transition);
-}
-.preview-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12px; font-weight: 600;
-    padding: 4px 12px; border-radius: 20px;
-    transition: var(--transition);
-}
-
-/* Tips list */
-.tip-item {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px; color: var(--text-muted);
-}
-.tip-item:last-child { border-bottom: none; padding-bottom: 0; }
-.tip-item i { color: var(--primary); margin-top: 1px; font-size: 13px; flex-shrink: 0; }
-
-/* Action bar */
-.action-bar {
-    position: sticky; bottom: 0;
-    background: #fff; border-top: 1px solid var(--border);
-    padding: 14px 0; margin-top: 4px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 10px; z-index: 100;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.07);
-}
-.btn-cancel-page {
-    display: inline-flex; align-items: center; gap: 7px;
-    background: #fff; border: 1px solid var(--border);
-    color: var(--text-muted); border-radius: var(--radius-sm);
-    padding: 10px 20px; font-size: 13.5px; font-weight: 600;
-    font-family: 'DM Sans', sans-serif; cursor: pointer;
-    transition: var(--transition); text-decoration: none;
-}
-.btn-cancel-page:hover { background: #f8fafc; color: var(--text-main); }
-.btn-save {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--primary); color: #fff; border: none;
-    border-radius: var(--radius-sm); padding: 10px 24px;
-    font-size: 13.5px; font-weight: 700;
-    font-family: 'DM Sans', sans-serif; cursor: pointer;
-    transition: var(--transition);
-}
-.btn-save:hover {
-    background: var(--primary-dark);
-    box-shadow: 0 4px 14px rgba(26,86,219,0.4);
-    transform: translateY(-1px);
-}
-.btn-save:disabled { opacity: .65; cursor: not-allowed; transform: none; }
-
-@@media (max-width: 767px) {
-    .section-body { padding: 14px; }
-    .icon-grid { grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); }
-    .action-bar { padding: 12px 0; }
-}
-</style>
-
-<!-- ═══ Page Header ═══ -->
-<div class="page-header">
-    <div>
-        <h1 class="page-title">Yeni Kategori Ekle</h1>
-        <p class="page-subtitle">Araç filosuna yeni bir kategori tanımlayın.</p>
-    </div>
-    <a href="/Category/Index" class="btn-cancel-page">
-        <i class="fa-solid fa-arrow-left"></i> Listeye Dön
-    </a>
-</div>
-
-<form id="createCatForm" method="post" novalidate>
-    @Html.AntiForgeryToken()
-
-    <div class="row g-4">
-
-        <!-- ═══ SOL ═══ -->
-        <div class="col-12 col-lg-7">
-
-            <!-- Kategori Adı -->
-            <div class="form-section">
-                <div class="section-header">
-                    <div class="section-icon" style="background:#e8efff;color:var(--primary);">
-                        <i class="fa-solid fa-pen-nib"></i>
-                    </div>
+            <!-- Kategori Bilgisi Kartı -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between pb-4 mb-6 border-b border-outline-variant">
                     <div>
-                        <p class="section-title">Kategori Bilgisi</p>
-                        <p class="section-subtitle">Temel tanımlama bilgisi</p>
+                        <h2 class="text-headline-md font-headline-md text-on-surface font-semibold">Kategori Bilgisi</h2>
+                        <p class="text-body-sm text-secondary mt-0.5">Temel tanımlama bilgisi</p>
                     </div>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-surface-container-high text-primary">Genel Tanım</span>
                 </div>
-                <div class="section-body">
 
-                    <label class="f-label" for="CategoryName">
-                        Kategori Adı <span class="req">*</span>
-                    </label>
-                    <input type="text"
-                           id="CategoryName"
-                           name="CategoryName"
-                           class="f-control"
-                           placeholder="Örn: Sedan, SUV, Elektrikli…"
-                           maxlength="50"
-                           autocomplete="off"
-                           oninput="onNameInput(this)" />
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
-                        <div class="f-error" id="nameError">
-                            <i class="fa-solid fa-circle-exclamation"></i> Kategori adı zorunludur.
-                        </div>
-                        <div class="char-count ms-auto"><span id="charCount">0</span>/50</div>
-                    </div>
-                    <p class="f-hint">
-                        <i class="fa-solid fa-circle-info me-1" style="color:var(--primary);"></i>
-                        Kısa ve anlamlı bir isim girin. Büyük-küçük harf duyarlı değildir.
-                    </p>
-
-                    <!-- Var olan kategorilerle benzerlik uyarısı -->
-                    <div id="similarWarn" style="display:none;margin-top:10px;padding:10px 14px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--radius-sm);font-size:13px;color:#92400e;display:none;align-items:center;gap:8px;">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <span id="similarWarnText">Benzer isimde bir kategori mevcut olabilir.</span>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- İkon Seçici -->
-            <div class="form-section">
-                <div class="section-header">
-                    <div class="section-icon" style="background:#fff4ed;color:var(--accent);">
-                        <i class="fa-solid fa-icons"></i>
-                    </div>
+                <div class="flex flex-col gap-6">
+                    <!-- Kategori Adı -->
                     <div>
-                        <p class="section-title">Kategori İkonu</p>
-                        <p class="section-subtitle">Listede görünecek ikon — isteğe bağlı</p>
-                    </div>
-                </div>
-                <div class="section-body">
-                    <div class="icon-grid" id="iconGrid">
-                        @{
-                            var iconList = new[] {
-                                ("fa-car-side",       "Araç"),
-                                ("fa-truck",          "Kamyon"),
-                                ("fa-van-shuttle",    "Minivan"),
-                                ("fa-motorcycle",     "Motorsiklet"),
-                                ("fa-car-rear",       "Sedan"),
-                                ("fa-jeep",           "SUV"),
-                                ("fa-bus",            "Otobüs"),
-                                ("fa-taxi",           "Taksi"),
-                                ("fa-bolt",           "Elektrikli"),
-                                ("fa-leaf",           "Hibrit"),
-                                ("fa-gas-pump",       "Yakıtlı"),
-                                ("fa-shield-halved",  "Premium"),
-                                ("fa-star",           "VIP"),
-                                ("fa-briefcase",      "İş"),
-                                ("fa-people-group",   "Aile"),
-                                ("fa-mountain-sun",   "Offroad"),
-                                ("fa-gauge-high",     "Spor"),
-                                ("fa-snowflake",      "Kış"),
-                                ("fa-umbrella-beach", "Tatil"),
-                                ("fa-building-user",  "Kurumsal"),
-                            };
-                        }
-                        @foreach (var (faClass, label) in iconList)
-                        {
-                            <input type="radio" class="icon-radio" name="IconClass"
-                                   id="ico_@faClass.Replace("-","_")"
-                                   value="@faClass"
-                                   onchange="updatePreview()" />
-                            <label for="ico_@faClass.Replace("-","_")" title="@label">
-                                <i class="fa-solid @faClass"></i>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-semibold text-secondary uppercase tracking-wider" for="CategoryName">
+                                Kategori Adı <span class="text-error">*</span>
                             </label>
-                        }
-                    </div>
-                    <p class="f-hint" style="margin-top:10px;">
-                        <i class="fa-solid fa-circle-info me-1" style="color:var(--primary);"></i>
-                        İkon seçimi veritabanına kaydedilmez; yalnızca görsel amaçlıdır.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Renk Etiketi -->
-            <div class="form-section">
-                <div class="section-header">
-                    <div class="section-icon" style="background:#fdf4ff;color:#9333ea;">
-                        <i class="fa-solid fa-palette"></i>
-                    </div>
-                    <div>
-                        <p class="section-title">Renk Etiketi</p>
-                        <p class="section-subtitle">Kategori için temsil rengi — isteğe bağlı</p>
-                    </div>
-                </div>
-                <div class="section-body">
-                    <div class="color-swatches">
-                        @{
-                            var swatches = new[] {
-                                ("#1a56db", "Mavi"),
-                                ("#f97316", "Turuncu"),
-                                ("#10b981", "Yeşil"),
-                                ("#ef4444", "Kırmızı"),
-                                ("#9333ea", "Mor"),
-                                ("#d97706", "Sarı"),
-                                ("#0284c7", "Açık Mavi"),
-                                ("#db2777", "Pembe"),
-                                ("#64748b", "Gri"),
-                                ("#0f172a", "Siyah"),
-                            };
-                        }
-                        @foreach (var (hex, label) in swatches)
-                        {
-                            <input type="radio" class="swatch-radio" name="ColorTag"
-                                   id="sw_@hex.Replace("#","")"
-                                   value="@hex"
-                                   onchange="updatePreview()" />
-                            <label for="sw_@hex.Replace("#","")"
-                                   style="background:@hex;"
-                                   title="@label">
-                                <i class="fa-solid fa-check"></i>
-                            </label>
-                        }
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!-- /SOL -->
-
-        <!-- ═══ SAĞ ═══ -->
-        <div class="col-12 col-lg-5">
-
-            <!-- Canlı Önizleme -->
-            <div class="form-section" style="position:sticky;top:calc(var(--navbar-height) + 16px);">
-                <div class="section-header">
-                    <div class="section-icon" style="background:#f0fdf4;color:#10b981;">
-                        <i class="fa-solid fa-eye"></i>
-                    </div>
-                    <div>
-                        <p class="section-title">Canlı Önizleme</p>
-                        <p class="section-subtitle">Kategori listesindeki görünümü</p>
-                    </div>
-                </div>
-                <div class="section-body">
-
-                    <!-- Kart önizleme -->
-                    <div class="preview-card" id="previewCard">
-                        <div class="preview-icon-wrap" id="previewIconWrap"
-                             style="background:#e8efff;color:#1a56db;">
-                            <i class="fa-solid fa-tags" id="previewIcon"></i>
+                            <span class="text-xs text-outline font-mono">0 / 50</span>
                         </div>
-                        <div class="preview-name" id="previewName">Kategori Adı</div>
-                        <div>
-                            <span class="preview-badge" id="previewBadge"
-                                  style="background:#e8efff;color:#1a56db;">
-                                <i class="fa-solid fa-tags"></i> Yeni Kategori
-                            </span>
-                        </div>
+                        <input id="CategoryName" name="CategoryName" type="text" maxlength="50" required placeholder="Örn: Lüks & Premium"
+                               class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
+                        <p class="text-xs text-secondary mt-1.5">Kısa ve anlamlı bir isim girin. Büyük-küçük harf duyarlı değildir.</p>
                     </div>
 
-                    <!-- Tablo satır önizlemesi -->
-                    <div style="margin-top:16px;">
-                        <p style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif;">
-                            Tablodaki Görünüm
-                        </p>
-                        <div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">
-                            <div style="background:#f8fafc;padding:8px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);border-bottom:1px solid var(--border);display:flex;gap:12px;">
-                                <span style="width:36px;">#</span>
-                                <span>Kategori Adı</span>
-                            </div>
-                            <div style="padding:10px 14px;display:flex;align-items:center;gap:12px;">
-                                <span style="width:32px;height:32px;background:var(--primary-light);color:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:800;">—</span>
-                                <div style="display:flex;align-items:center;gap:10px;">
-                                    <div id="tableIconBox"
-                                         style="width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;background:#e8efff;color:#1a56db;transition:var(--transition);">
-                                        <i class="fa-solid fa-tags" id="tableIcon"></i>
-                                    </div>
-                                    <div>
-                                        <div id="tableNameRow" style="font-weight:600;font-size:14px;color:var(--text-main);">Kategori Adı</div>
-                                        <div style="font-size:11.5px;color:var(--text-muted);">Kategori #—</div>
-                                    </div>
+                    <!-- Kategori İkonu -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1">
+                            Kategori İkonu
+                        </label>
+                        <p class="text-xs text-secondary mb-3">Listede görünecek ikon — isteğe bağlı</p>
+
+                        <!-- İkon Seçim Izgarası -->
+                        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="IconType" value="sedan" class="peer sr-only" checked />
+                                <div class="flex flex-col items-center justify-center p-3 rounded-lg border border-outline-variant bg-surface-container-low peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary hover:bg-surface-container transition-all text-center">
+                                    <span class="material-symbols-outlined text-[24px] mb-1">directions_car</span>
+                                    <span class="text-xs font-medium">Sedan</span>
                                 </div>
-                            </div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="IconType" value="suv" class="peer sr-only" />
+                                <div class="flex flex-col items-center justify-center p-3 rounded-lg border border-outline-variant bg-surface-container-low peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary hover:bg-surface-container transition-all text-center">
+                                    <span class="material-symbols-outlined text-[24px] mb-1">airport_shuttle</span>
+                                    <span class="text-xs font-medium">SUV</span>
+                                </div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="IconType" value="luxury" class="peer sr-only" />
+                                <div class="flex flex-col items-center justify-center p-3 rounded-lg border border-outline-variant bg-surface-container-low peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary hover:bg-surface-container transition-all text-center">
+                                    <span class="material-symbols-outlined text-[24px] mb-1">diamond</span>
+                                    <span class="text-xs font-medium">Lüks</span>
+                                </div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="IconType" value="minivan" class="peer sr-only" />
+                                <div class="flex flex-col items-center justify-center p-3 rounded-lg border border-outline-variant bg-surface-container-low peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary hover:bg-surface-container transition-all text-center">
+                                    <span class="material-symbols-outlined text-[24px] mb-1">rv_hookup</span>
+                                    <span class="text-xs font-medium">Minivan</span>
+                                </div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="IconType" value="electric" class="peer sr-only" />
+                                <div class="flex flex-col items-center justify-center p-3 rounded-lg border border-outline-variant bg-surface-container-low peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary hover:bg-surface-container transition-all text-center">
+                                    <span class="material-symbols-outlined text-[24px] mb-1">bolt</span>
+                                    <span class="text-xs font-medium">Elektrik</span>
+                                </div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="IconType" value="sports" class="peer sr-only" />
+                                <div class="flex flex-col items-center justify-center p-3 rounded-lg border border-outline-variant bg-surface-container-low peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary hover:bg-surface-container transition-all text-center">
+                                    <span class="material-symbols-outlined text-[24px] mb-1">speed</span>
+                                    <span class="text-xs font-medium">Spor</span>
+                                </div>
+                            </label>
                         </div>
+                        <p class="text-[11px] text-outline mt-2">İkon seçimi veritabanına kaydedilmez; yalnızca görsel amaçlıdır.</p>
                     </div>
 
-                    <!-- İpuçları -->
-                    <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
-                        <p style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif;">İpuçları</p>
-                        <div class="tip-item">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <span>Kategori adı 2–50 karakter arasında olmalıdır.</span>
-                        </div>
-                        <div class="tip-item">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <span>Mevcut kategorilerle aynı isim kullanmaktan kaçının.</span>
-                        </div>
-                        <div class="tip-item">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <span>İkon ve renk seçimi yalnızca görsel; veritabanına kaydedilmez.</span>
+                    <!-- Renk Etiketi -->
+                    <div>
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1">
+                            Renk Etiketi
+                        </label>
+                        <p class="text-xs text-secondary mb-3">Kategori için temsil rengi — isteğe bağlı</p>
+
+                        <div class="flex items-center gap-3">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="ColorBadge" value="blue" class="peer sr-only" checked />
+                                <div class="w-8 h-8 rounded-full bg-blue-600 ring-2 ring-transparent peer-checked:ring-offset-2 peer-checked:ring-primary flex items-center justify-center text-white transition-all">
+                                    <span class="material-symbols-outlined text-[16px]">check</span>
+                                </div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="ColorBadge" value="emerald" class="peer sr-only" />
+                                <div class="w-8 h-8 rounded-full bg-emerald-600 ring-2 ring-transparent peer-checked:ring-offset-2 peer-checked:ring-emerald-600 flex items-center justify-center text-white transition-all"></div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="ColorBadge" value="indigo" class="peer sr-only" />
+                                <div class="w-8 h-8 rounded-full bg-indigo-600 ring-2 ring-transparent peer-checked:ring-offset-2 peer-checked:ring-indigo-600 flex items-center justify-center text-white transition-all"></div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="ColorBadge" value="slate" class="peer sr-only" />
+                                <div class="w-8 h-8 rounded-full bg-slate-600 ring-2 ring-transparent peer-checked:ring-offset-2 peer-checked:ring-slate-600 flex items-center justify-center text-white transition-all"></div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="ColorBadge" value="amber" class="peer sr-only" />
+                                <div class="w-8 h-8 rounded-full bg-amber-600 ring-2 ring-transparent peer-checked:ring-offset-2 peer-checked:ring-amber-600 flex items-center justify-center text-white transition-all"></div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="ColorBadge" value="rose" class="peer sr-only" />
+                                <div class="w-8 h-8 rounded-full bg-rose-600 ring-2 ring-transparent peer-checked:ring-offset-2 peer-checked:ring-rose-600 flex items-center justify-center text-white transition-all"></div>
+                            </label>
                         </div>
                     </div>
+                </div>
 
+                <!-- Alt Aksiyon & Bilgilendirme -->
+                <div class="flex items-center justify-between pt-6 mt-6 border-t border-outline-variant">
+                    <span class="text-xs text-secondary"><strong class="text-error">*</strong> ile işaretli alanlar zorunludur</span>
+                    <div class="flex items-center gap-3">
+                        <a href="/Categories" class="px-5 py-2.5 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-low text-sm font-medium transition-colors">
+                            Vazgeç
+                        </a>
+                        <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-semibold text-sm shadow-sm hover:bg-primary transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">check</span>
+                            Kategoriyi Kaydet
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bilgilendirme Kartı -->
+            <div class="bg-surface-container-low border border-outline-variant rounded-xl p-5 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">info</span>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-on-surface mb-1">Kategori Hiyerarşisi</h4>
+                    <p class="text-xs text-secondary leading-relaxed">Eklenen yeni kategori doğrudan araç modelleri oluşturulurken sınıflandırma filtrelerinde ve web sitesi ana arama çubuğunda anında listelenmeye başlar.</p>
                 </div>
             </div>
 
         </div>
-        <!-- /SAĞ -->
+
+        <!-- Sağ Sütun: Canlı Önizleme & İpuçları Paneli -->
+        <div class="flex flex-col gap-6">
+
+            <!-- Canlı Önizleme Simülasyonu -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant">
+                    <div class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-secondary">
+                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                        Canlı Önizleme
+                    </div>
+                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-tertiary-fixed/30 px-2 py-0.5 rounded-full">
+                        CANLI
+                    </span>
+                </div>
+                <p class="text-xs text-secondary mb-4">Kategori listesindeki görünümü</p>
+
+                <!-- Önizleme Kartı -->
+                <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-primary text-on-primary flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[22px]">directions_car</span>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-on-surface text-sm">Lüks & Premium</div>
+                            <div class="text-xs text-secondary">Aktif Filo Sınıfı • 0 Model Tanımlı</div>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-outline text-[18px]">arrow_forward</span>
+                </div>
+
+                <!-- Tablodaki Görünüm Simülasyonu -->
+                <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-2 flex items-center justify-between">
+                    <span>Tablodaki Görünüm</span>
+                    <span class="text-[11px] font-normal text-outline">Simülasyon</span>
+                </div>
+                <div class="border border-outline-variant rounded-lg overflow-hidden bg-surface-container-lowest text-xs">
+                    <div class="bg-surface-container-low px-3 py-2 border-b border-outline-variant flex items-center justify-between font-semibold text-secondary">
+                        <span>KOD / İSİM</span>
+                        <span>DURUM</span>
+                    </div>
+                    <div class="p-3 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded border-outline-variant" />
+                            <div class="w-6 h-6 rounded bg-primary/10 text-primary flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[14px]">directions_car</span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-on-surface block">Lüks & Premium</span>
+                                <span class="text-[10px] text-outline font-mono">#CAT-48 • 0 Araç Kayıtlı</span>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700">Aktif</span>
+                    </div>
+                </div>
+
+                <!-- Toplam İstatistik Küçük Rozeti -->
+                <div class="mt-4 p-3 rounded-lg bg-surface-container-high/60 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2 text-secondary">
+                        <span class="material-symbols-outlined text-[16px] text-primary">category</span>
+                        <span>Toplam Kategori</span>
+                    </div>
+                    <span class="font-bold text-primary text-sm">15</span>
+                </div>
+            </div>
+
+            <!-- İpuçları Paneli -->
+            <div class="bg-surface-container-low border border-outline-variant rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3 text-primary">
+                    <span class="material-symbols-outlined text-[20px]">lightbulb</span>
+                    <h4 class="text-sm font-semibold text-on-surface">İpuçları</h4>
+                </div>
+                <ul class="text-xs text-secondary space-y-3 leading-relaxed">
+                    <li class="flex items-start gap-2.5">
+                        <span class="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">1</span>
+                        <span><strong>Karakter Limiti:</strong> Kategori adı 2–50 karakter arasında olmalıdır.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">2</span>
+                        <span><strong>Benzersizlik:</strong> Mevcut kategorilerle aynı isim kullanmaktan kaçının.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">3</span>
+                        <span><strong>Görsel Seçim:</strong> İkon ve renk seçimi yalnızca görsel; veritabanına kaydedilmez.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Sistem Standartları Kutusu -->
+            <div class="bg-inverse-surface text-inverse-on-surface rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-semibold text-secondary-fixed-dim uppercase tracking-wider">SİSTEM STANDARTLARI</span>
+                    <span class="material-symbols-outlined text-outline text-[16px]">verified</span>
+                </div>
+                <h5 class="text-sm font-bold mb-1 text-white">Filo Sınıflandırma Mantığı</h5>
+                <p class="text-xs text-secondary-fixed-dim leading-relaxed">Kategoriler araç tiplerini (Sedan, Hatchback, SUV vb.) veya kiralama paketlerini (Ekonomik, Lüks, Ticari) gruplandırmak için kullanılır.</p>
+            </div>
+
+        </div>
 
     </div>
-
-    <!-- ═══ Sticky Action Bar ═══ -->
-    <div class="action-bar">
-        <div style="font-size:13px;color:var(--text-muted);">
-            <i class="fa-solid fa-circle-exclamation me-1" style="color:var(--accent);"></i>
-            <span style="color:var(--danger);">*</span> ile işaretli alanlar zorunludur
-        </div>
-        <div class="d-flex gap-2 flex-wrap">
-            <a href="/Category/Index" class="btn-cancel-page">
-                <i class="fa-solid fa-xmark"></i> Vazgeç
-            </a>
-            <button type="submit" class="btn-save" id="saveBtn" onclick="validateAndSubmit(event)">
-                <i class="fa-solid fa-check"></i> Kategoriyi Kaydet
-            </button>
-        </div>
-    </div>
-
 </form>
-
-<script>
-/* ══════════════════════════════════════════
-   CreateCategory Page Scripts
-══════════════════════════════════════════ */
-
-// Mevcut kategori isimleri (benzerlik kontrolü için)
-// Controller'dan ViewBag.ExistingNames ile beslenebilir
-const existingNames = @Html.Raw(
-    Newtonsoft.Json.JsonConvert.SerializeObject(
-        ViewBag.ExistingNames ?? new string[] {}
-    )
-);
-
-// Seçili renk ve ikon
-let selectedColor = '#1a56db';
-let selectedIcon  = 'fa-tags';
-
-// ── İsim inputu ──
-function onNameInput(el) {
-    const val = el.value;
-    document.getElementById('charCount').textContent = val.length;
-
-    // Validasyon
-    if (val.trim()) {
-        el.classList.remove('is-invalid');
-        el.classList.add('is-valid');
-        document.getElementById('nameError').style.display = 'none';
-    } else {
-        el.classList.remove('is-valid');
-    }
-
-    // Benzerlik kontrolü
-    const lower = val.trim().toLowerCase();
-    const similar = existingNames.find(n => n.toLowerCase().includes(lower) && lower.length >= 2);
-    const warnEl  = document.getElementById('similarWarn');
-    const warnTxt = document.getElementById('similarWarnText');
-    if (similar && lower) {
-        warnTxt.textContent = `"${similar}" adlı benzer bir kategori zaten mevcut.`;
-        warnEl.style.display = 'flex';
-    } else {
-        warnEl.style.display = 'none';
-    }
-
-    updatePreview();
-}
-
-// ── Canlı önizleme güncelle ──
-function updatePreview() {
-    const name  = document.getElementById('CategoryName').value.trim() || 'Kategori Adı';
-    const color = document.querySelector('input[name="ColorTag"]:checked')?.value || '#1a56db';
-    const icon  = document.querySelector('input[name="IconClass"]:checked')?.value || 'fa-tags';
-
-    selectedColor = color;
-    selectedIcon  = icon;
-
-    // Arka plan rengi (açık ton) hesapla
-    const bgLight = color + '22'; // hex + alpha trick
-
-    // Kart önizleme
-    const iconWrap = document.getElementById('previewIconWrap');
-    const iconEl   = document.getElementById('previewIcon');
-    iconWrap.style.background = bgLight;
-    iconWrap.style.color      = color;
-    iconEl.className          = `fa-solid ${icon}`;
-
-    document.getElementById('previewName').textContent = name;
-
-    const badge = document.getElementById('previewBadge');
-    badge.style.background = bgLight;
-    badge.style.color      = color;
-    badge.innerHTML = `<i class="fa-solid ${icon}"></i> ${name}`;
-
-    // Tablo satır önizleme
-    const tableBox  = document.getElementById('tableIconBox');
-    const tableIcon = document.getElementById('tableIcon');
-    tableBox.style.background = bgLight;
-    tableBox.style.color      = color;
-    tableIcon.className       = `fa-solid ${icon}`;
-    document.getElementById('tableNameRow').textContent = name;
-}
-
-// ── Form doğrulama & gönder ──
-function validateAndSubmit(e) {
-    e.preventDefault();
-    const nameEl = document.getElementById('CategoryName');
-    const errEl  = document.getElementById('nameError');
-
-    if (!nameEl.value.trim()) {
-        nameEl.classList.add('is-invalid');
-        nameEl.classList.remove('is-valid');
-        errEl.style.display = 'flex';
-        nameEl.focus();
-        nameEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-    }
-
-    if (nameEl.value.trim().length < 2) {
-        nameEl.classList.add('is-invalid');
-        errEl.style.display = 'flex';
-        errEl.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> En az 2 karakter giriniz.';
-        nameEl.focus();
-        return;
-    }
-
-    // Gönder
-    const btn = document.getElementById('saveBtn');
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Kaydediliyor…';
-    btn.disabled  = true;
-    document.getElementById('createCatForm').submit();
-}
-
-// ── Enter ile gönder ──
-document.getElementById('CategoryName')?.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); validateAndSubmit(e); }
-});
-
-// ── İlk yükleme ──
-document.addEventListener('DOMContentLoaded', () => {
-    // Varsayılan rengi seç
-    const defaultSwatch = document.querySelector('input[name="ColorTag"][value="#1a56db"]');
-    if (defaultSwatch) { defaultSwatch.checked = true; }
-
-    // Varsayılan ikonu seç
-    const defaultIcon = document.querySelector('input[name="IconClass"][value="fa-car-side"]');
-    if (defaultIcon) { defaultIcon.checked = true; }
-
-    updatePreview();
-});
-</script>
-
-

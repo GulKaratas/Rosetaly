@@ -24,6 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\Admin\js\" />
+    <Folder Include="wwwroot\Admin\Partial\" />
     <Folder Include="wwwroot\Rentaly\Rentaly HTML\vendor\FormGuide\PHPFormValidator\tests\" />
     <Folder Include="wwwroot\Rentaly\Rentaly HTML\vendor\phpmailer\phpmailer\examples\" />
     <Folder Include="wwwroot\Rentaly\Rentaly HTML\vendor\phpmailer\phpmailer\language\" />

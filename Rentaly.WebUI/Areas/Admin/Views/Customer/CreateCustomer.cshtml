@@ -1,0 +1,294 @@
+﻿@using Rentaly.DtoLayer.CustomerDtos
+@model List<CreateCustomerDto>
+@{
+    ViewData["Title"] = "CreateCustomer";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Yeni Müşteri Ekle", "Sisteme manuel olarak yeni bir müşteri kaydı oluşturun.", "Müşteriler", "", "Listeye Dön", true, "/Admin/Customer/CustomerList/"))
+}
+
+<!-- Main Grid Layout (2 Col Left vs 1 Col Right) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left & Middle Form Area (8 cols) -->
+<form class="lg:col-span-8 flex flex-col gap-space-lg" id="customerForm" onsubmit="event.preventDefault();">
+<!-- Card 1: Kişisel & Kimlik Bilgileri -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Kişisel ve Kimlik Bilgileri</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Resmi sözleşmeler ve KABİS entegrasyonu için zorunlu alanlar</p>
+</div>
+</div>
+<span class="font-label-badge text-label-badge px-2 py-0.5 rounded-full bg-surface-container text-secondary">Adım 1/3</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md pt-space-xs">
+<div class="flex flex-col gap-1.5">
+<label class="font-table-header text-table-header text-on-surface uppercase tracking-wider flex items-center gap-1" for="inputAd">
+<span>Ad</span>
+<span class="text-error">*</span>
+</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">badge</span>
+<input class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md pl-10 pr-3 py-2 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 transition-all" id="inputAd" placeholder="Örn: Ahmet" required="" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-table-header text-table-header text-on-surface uppercase tracking-wider flex items-center gap-1" for="inputSoyad">
+<span>Soyad</span>
+<span class="text-error">*</span>
+</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">badge</span>
+<input class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md pl-10 pr-3 py-2 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 transition-all" id="inputSoyad" placeholder="Örn: Yılmaz" required="" type="text"/>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-table-header text-table-header text-on-surface uppercase tracking-wider flex items-center gap-1" for="inputTC">
+<span>T.C. Kimlik Numarası</span>
+<span class="text-error">*</span>
+</label>
+<span class="font-body-sm text-body-sm text-secondary" id="tcCounter">0 / 11 Hane</span>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">fingerprint</span>
+<input class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-mono text-body-md tracking-wider pl-10 pr-3 py-2 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 transition-all" id="inputTC" maxlength="11" pattern="\d{11}" placeholder="11 Haneli T.C. No giriniz" required="" type="text"/>
+</div>
+<div class="flex items-start gap-2 mt-1 p-2.5 rounded-lg bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">verified_user</span>
+<p class="font-body-sm text-body-sm leading-tight">
+              Girilen T.C. Kimlik Numarası, rezervasyon başlatıldığında Emniyet Genel Müdürlüğü <strong>KABİS</strong> (Kiralık Araç Bildirim Sistemi) üzerinden otomatik doğrulanır.
+            </p>
+</div>
+</div>
+</div>
+<!-- Card 2: İletişim Bilgileri -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">contact_phone</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">İletişim Bilgileri</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sözleşme bildirimi ve SMS doğrulama kanalları</p>
+</div>
+</div>
+<span class="font-label-badge text-label-badge px-2 py-0.5 rounded-full bg-surface-container text-secondary">Adım 2/3</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1.5">
+<label class="font-table-header text-table-header text-on-surface uppercase tracking-wider flex items-center gap-1" for="inputEmail">
+<span>E-Posta Adresi</span>
+<span class="text-error">*</span>
+</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">mail</span>
+<input class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md pl-10 pr-3 py-2 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 transition-all" id="inputEmail" placeholder="ad.soyad@ornek.com" required="" type="email"/>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-table-header text-table-header text-on-surface uppercase tracking-wider flex items-center gap-1" for="inputPhone">
+<span>Telefon Numarası</span>
+<span class="text-error">*</span>
+</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">call</span>
+<input class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md pl-10 pr-3 py-2 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 transition-all" id="inputPhone" placeholder="0 (5XX) XXX XX XX" required="" type="tel"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Sürücü Belgesi (Ehliyet) Bilgileri -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">id_card</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Sürücü Belgesi (Ehliyet) Bilgileri</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Segment kiralama uygunluğu ve asgari ehliyet yılı denetimi</p>
+</div>
+</div>
+<!-- Quick-fill Samples -->
+<div class="flex items-center gap-1.5 bg-surface-container-low p-1 rounded-lg">
+<span class="font-label-badge text-label-badge text-secondary px-2">Hızlı Doldur:</span>
+<button class="px-2 py-1 rounded bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-on-surface font-body-sm text-body-sm transition-colors shadow-sm" onclick="quickFill('Ahmet', 'Yılmaz', '10984729102', 'ahmet.yilmaz@email.com', '0 (532) 412 88 19', 'TR-784920', '2016-04-12')" type="button">
+              Ahmet Y.
+            </button>
+<button class="px-2 py-1 rounded bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-on-surface font-body-sm text-body-sm transition-colors shadow-sm" onclick="quickFill('Ayşe', 'Kaya', '34902198452', 'ayse.kaya@workspace.net', '0 (544) 621 10 33', 'TR-918204', '2020-09-18')" type="button">
+              Ayşe K.
+            </button>
+<button class="px-2 py-1 rounded bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-on-surface font-body-sm text-body-sm transition-colors shadow-sm" onclick="quickFill('Mehmet', 'Demir', '28401928410', 'm.demir@holding.com.tr', '0 (505) 991 76 44', 'TR-339108', '2012-01-25')" type="button">
+              Mehmet D.
+            </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1.5">
+<label class="font-table-header text-table-header text-on-surface uppercase tracking-wider flex items-center gap-1" for="inputLicenseNo">
+<span>Ehliyet Belge / Seri No</span>
+<span class="text-error">*</span>
+</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">pin</span>
+<input class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-mono text-body-md pl-10 pr-3 py-2 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 transition-all uppercase" id="inputLicenseNo" placeholder="Örn: TR-654890" required="" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-table-header text-table-header text-on-surface uppercase tracking-wider flex items-center gap-1" for="inputLicenseDate">
+<span>Ehliyet Veriliş Tarihi</span>
+<span class="text-error">*</span>
+</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">calendar_today</span>
+<input class="w-full bg-surface-container-low focus:bg-surface-container-lowest text-on-surface font-body-md text-body-md pl-10 pr-3 py-2 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 transition-all" id="inputLicenseDate" required="" type="date"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4: Entity İlişkisi Card -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex items-start gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[24px]">account_tree</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">İlişkisel Veri Mimarisi: Customer → Rentals (1:N)</h3>
+<span class="px-2 py-0.5 rounded bg-surface-container font-label-badge text-label-badge text-primary">Foreign Key Parent</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Müşteri kaydı tamamlandıktan sonra sistemde bağımsız birincil anahtar (PK: <code class="font-mono text-primary font-semibold">customer_id</code>) üretilir. Bu kayıt ileride açılacak tüm rezervasyonlar, depozito tahsilatları ve kaza raporlarıyla <strong>1-to-Many</strong> ilişkilenir.
+          </p>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center justify-end gap-space-md pt-2">
+<a class="px-space-lg py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-nav-item text-label-nav-item transition-colors" href="/Customers">
+          Vazgeç
+        </a>
+<button class="inline-flex items-center gap-2 px-space-xl py-2.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-nav-item text-label-nav-item shadow-sm transition-all" onclick="handleSave()" type="button">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>Müşteriyi Kaydet</span>
+</button>
+</div>
+</form>
+<!-- Right Column: Live Preview & Guideline Card (4 cols) -->
+<div class="lg:col-span-4 flex flex-col gap-space-lg">
+<!-- Live Preview Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md sticky top-20">
+<div class="flex items-center justify-between pb-2">
+<span class="font-label-nav-header text-label-nav-header uppercase tracking-wider text-secondary">Canlı Kart Önizleme</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-tertiary font-label-badge text-label-badge">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+            Dinamik Senkron
+          </span>
+</div>
+<!-- Simulated Badge Visual Card -->
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary-container via-primary to-inverse-surface text-on-primary p-space-md shadow-md">
+<div class="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-on-primary/10 blur-xl pointer-events-none"></div>
+<div class="flex items-start justify-between relative z-10">
+<div class="w-14 h-14 rounded-full bg-on-primary/20 backdrop-blur-md flex items-center justify-center font-headline-xl text-headline-xl text-on-primary font-bold shadow-inner" id="previewAvatar">
+              AY
+            </div>
+<div class="text-right">
+<span class="font-label-badge text-label-badge uppercase tracking-widest text-on-primary/70">RentAdmin</span>
+<div class="font-table-header text-table-header font-bold text-on-primary">MÜŞTERİ KARTI</div>
+</div>
+</div>
+<div class="mt-4 relative z-10">
+<div class="font-headline-lg text-headline-lg font-bold truncate" id="previewFullName">Ahmet Yılmaz</div>
+<div class="font-mono font-body-sm text-body-sm text-on-primary/80 mt-0.5" id="previewTC">TC: 109*****102</div>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between text-on-primary/90 relative z-10">
+<div>
+<div class="font-label-badge text-label-badge text-on-primary/60 uppercase">Ehliyet Deneyimi</div>
+<div class="font-headline-md text-headline-md font-bold" id="previewExp">8 Yıl</div>
+</div>
+<div class="text-right">
+<div class="font-label-badge text-label-badge text-on-primary/60 uppercase">Uygun Segment</div>
+<div class="font-label-badge text-label-badge font-semibold px-2 py-0.5 rounded bg-on-primary/20" id="previewSegment">Premium &amp; SUV</div>
+</div>
+</div>
+</div>
+<!-- Extra Metadata Live List -->
+<div class="flex flex-col gap-2 pt-1 font-body-sm text-body-sm">
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">mail</span> E-Posta:
+            </span>
+<span class="font-medium text-on-surface truncate max-w-[170px]" id="previewEmail">ahmet.yilmaz@email.com</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">call</span> Telefon:
+            </span>
+<span class="font-medium text-on-surface" id="previewPhone">0 (532) 412 88 19</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">verified</span> Belge No:
+            </span>
+<span class="font-mono text-on-surface font-semibold" id="previewLicense">TR-784920</span>
+</div>
+</div>
+<!-- Simulated Table Row Snippet -->
+<div class="flex flex-col gap-1.5 pt-2">
+<span class="font-label-nav-header text-label-nav-header uppercase tracking-wider text-secondary">Tablo Görünümü Projeksiyonu</span>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-center justify-between text-body-sm">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]" id="miniAvatar">
+                AY
+              </div>
+<div class="truncate">
+<div class="font-semibold text-on-surface truncate leading-tight" id="miniName">Ahmet Yılmaz</div>
+<div class="text-[11px] text-on-surface-variant truncate" id="miniEmail">ahmet.yilmaz@email.com</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-tertiary font-label-badge text-label-badge whitespace-nowrap">
+              Yeni Müşteri
+            </span>
+</div>
+</div>
+<!-- Müşteri Doğrulama Kılavuzu -->
+<div class="mt-2 p-space-md rounded-xl bg-surface-container-low flex flex-col gap-2">
+<div class="flex items-center gap-1.5 text-on-surface font-headline-md text-[15px]">
+<span class="material-symbols-outlined text-primary text-[20px]">fact_check</span>
+<span>Müşteri Doğrulama Kılavuzu</span>
+</div>
+<ul class="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface-variant pl-1">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[16px] shrink-0 mt-0.5">check_circle</span>
+<span><strong>Ekonomik Sınıf:</strong> Asgari 21 yaş ve en az 1 yıllık geçerli sürücü belgesi gereklidir.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[16px] shrink-0 mt-0.5">check_circle</span>
+<span><strong>Lüks &amp; SUV:</strong> Asgari 25 yaş ve en az 3 yıllık aktif ehliyet teyidi zorunludur.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[16px] shrink-0 mt-0.5">check_circle</span>
+<span>KABİS servis kesintisi durumunda müşteri kimliğinin aslı teslimatta fiziki taranmalıdır.</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- Notification Toast Modal Container (Dynamic via JS) -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 p-4 rounded-xl bg-inverse-surface text-inverse-on-surface shadow-xl" id="toastNotification">
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-on-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">done_all</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-inverse-on-surface">Müşteri Kaydedildi</div>
+<div class="font-body-sm text-body-sm text-inverse-on-surface/80">Yeni müşteri filoya eklendi. Yönlendiriliyorsunuz...</div>
+</div>
+</div>

@@ -49,10 +49,10 @@ namespace Rentaly.BusinessLayer.Concrete
                 IsAvailable = car.IsAvailable
             }).ToList();
         }
-        public async Task<ResultCarDto> TGetByIdAsync(int id)
+        public async Task<GetCarByIdDto> TGetByIdAsync(int id)
         {
             var car = await _carDal.GetByIdAsync(id);
-            return _mapper.Map<ResultCarDto>(car);
+            return _mapper.Map<GetCarByIdDto>(car);
         }
 
         public async Task<List<ResultCarDto>> TGetListAsync()
