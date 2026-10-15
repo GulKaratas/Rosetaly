@@ -1,0 +1,127 @@
+﻿@model DashboardViewModel
+
+<!-- 4. VERİ TABLOLARI (2 Ayrılmış Kart) -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg">
+
+    <!-- Sol Kart: Son Kiralamalar -->
+    <div class="elevated-card p-5">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">history</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md font-bold text-slate-900 tracking-tight">Son Kiralamalar</h2>
+                    <p class="font-body-sm text-body-sm text-slate-500">Sisteme en son düşen kiralama hareketleri</p>
+                </div>
+            </div>
+            <a href="/Admin/Rental/RentalList/" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">Tümünü Gör</a>
+        </div>
+
+        <div class="overflow-x-auto mt-4">
+            @if (Model.RecentRentals != null && Model.RecentRentals.Any())
+            {
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-50 text-slate-700 uppercase text-xs">
+                        <tr>
+                            <th class="p-2.5">Kiralama ID</th>
+                            <th class="p-2.5">Araç / Müşteri</th>
+                            <th class="p-2.5">Tarih</th>
+                            <th class="p-2.5">Tutar</th>
+                            <th class="p-2.5">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach (var rental in Model.RecentRentals)
+                        {
+                            <tr class="hover:bg-slate-50/50">
+                                <td class="p-2.5 font-mono font-bold text-slate-900">#@rental.RentalId</td>
+                                <td class="p-2.5">
+                                    <div class="font-medium text-slate-900">Araç ID: #@rental.CarId</div>
+                                    <div class="text-xs text-slate-500">Müşteri ID: #@rental.CustomerId</div>
+                                </td>
+                                <td class="p-2.5 text-xs">
+                                    <div>@rental.PickupDate.ToString("dd.MM.yyyy")</div>
+                                    <div class="text-slate-400">@rental.ReturnDate.ToString("dd.MM.yyyy")</div>
+                                </td>
+                                <td class="p-2.5 font-mono font-semibold text-slate-900">@rental.TotalPrice.ToString("C2")</td>
+                                <td class="p-2.5">
+                                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full
+                                        @(rental.Status == "Onaylı" ? "bg-emerald-100 text-emerald-800" :
+                                          rental.Status == "Bekliyor" ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-800")">
+                                        @rental.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-sm text-slate-400 text-center py-6">Henüz kayıtlı kiralama hareketi bulunmuyor.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Sağ Kart: Son Eklenen / Kayıtlı Araçlar -->
+    <div class="elevated-card p-5">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">directions_car</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md font-bold text-slate-900 tracking-tight">Filodaki Son Araçlar</h2>
+                    <p class="font-body-sm text-body-sm text-slate-500">Sisteme eklenen en son araçlar ve durumları</p>
+                </div>
+            </div>
+            <a href="/Admin/Car/Carlist/" class="text-xs font-semibold text-sky-600 hover:text-sky-800">Tümünü Gör</a>
+        </div>
+
+        <div class="overflow-x-auto mt-4">
+            @if (Model.RecentCars != null && Model.RecentCars.Any())
+            {
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-50 text-slate-700 uppercase text-xs">
+                        <tr>
+                            <th class="p-2.5">Model / Marka</th>
+                            <th class="p-2.5">Plaka</th>
+                            <th class="p-2.5">Günlük Ücret</th>
+                            <th class="p-2.5">Müsaitlik</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach (var car in Model.RecentCars.Take(5))
+                        {
+                            <tr class="hover:bg-slate-50/50">
+                                <td class="p-2.5 font-medium text-slate-900">
+                                    @car.BrandName @car.ModelName
+                                </td>
+                                <td class="p-2.5 font-mono text-xs">
+                                    <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 font-bold">@car.PlateNumber</span>
+                                </td>
+                                <td class="p-2.5 font-mono font-semibold text-slate-900">@car.DailyPrice.ToString("C2")</td>
+                                <td class="p-2.5">
+                                    @if (car.IsAvailable)
+                                    {
+                                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800">Müsait</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-rose-100 text-rose-800">Kirada</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-sm text-slate-400 text-center py-6">Kayıtlı araç bulunamadı.</p>
+            }
+        </div>
+    </div>
+
+</section>

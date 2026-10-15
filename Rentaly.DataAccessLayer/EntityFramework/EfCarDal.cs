@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Rentaly.DataAccessLayer.Abstract;
 using Rentaly.DataAccessLayer.Concrete;
 using Rentaly.DataAccessLayer.RepositoryDesignPattern;
@@ -29,6 +29,17 @@ namespace Rentaly.DataAccessLayer.EntityFramework
                 .Include(car => car.Branch)
                 .ToListAsync();
         }
+        public override async Task<Car> GetByIdAsync(int id)
+        {
+            return await _context.Cars
+                .AsNoTracking()
+                .Include(car => car.CarModel)
+                    .ThenInclude(model => model.Brand)
+                .Include(car => car.Category)
+                .Include(car => car.Branch)
+                .FirstOrDefaultAsync(car => car.CarId == id);
+        }
+
         public async Task<List<Car>> GetLatest10CarsAsync()
         {
             return await _context.Cars

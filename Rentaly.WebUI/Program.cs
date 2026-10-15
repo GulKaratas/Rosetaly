@@ -50,6 +50,9 @@ builder.Services.AddScoped<IFAQService, FAQManager>();
 builder.Services.AddScoped<IRentalDal, EfRentalDal>();
 builder.Services.AddScoped<IRentalService, RentalManager>();
 
+builder.Services.AddScoped<IEmailService, EmailManager>();
+builder.Services.AddScoped<IAiOperationsService, AiOperationsManager>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -63,6 +66,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// Bulunamayan sayfa kodlarını (404 vb.) yakalamak için:
+app.UseStatusCodePagesWithReExecute("/Error/NotFound", "?statusCode={0}");
 app.UseStaticFiles();
 
 app.UseRouting();

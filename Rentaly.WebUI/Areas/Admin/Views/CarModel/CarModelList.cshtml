@@ -1,4 +1,4 @@
-﻿@model List<Rentaly.EntityLayer.Entities.CarModel>
+@model List<Rentaly.EntityLayer.Entities.CarModel>
 @{
     ViewData["Title"] = "CarModelList";
     Layout = "~/Views/AdminLayout/Index.cshtml";
@@ -32,11 +32,7 @@
                         class="appearance-none bg-surface-container-low text-on-surface font-body-sm text-body-sm py-space-xs pl-space-md pr-8 rounded-lg outline-none cursor-pointer focus:bg-surface-container transition-colors">
                     <option value="">Tüm Markalar</option>
 
-                    @foreach (var brand in Model
-                        .Where(x => x.Brand != null)
-                        .Select(x => x.Brand.BrandName)
-                        .Distinct()
-                        .OrderBy(x => x))
+                    @foreach (var brand in Model.Select(x => x.Brand.BrandName).Distinct().OrderBy(x => x))
                     {
                         <option value="@brand">@brand</option>
                     }
@@ -89,7 +85,6 @@
                     <th class="py-3 px-4">ID</th>
                     <th class="py-3 px-4">Model Adı</th>
                     <th class="py-3 px-4">Bağlı Marka</th>
-                    <th class="py-3 px-4">Filo Bilgisi</th>
                     <th class="py-3 px-4">Durum</th>
                     <th class="py-3 px-4 text-right">İşlemler</th>
 
@@ -101,7 +96,7 @@
 
                 @foreach (var item in Model)
                 {
-                    var brandName = item.Brand?.BrandName ?? "Marka belirtilmemiş";
+                    var brandName = item.Brand.BrandName;
 
                     <tr class="model-row hover:bg-surface-container-low/60 transition-colors group"
                         data-name="@item.ModelName"
@@ -151,17 +146,6 @@
                         </td>
 
                         <td class="py-3 px-4">
-                            <div class="flex items-center gap-2">
-                                <span class="inline-flex items-center gap-1 font-semibold text-on-surface">
-                                    <span class="material-symbols-outlined text-[16px] text-secondary">
-                                        local_taxi
-                                    </span>
-                                    Araç
-                                </span>
-                            </div>
-                        </td>
-
-                        <td class="py-3 px-4">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed">
                                 <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
                                 Kayıtlı
@@ -171,14 +155,6 @@
                         <td class="py-3 px-4 text-right">
                             <div class="inline-flex items-center justify-end gap-1">
 
-                                <a href="/Admin/Car/CarList?carModelId=@item.CarModelId"
-                                   class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors"
-                                   title="Modelin Araçlarını Gör">
-                                    <span class="material-symbols-outlined text-[18px]">
-                                        directions_car
-                                    </span>
-                                </a>
-
                                 <a href="/Admin/CarModel/UpdateCarModel/@item.CarModelId"
                                    class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors"
                                    title="Düzenle">
@@ -187,14 +163,11 @@
                                     </span>
                                 </a>
 
-                                <a href="/Admin/CarModel/DeleteCarModel/@item.CarModelId"
-                                   class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors"
-                                   title="Sil"
-                                   onclick="return confirm('Bu araç modelini silmek istediğinize emin misiniz?')">
-                                    <span class="material-symbols-outlined text-[18px]">
-                                        delete
-                                    </span>
-                                </a>
+                                <form asp-area="Admin" asp-controller="CarModel" asp-action="DeleteCarModel" asp-route-id="@item.CarModelId" method="post" class="inline" onsubmit="return confirm('@item.ModelName modelini silmek istediğinize emin misiniz?');">
+                                    <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors" title="Sil" type="submit">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    </button>
+                                </form>
 
                             </div>
                         </td>

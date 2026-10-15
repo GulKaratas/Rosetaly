@@ -1,0 +1,576 @@
+﻿@model ReservationPageViewModel
+@{
+    ViewData["Title"] = "Rezervasyon";
+    Layout = "~/Views/Shared/_UILayout.cshtml";
+    var car = Model.Car;
+    var form = Model.Form;
+    var today = DateTime.Today.ToString("yyyy-MM-dd");
+    var step = Model.ActiveStep < 1 ? 1 : Model.ActiveStep;
+}
+
+<style>
+    .reserve-page {
+        margin-top: 92px;
+        padding: 28px 0 72px;
+    }
+
+    .reserve-page .car-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .reserve-side {
+        position: sticky;
+        top: 96px;
+    }
+
+    .reserve-photo {
+        height: 230px;
+        background: #0f1217;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-size: 2.6rem;
+        overflow: hidden;
+    }
+
+    .reserve-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .reserve-steps {
+        display: flex;
+        align-items: flex-start;
+        gap: 0;
+        list-style: none;
+        margin: 0 0 22px;
+        padding: 0;
+    }
+
+    .reserve-steps li {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+        position: relative;
+        color: #6d7888;
+    }
+
+    .reserve-steps li::before {
+        content: "";
+        position: absolute;
+        top: 16px;
+        left: calc(-50% + 18px);
+        right: calc(50% + 18px);
+        height: 2px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .reserve-steps li:first-child::before {
+        display: none;
+    }
+
+    .reserve-steps li.is-done::before,
+    .reserve-steps li.is-active::before {
+        background: var(--primary-color);
+    }
+
+    .reserve-steps .step-mark {
+        width: 32px;
+        height: 32px;
+        margin: 0 auto 8px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: #141920;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.82rem;
+        font-weight: 800;
+        position: relative;
+        z-index: 1;
+    }
+
+    .reserve-steps li.is-active {
+        color: #fff;
+    }
+
+    .reserve-steps li.is-active .step-mark,
+    .reserve-steps li.is-done .step-mark {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: #0b0f14;
+    }
+
+    .reserve-steps small {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+
+    .step-panel {
+        display: none;
+    }
+
+    .step-panel.is-active {
+        display: block;
+        animation: reserveStep .28s ease;
+    }
+
+    @@keyframes reserveStep {
+        from { opacity: 0; transform: translateX(18px); }
+        to { opacity: 1; transform: none; }
+    }
+
+    .reserve-page .form-label {
+        color: #d5dbe3;
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .reserve-page .form-control,
+    .reserve-page .form-select {
+        background: #11141a;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border-radius: 12px;
+        min-height: 46px;
+        color-scheme: dark;
+    }
+
+    .reserve-page .form-control:focus,
+    .reserve-page .form-select:focus {
+        background: #11141a;
+        color: #fff;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(30, 203, 21, 0.15);
+    }
+
+    .reserve-page .is-invalid {
+        border-color: #ef4444 !important;
+    }
+
+    .field-error {
+        min-height: 16px;
+        margin: 4px 0 0;
+        color: #fca5a5;
+        font-size: 0.75rem;
+    }
+
+    .spec-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .spec-tile {
+        background: #11141a;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 10px 12px;
+    }
+
+    .spec-tile span {
+        display: block;
+        color: #8e9aab;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .spec-tile strong {
+        display: block;
+        margin-top: 3px;
+        font-size: 0.92rem;
+    }
+
+    .review-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 0.92rem;
+    }
+
+    .review-row span { color: #8e9aab; }
+    .review-row strong { text-align: right; }
+
+    .reserve-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-top: 22px;
+    }
+
+    @@media (max-width: 991px) {
+        .reserve-side { position: static; }
+    }
+
+    @@media (max-width: 575px) {
+        .reserve-steps small { font-size: 0.68rem; }
+        .spec-grid { grid-template-columns: 1fr 1fr; }
+    }
+</style>
+
+<section class="reserve-page">
+    <div class="container">
+        @if (car == null)
+        {
+            <div class="car-card car-body text-center">
+                <h1 class="h4 mb-2">Araç bulunamadı</h1>
+                <p class="text-white-50 mb-3">Rezervasyon için önce bir araç seçin.</p>
+                <a class="btn btn-custom-primary" asp-controller="Car" asp-action="CarList">Araçlara Dön</a>
+            </div>
+        }
+        else
+        {
+            <ol class="reserve-steps" id="reserveSteps">
+                <li class="@(Model.Submitted || step > 1 ? "is-done" : step == 1 ? "is-active" : "")" data-step="1"><div class="step-mark">@(Model.Submitted || step > 1 ? "✓" : "1")</div><small>Kiralama Bilgileri</small></li>
+                <li class="@(Model.Submitted || step > 2 ? "is-done" : step == 2 ? "is-active" : "")" data-step="2"><div class="step-mark">@(Model.Submitted || step > 2 ? "✓" : "2")</div><small>Sürücü Bilgileri</small></li>
+                <li class="@(Model.Submitted ? "is-done" : step == 3 ? "is-active" : "")" data-step="3"><div class="step-mark">@(Model.Submitted ? "✓" : "3")</div><small>Kontrol ve Onay</small></li>
+            </ol>
+
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-5">
+                    <div class="car-card reserve-side">
+                        <div class="reserve-photo">
+                            @if (!string.IsNullOrWhiteSpace(car.ImageUrl))
+                            {
+                                <img src="@car.ImageUrl" alt="@car.DisplayName" />
+                            }
+                            else
+                            {
+                                <i class="fa fa-car-side"></i>
+                            }
+                        </div>
+                        <div class="car-body">
+                            <p class="text-white-50 small mb-1">@car.BrandName</p>
+                            <div class="d-flex justify-content-between align-items-start gap-3">
+                                <h1 class="h4 mb-0">@car.ModelName</h1>
+                                <div class="text-end">
+                                    <div class="price-val text-primary-custom">₺@car.DailyPrice.ToString("N0") <span>/ gün</span></div>
+                                </div>
+                            </div>
+                            <div class="spec-grid mt-3">
+                                <div class="spec-tile"><span>Model yılı</span><strong>@car.Year</strong></div>
+                                <div class="spec-tile"><span>Vites</span><strong>@car.Transmission</strong></div>
+                                <div class="spec-tile"><span>Yakıt</span><strong>@car.FuelType</strong></div>
+                                <div class="spec-tile"><span>Koltuk</span><strong>@car.SeatCount kişi</strong></div>
+                                <div class="spec-tile"><span>Günlük ücret</span><strong>₺@car.DailyPrice.ToString("N0")</strong></div>
+                                <div class="spec-tile"><span>Depozito</span><strong>₺@car.DepositAmount.ToString("N0")</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    @if (Model.Submitted)
+                    {
+                        <div class="car-card car-body text-center">
+                            <span class="hero-tag">Bekliyor</span>
+                            <h2 class="h4 mt-2">Talebiniz alındı</h2>
+                            <p class="text-white-50 mb-0">Araç, yönetici onayından sonra seçtiğiniz tarihler için ayrılır.</p>
+                        </div>
+                    }
+                    else
+                    {
+                    <form id="reserveForm" method="post" asp-controller="Rental" asp-action="Index" novalidate
+                          data-daily="@car.DailyPrice.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                          data-deposit="@car.DepositAmount.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                        <input type="hidden" name="CarId" value="@car.CarId" />
+                        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+                        {
+                            <div class="car-card car-body mb-3 text-danger">@Model.ErrorMessage</div>
+                        }
+                        <div class="step-panel @(step == 1 ? "is-active" : "")" data-panel="1">
+                            <div class="car-card car-body">
+                                <h2 class="h5 mb-1">Kiralama Bilgileri</h2>
+                                <p class="text-white-50 small mb-4">Alış ve iade zamanını, teslim şubelerini seçin.</p>
+                                <div class="row g-3">
+                                    <div class="col-sm-7">
+                                        <label class="form-label" for="pickupDate">Alış tarihi <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="pickupDate" name="PickupDate" type="date" min="@today" value="@form.PickupDate" required />
+                                        <p class="field-error" data-for="pickupDate"></p>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <label class="form-label" for="pickupTime">Alış saati <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="pickupTime" name="PickupTime" type="time" value="@(string.IsNullOrWhiteSpace(form.PickupTime) ? "10:00" : form.PickupTime)" required />
+                                        <p class="field-error" data-for="pickupTime"></p>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <label class="form-label" for="returnDate">İade tarihi <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="returnDate" name="ReturnDate" type="date" min="@today" value="@form.ReturnDate" required />
+                                        <p class="field-error" data-for="returnDate"></p>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <label class="form-label" for="returnTime">İade saati <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="returnTime" name="ReturnTime" type="time" value="@(string.IsNullOrWhiteSpace(form.ReturnTime) ? "10:00" : form.ReturnTime)" required />
+                                        <p class="field-error" data-for="returnTime"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="pickupBranch">Alış şubesi <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="pickupBranch" name="PickupBranch" required>
+                                            <option value="">Şube seçiniz</option>
+                                            @foreach (var branch in Model.Branches)
+                                            {
+                                                if (branch.BranchId == form.PickupBranch)
+                                                {
+                                                    <option value="@branch.BranchId" selected>@branch.BranchName</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@branch.BranchId">@branch.BranchName</option>
+                                                }
+                                            }
+                                        </select>
+                                        <p class="field-error" data-for="pickupBranch"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="returnBranch">İade şubesi <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="returnBranch" name="ReturnBranch" required>
+                                            <option value="">Şube seçiniz</option>
+                                            @foreach (var branch in Model.Branches)
+                                            {
+                                                if (branch.BranchId == form.ReturnBranch)
+                                                {
+                                                    <option value="@branch.BranchId" selected>@branch.BranchName</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@branch.BranchId">@branch.BranchName</option>
+                                                }
+                                            }
+                                        </select>
+                                        <p class="field-error" data-for="returnBranch"></p>
+                                    </div>
+                                </div>
+                                <div class="reserve-actions">
+                                    <a class="text-white-50 small text-decoration-none" asp-controller="Car" asp-action="CarsDetails" asp-route-id="@car.CarId">
+                                        <i class="fa fa-arrow-left me-1"></i>Araç detayına dön
+                                    </a>
+                                    <button class="btn btn-custom-primary" type="button" data-next="2">Devam Et</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-panel @(step == 2 ? "is-active" : "")" data-panel="2">
+                            <div class="car-card car-body">
+                                <h2 class="h5 mb-1">Sürücü Bilgileri</h2>
+                                <p class="text-white-50 small mb-4">Sözleşme için sürücü ve iletişim bilgilerini girin.</p>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="firstName">Ad <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="firstName" name="FirstName" type="text" placeholder="Ad" value="@form.FirstName" required />
+                                        <p class="field-error" data-for="firstName"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="lastName">Soyad <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="lastName" name="LastName" type="text" placeholder="Soyad" value="@form.LastName" required />
+                                        <p class="field-error" data-for="lastName"></p>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label" for="email">E-posta <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="email" name="Email" type="email" placeholder="ad@ornek.com" value="@form.Email" required />
+                                        <p class="field-error" data-for="email"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="phone">Telefon <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="phone" name="Phone" type="tel" placeholder="05xx xxx xx xx" value="@form.Phone" required />
+                                        <p class="field-error" data-for="phone"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="nationalId">T.C. kimlik no <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="nationalId" name="NationalId" type="text" inputmode="numeric" maxlength="11" placeholder="11 hane" value="@form.NationalId" required />
+                                        <p class="field-error" data-for="nationalId"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="licenseNo">Ehliyet numarası <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="licenseNo" name="LicenseNo" type="text" placeholder="Belge no" value="@form.LicenseNo" required />
+                                        <p class="field-error" data-for="licenseNo"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="licenseDate">Ehliyet tarihi <span class="text-danger">*</span></label>
+                                        <input class="form-control" id="licenseDate" name="LicenseDate" type="date" max="@today" value="@form.LicenseDate" required />
+                                        <p class="field-error" data-for="licenseDate"></p>
+                                    </div>
+                                </div>
+                                <div class="reserve-actions">
+                                    <button class="btn btn-ocr" type="button" data-prev="1">Geri</button>
+                                    <button class="btn btn-custom-primary" type="button" data-next="3">Devam Et</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-panel @(step == 3 ? "is-active" : "")" data-panel="3">
+                            <div class="car-card car-body">
+                                <h2 class="h5 mb-1">Kontrol ve Onay</h2>
+                                <p class="text-white-50 small mb-3">Bilgileri kontrol edin. Talep, yönetici onayına kadar bekler.</p>
+                                <div class="review-row"><span>Alış</span><strong id="reviewPickup"></strong></div>
+                                <div class="review-row"><span>İade</span><strong id="reviewReturn"></strong></div>
+                                <div class="review-row"><span>Alış şubesi</span><strong id="reviewPickupBranch"></strong></div>
+                                <div class="review-row"><span>İade şubesi</span><strong id="reviewReturnBranch"></strong></div>
+                                <div class="review-row"><span>Sürücü</span><strong id="reviewDriver"></strong></div>
+                                <div class="review-row"><span>İletişim</span><strong id="reviewContact"></strong></div>
+                                <div class="review-row"><span>Süre</span><strong id="reviewDays"></strong></div>
+                                <div class="review-row"><span>Kiralama tutarı</span><strong id="reviewTotal"></strong></div>
+                                <div class="review-row"><span>Depozito</span><strong id="reviewDeposit"></strong></div>
+                                <div class="reserve-actions">
+                                    <button class="btn btn-ocr" type="button" data-prev="2">Geri</button>
+                                    <button class="btn btn-custom-primary" type="submit" id="finishReserve">Talebi Gönder</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@if (car != null && !Model.Submitted)
+{
+    <script>
+        (function () {
+            const form = document.getElementById("reserveForm");
+            const steps = [...document.querySelectorAll("#reserveSteps li")];
+            const panels = [...document.querySelectorAll(".step-panel")];
+            const daily = Number(form.dataset.daily || 0);
+            const deposit = Number(form.dataset.deposit || 0);
+
+            function field(id) { return document.getElementById(id); }
+            function errorFor(id) { return document.querySelector('.field-error[data-for="' + id + '"]'); }
+
+            function setError(id, message) {
+                const input = field(id);
+                const error = errorFor(id);
+                if (input) input.classList.toggle("is-invalid", Boolean(message));
+                if (error) error.textContent = message || "";
+                return !message;
+            }
+
+            function selectedText(id) {
+                const select = field(id);
+                const option = select.options[select.selectedIndex];
+                return option && option.value ? option.text : "";
+            }
+
+            function combine(dateId, timeId) {
+                const date = field(dateId).value;
+                const time = field(timeId).value || "00:00";
+                if (!date) return null;
+                const value = new Date(date + "T" + time);
+                return Number.isNaN(value.getTime()) ? null : value;
+            }
+
+            function startOfToday() {
+                const now = new Date();
+                return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            }
+
+            function validateStep(step) {
+                let ok = true;
+                if (step === 1) {
+                    ok = setError("pickupDate", field("pickupDate").value ? "" : "Alış tarihi seçin.") && ok;
+                    ok = setError("pickupTime", field("pickupTime").value ? "" : "Alış saati seçin.") && ok;
+                    ok = setError("returnDate", field("returnDate").value ? "" : "İade tarihi seçin.") && ok;
+                    ok = setError("returnTime", field("returnTime").value ? "" : "İade saati seçin.") && ok;
+                    ok = setError("pickupBranch", field("pickupBranch").value ? "" : "Alış şubesi seçin.") && ok;
+                    ok = setError("returnBranch", field("returnBranch").value ? "" : "İade şubesi seçin.") && ok;
+
+                    const pickup = combine("pickupDate", "pickupTime");
+                    const back = combine("returnDate", "returnTime");
+                    if (pickup && pickup < startOfToday()) {
+                        ok = setError("pickupDate", "Geçmiş bir tarih seçilemez.") && false;
+                    }
+                    if (pickup && back && back <= pickup) {
+                        ok = setError("returnDate", "İade, alış tarihinden sonra olmalıdır.") && false;
+                    }
+                }
+
+                if (step === 2) {
+                    ok = setError("firstName", field("firstName").value.trim() ? "" : "Ad gerekli.") && ok;
+                    ok = setError("lastName", field("lastName").value.trim() ? "" : "Soyad gerekli.") && ok;
+                    const email = field("email").value.trim();
+                    ok = setError("email", /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(email) ? "" : "Geçerli bir e-posta girin.") && ok;
+                    ok = setError("phone", field("phone").value.trim().length >= 10 ? "" : "Telefon numarası gerekli.") && ok;
+                    ok = setError("nationalId", /^\d{11}$/.test(field("nationalId").value.trim()) ? "" : "Kimlik numarası 11 hane olmalıdır.") && ok;
+                    ok = setError("licenseNo", field("licenseNo").value.trim() ? "" : "Ehliyet numarası gerekli.") && ok;
+                    const licenseDate = field("licenseDate").value;
+                    ok = setError("licenseDate", licenseDate && licenseDate <= "@today" ? "" : "Ehliyet tarihi bugünden sonra olamaz.") && ok;
+                }
+                return ok;
+            }
+
+            function money(value) {
+                return "₺" + Math.round(value).toLocaleString("tr-TR");
+            }
+
+            function fillReview() {
+                const pickup = combine("pickupDate", "pickupTime");
+                const back = combine("returnDate", "returnTime");
+                const days = Math.max(1, Math.ceil((back - pickup) / 86400000));
+                const format = new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium", timeStyle: "short" });
+                field("reviewPickup").textContent = format.format(pickup);
+                field("reviewReturn").textContent = format.format(back);
+                field("reviewPickupBranch").textContent = selectedText("pickupBranch");
+                field("reviewReturnBranch").textContent = selectedText("returnBranch");
+                field("reviewDriver").textContent = field("firstName").value.trim() + " " + field("lastName").value.trim();
+                field("reviewContact").textContent = field("email").value.trim();
+                field("reviewDays").textContent = days + " gün";
+                field("reviewTotal").textContent = money(days * daily);
+                field("reviewDeposit").textContent = money(deposit);
+            }
+
+            function showStep(step) {
+                const finished = step === "done";
+                panels.forEach(panel => panel.classList.toggle("is-active", panel.dataset.panel === String(step)));
+                steps.forEach(item => {
+                    const number = Number(item.dataset.step);
+                    const done = finished || number < step;
+                    item.classList.toggle("is-active", !finished && number === step);
+                    item.classList.toggle("is-done", done);
+                    item.querySelector(".step-mark").textContent = done ? "✓" : String(number);
+                });
+            }
+
+            form.addEventListener("click", function (event) {
+                const next = event.target.closest("[data-next]");
+                const prev = event.target.closest("[data-prev]");
+                if (next) {
+                    const target = Number(next.dataset.next);
+                    if (!validateStep(target - 1)) return;
+                    if (target === 3) fillReview();
+                    showStep(target);
+                }
+                if (prev) showStep(Number(prev.dataset.prev));
+            });
+
+            form.addEventListener("submit", function (event) {
+                const step1 = validateStep(1);
+                const step2 = step1 && validateStep(2);
+                if (!step1 || !step2) {
+                    event.preventDefault();
+                    showStep(step1 ? 2 : 1);
+                    return;
+                }
+                fillReview();
+            });
+
+            field("pickupDate").addEventListener("change", function () {
+                if (field("pickupDate").value) field("returnDate").min = field("pickupDate").value;
+            });
+
+            if (document.querySelector('.step-panel[data-panel="3"].is-active')) {
+                fillReview();
+            }
+        })();
+    </script>
+}

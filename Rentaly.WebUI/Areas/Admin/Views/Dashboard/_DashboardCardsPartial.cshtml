@@ -1,0 +1,108 @@
+﻿@model DashboardViewModel
+
+<section>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-label-nav-header uppercase tracking-wider text-slate-500 font-bold">FİLO VE REZERVASYON ANA PERFORMANS GÖSTERGELERİ</span>
+                            <span class="font-label-badge text-label-badge text-slate-500">Canlı KABİS &amp; Envanter Senkronizasyonu</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
+                            <!-- KPI 1: Toplam Araç Sayısı -->
+                            
+                            <div class="elevated-card p-3.5 flex flex-col justify-between" style="border-top: 3px solid #2563eb !important;">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-label-nav-header text-slate-500 uppercase tracking-wider text-[11px]">Toplam Araç</span>
+                                    <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[17px]">directions_car</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">@Model.CarCount</div>
+                                    <span class="font-body-sm text-[12px] text-slate-500 mt-0.5 block">Kayıtlı Filo Hacmi</span>
+                                </div>
+                            </div>
+                            <!-- KPI 2: Müsait Araç Sayısı -->
+                            <div class="elevated-card p-3.5 flex flex-col justify-between" style="border-top: 3px solid #059669 !important;">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-label-nav-header text-slate-500 uppercase tracking-wider text-[11px]">Müsait Araç</span>
+                                    <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[17px]">check_circle</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="flex items-baseline gap-1.5">
+                                        <div class="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">@Model.AvailableCarCount</div>
+                                     
+                                    </div>
+                                    <span class="font-body-sm text-[12px] text-slate-500 mt-0.5 block">Kiralanabilir Durumda</span>
+                                </div>
+                            </div>
+                            <!-- KPI 3: Toplam Müşteri Sayısı -->
+                            <div class="elevated-card p-3.5 flex flex-col justify-between" style="border-top: 3px solid #0284c7 !important;">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-label-nav-header text-slate-500 uppercase tracking-wider text-[11px]">Toplam Müşteri</span>
+                                    <div class="w-7 h-7 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[17px]">groups</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">@Model.CustomerCount</div>
+                                    <span class="font-body-sm text-[12px] text-slate-500 mt-0.5 block">Aktif &amp; Kurumsal Üye</span>
+                                </div>
+                            </div>
+                            <!-- KPI 4: Toplam Şube Sayısı -->
+                            <div class="elevated-card p-3.5 flex flex-col justify-between" style="border-top: 3px solid #475569 !important;">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-label-nav-header text-slate-500 uppercase tracking-wider text-[11px]">TOPLAM ŞUBE</span>
+                                    <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[17px]">store</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                <div class="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">@Model.BranchCount</div>
+                                    <span class="font-body-sm text-[12px] text-slate-500 mt-0.5 block">Havalimanı &amp; Şehir</span>
+                                </div>
+                            </div>
+                            <!-- KPI 5: Bekleyen Rezervasyon Sayısı -->
+                            <div class="elevated-card p-3.5 flex flex-col justify-between" style="border-top: 3px solid #d97706 !important;">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-label-nav-header text-slate-500 uppercase tracking-wider text-[11px]">Bekleyen Rez.</span>
+                                    <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[17px]">hourglass_top</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="flex items-baseline gap-1.5">
+                                        <div class="font-headline-xl text-headline-xl text-amber-700 font-bold tracking-tight">@Model.PendingRentalCount</div>
+                                        <span class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold text-[10px]">İncele</span>
+                                    </div>
+                                    <span class="font-body-sm text-[12px] text-amber-700 font-medium mt-0.5 block">Onay Bekliyor</span>
+                                </div>
+                            </div>
+                            <!-- KPI 6: Onaylı Rezervasyon Sayısı -->
+                            <div class="elevated-card p-3.5 flex flex-col justify-between" style="border-top: 3px solid #0d9488 !important;">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-label-nav-header text-slate-500 uppercase tracking-wider text-[11px]">Onaylı Rez.</span>
+                                    <div class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[17px]">verified</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="font-headline-xl text-headline-xl text-slate-900 font-bold tracking-tight">@Model.ApprovedRentalCount</div>
+                                    <span class="font-body-sm text-[12px] text-slate-500 mt-0.5 block">Planlanan Kontrat</span>
+                                </div>
+                            </div>
+                            <!-- KPI 7: Onaylı Kiralamaların Toplam Tutarı -->
+                            <div class="elevated-card p-3.5 flex flex-col justify-between sm:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-1" style="border-top: 3px solid #16a34a !important;">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-label-nav-header text-slate-500 uppercase tracking-wider text-[11px]">ONAYLI CİRO</span>
+                                    <div class="w-7 h-7 rounded-lg bg-green-100 text-green-700 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[17px]">payments</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                <div class="font-headline-md text-headline-md text-slate-900 font-bold tracking-tight font-mono">@Model.ApprovedRevenue</div>
+                                    <span class="font-body-sm text-[12px] text-emerald-700 font-semibold mt-0.5 block">Toplam Onaylı Tutar</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>

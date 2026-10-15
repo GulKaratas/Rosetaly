@@ -1,0 +1,164 @@
+@model CarModel
+@{
+    ViewData["Title"] = "UpdateCarModel";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    var cars = (List<Car>)ViewBag.Cars;
+    var sample = cars.FirstOrDefault();
+    var yearText = cars.Count == 0 ? "" : cars.Min(x => x.Year) + " - " + cars.Max(x => x.Year);
+}
+
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Model Bilgilerini Güncelle", Model.Brand.BrandName + " " + Model.ModelName + " kaydını düzenleyin.", "Modeller", "", "Listeye Dön", true, "/Admin/CarModel/CarModelList/"))
+}
+
+<form asp-area="Admin" asp-controller="CarModel" asp-action="UpdateCarModel" method="post" class="flex flex-col gap-6 w-full">
+    <input type="hidden" asp-for="CarModelId" />
+
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 flex flex-col gap-5">
+        <div class="flex items-center justify-between pb-3 bg-surface-container-low/40 -mx-6 -mt-6 p-6 rounded-t-xl">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">badge</span>
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="font-headline-md text-headline-md text-on-surface font-semibold">1. Temel Model &amp; Marka Bilgileri</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Sistem içi ID, bağlı ana marka ve katalog model adı.</p>
+                </div>
+            </div>
+            <span class="text-outline font-table-header text-table-header tracking-wider uppercase">Entity: CarModel</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="flex flex-col gap-1.5">
+                <label class="font-table-header text-table-header text-secondary flex items-center justify-between">
+                    <span>Model ID</span>
+                    <span class="text-outline text-[11px] font-normal">Sistem Tarafından Atanır</span>
+                </label>
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-3 text-outline text-[18px]">lock</span>
+                    <input class="w-full pl-9 pr-3 py-2 bg-surface-container-low text-secondary font-label-nav-item text-label-nav-item rounded-lg cursor-not-allowed outline-none select-none" readonly type="text" value="#MDL-@Model.CarModelId" />
+                </div>
+            </div>
+            <div class="flex flex-col gap-1.5 lg:col-span-2">
+                <label class="font-table-header text-table-header text-on-surface font-semibold flex items-center gap-1" asp-for="ModelName">
+                    <span>Model Adı / İsimlendirme</span>
+                    <span class="text-error">*</span>
+                </label>
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">title</span>
+                    <input asp-for="ModelName" class="w-full pl-9 pr-3 py-2 bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-lg shadow-sm focus:bg-surface-container-low transition-colors outline-none" required type="text" />
+                </div>
+            </div>
+            <div class="flex flex-col gap-1.5">
+                <label class="font-table-header text-table-header text-on-surface font-semibold flex items-center gap-1" asp-for="BrandId">
+                    <span>Bağlı Marka (Brand)</span>
+                    <span class="text-error">*</span>
+                </label>
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">military_tech</span>
+                    <select asp-for="BrandId" asp-items="ViewBag.Brands" class="w-full pl-9 pr-8 py-2 bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-lg shadow-sm focus:bg-surface-container-low transition-colors outline-none appearance-none cursor-pointer" required></select>
+                    <span class="material-symbols-outlined absolute right-2.5 pointer-events-none text-outline text-[18px]">unfold_more</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 flex flex-col gap-5">
+        <div class="flex items-center justify-between pb-3 bg-surface-container-low/40 -mx-6 -mt-6 p-6 rounded-t-xl">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-surface-variant flex items-center justify-center text-primary-container">
+                    <span class="material-symbols-outlined text-[20px]">tune</span>
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="font-headline-md text-headline-md text-on-surface font-semibold">2. Model Teknik &amp; Katalog Parametreleri</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Bu modele bağlı araç kayıtlarından gelen katalog özeti.</p>
+                </div>
+            </div>
+            <span class="text-tertiary font-label-badge text-label-badge bg-tertiary-fixed-dim/20 px-2 py-0.5 rounded">Filo Kaydından</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="flex flex-col gap-1.5">
+                <label class="font-table-header text-table-header text-on-surface font-semibold">Yakıt &amp; Güç Ünitesi</label>
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">local_gas_station</span>
+                    <input class="w-full pl-9 pr-3 py-2 bg-surface-container-low text-on-surface font-body-md text-body-md rounded-lg outline-none" readonly type="text" value="@(sample == null ? "Kayıt yok" : sample.FuelType)" />
+                </div>
+            </div>
+            <div class="flex flex-col gap-1.5">
+                <label class="font-table-header text-table-header text-on-surface font-semibold">Vites Tipi</label>
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">speed</span>
+                    <input class="w-full pl-9 pr-3 py-2 bg-surface-container-low text-on-surface font-body-md text-body-md rounded-lg outline-none" readonly type="text" value="@(sample == null ? "Kayıt yok" : sample.Transmission)" />
+                </div>
+            </div>
+            <div class="flex flex-col gap-1.5">
+                <label class="font-table-header text-table-header text-on-surface font-semibold">Kapasite &amp; Bagaj</label>
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">luggage</span>
+                    <input class="w-full pl-9 pr-3 py-2 bg-surface-container-low text-on-surface font-body-md text-body-md rounded-lg outline-none" readonly type="text" value="@(sample == null ? "Kayıt yok" : sample.SeatCount + " Kişilik / " + sample.LuggageCount + " Bagaj")" />
+                </div>
+            </div>
+            <div class="flex flex-col gap-1.5">
+                <label class="font-table-header text-table-header text-on-surface font-semibold">Filo Model Yılı Aralığı</label>
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">calendar_today</span>
+                    <input class="w-full pl-9 pr-3 py-2 bg-surface-container-low text-on-surface font-body-md text-body-md rounded-lg outline-none" readonly type="text" value="@(cars.Count == 0 ? "Kayıt yok" : yearText)" />
+                </div>
+            </div>
+            <div class="flex flex-col gap-1.5 lg:col-span-4">
+                <label class="font-table-header text-table-header text-on-surface font-semibold">Motor &amp; Güç Spesifikasyonu</label>
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">toys</span>
+                    <input class="w-full pl-9 pr-3 py-2 bg-surface-container-low text-on-surface font-body-md text-body-md rounded-lg outline-none" readonly type="text" value="@(sample == null || sample.PerformanceInfo == null ? "Kayıt yok" : sample.PerformanceInfo)" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            @foreach (var car in cars)
+            {
+                <div class="bg-surface-container-low rounded-lg p-4 flex flex-col justify-between gap-3">
+                    <div class="flex items-start justify-between">
+                        <div class="flex flex-col">
+                            <span class="font-table-header text-table-header font-bold text-on-surface tracking-wider bg-surface-container-lowest px-2 py-1 rounded inline-block shadow-sm">@car.PlateNumber</span>
+                            <span class="font-body-sm text-body-sm text-secondary mt-1">@car.Year • @car.Kilometer.ToString("N0") KM</span>
+                        </div>
+                        @if (car.IsAvailable)
+                        {
+                            <span class="px-2 py-0.5 rounded-full bg-tertiary-fixed-dim/30 text-tertiary font-label-badge text-label-badge font-semibold">Müsait</span>
+                        }
+                        else
+                        {
+                            <span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-fixed font-label-badge text-label-badge font-semibold">Kiralamada</span>
+                        }
+                    </div>
+                    <div class="flex items-center justify-between pt-2">
+                        <span class="text-secondary font-body-sm text-body-sm flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px] text-outline">location_on</span>
+                            @car.Branch.BranchName
+                        </span>
+                        <a class="text-primary hover:underline font-label-nav-item text-label-nav-item text-[12px] flex items-center" href="/Admin/Car/CarList">
+                            Detay
+                            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-4 md:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2 text-secondary font-body-sm text-body-sm">
+            <span class="material-symbols-outlined text-outline text-[18px]">info</span>
+            <span>Kaydedilen alanlar model adı ve bağlı markadır. Teknik özet filo araçlarından okunur.</span>
+        </div>
+        <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <a class="w-full sm:w-auto px-5 py-2.5 bg-surface-container-low hover:bg-surface-container text-on-surface rounded-lg font-label-nav-item text-label-nav-item transition-colors text-center" href="/Admin/CarModel/CarModelList">Vazgeç</a>
+            <button class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary-container text-on-primary rounded-lg font-label-nav-item text-label-nav-item shadow-sm hover:opacity-95 transition-all" type="submit">
+                <span class="material-symbols-outlined text-[18px]">save</span>
+                <span>Değişiklikleri Kaydet</span>
+            </button>
+        </div>
+    </div>
+</form>

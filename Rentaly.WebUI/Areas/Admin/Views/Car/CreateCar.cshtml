@@ -1,4 +1,4 @@
-﻿@model Rentaly.EntityLayer.Entities.Car
+﻿@model CreateCarDto
 
 @{
     ViewData["Title"] = "CreateCar";
@@ -54,6 +54,7 @@
                         </label>
                         <select asp-for="Year" required
                                 class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all">
+                            <option value="">Yıl seçiniz</option>
                             @for (int y = DateTime.Now.Year + 1; y >= 2015; y--)
                             {
                                 <option value="@y">@y</option>
@@ -133,6 +134,7 @@
                         </label>
                         <select asp-for="FuelType" required
                                 class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all">
+                            <option value="">Yakıt seçiniz</option>
                             <option value="Benzin">Benzin</option>
                             <option value="Dizel">Dizel</option>
                             <option value="Hibrit">Hibrit</option>
@@ -147,6 +149,7 @@
                         </label>
                         <select asp-for="Transmission" required
                                 class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all">
+                            <option value="">Vites seçiniz</option>
                             <option value="Otomatik">Otomatik</option>
                             <option value="Manuel">Manuel</option>
                             <option value="Yarı Otomatik">Yarı Otomatik</option>
@@ -159,7 +162,7 @@
                             Koltuk Sayısı <span class="text-error">*</span>
                         </label>
                         <div class="relative">
-                            <input asp-for="SeatCount" type="number" min="1" max="15" value="5" required
+                            <input asp-for="SeatCount" type="number" min="1" max="15" placeholder="5" required
                                    class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">airline_seat_recline_normal</span>
                         </div>
@@ -173,7 +176,7 @@
                             Bagaj Kapasitesi (Valiz) <span class="text-error">*</span>
                         </label>
                         <div class="relative">
-                            <input asp-for="LuggageCount" type="number" min="0" max="10" value="3" required
+                            <input asp-for="LuggageCount" type="number" min="0" max="10" placeholder="3" required
                                    class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all" />
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">luggage</span>
                         </div>
@@ -251,7 +254,7 @@
                 <button type="reset" class="px-5 py-2.5 rounded-lg border border-outline-variant text-secondary hover:bg-surface-container-low text-sm font-medium transition-colors">
                     Formu Temizle
                 </button>
-                <a href="/Cars" class="px-5 py-2.5 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-low text-sm font-medium transition-colors">
+                <a href="/Admin/Car/CarList" class="px-5 py-2.5 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-low text-sm font-medium transition-colors">
                     Vazgeç
                 </a>
                 <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-semibold text-sm shadow-sm hover:bg-primary transition-colors">
@@ -278,46 +281,45 @@
 
                 <div class="border border-outline-variant rounded-xl overflow-hidden bg-surface-container-low">
                     <div class="relative h-44 bg-surface-container-high flex items-center justify-center overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=600&q=80"
-                             alt="Önizleme" class="w-full h-full object-cover" />
-                        <span class="absolute top-2.5 left-2.5 bg-inverse-surface/80 backdrop-blur-sm text-inverse-on-surface text-[11px] font-semibold px-2 py-0.5 rounded">
-                            Segment / Model
-                        </span>
-                        <span class="absolute bottom-2.5 right-2.5 bg-inverse-surface/80 backdrop-blur-sm text-inverse-on-surface text-[11px] font-semibold px-2 py-0.5 rounded">
-                            2024 Model
-                        </span>
+                        <div id="previewPlaceholder" class="flex flex-col items-center gap-1 text-outline">
+                            <span class="material-symbols-outlined text-[40px]">add_photo_alternate</span>
+                            <span class="text-[11px]">Görsel eklenmedi</span>
+                        </div>
+                        <img id="previewImage" alt="" class="hidden w-full h-full object-cover" />
+                        <span id="previewCategory" class="hidden absolute top-2.5 left-2.5 bg-inverse-surface/80 backdrop-blur-sm text-inverse-on-surface text-[11px] font-semibold px-2 py-0.5 rounded"></span>
+                        <span id="previewYear" class="hidden absolute bottom-2.5 right-2.5 bg-inverse-surface/80 backdrop-blur-sm text-inverse-on-surface text-[11px] font-semibold px-2 py-0.5 rounded"></span>
                     </div>
 
                     <div class="p-4 bg-surface-container-lowest">
-                        <div class="flex items-start justify-between mb-1">
-                            <div>
-                                <h3 class="font-bold text-on-surface text-base">Renault Megane Sedan</h3>
-                                <span class="text-xs text-secondary font-mono">34 ABC 789</span>
+                        <div class="flex items-start justify-between mb-1 gap-3">
+                            <div class="min-w-0">
+                                <h3 id="previewModel" class="font-bold text-outline text-base truncate">Marka / Model</h3>
+                                <span id="previewPlate" class="text-xs text-outline font-mono">Plaka</span>
                             </div>
-                            <div class="text-right">
-                                <span class="text-primary font-bold text-lg">1.850 ₺</span>
+                            <div class="text-right shrink-0">
+                                <span id="previewPrice" class="text-outline font-bold text-lg">—</span>
                                 <span class="text-[11px] text-outline block">/ gün</span>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-3 gap-2 py-3 my-3 border-y border-outline-variant text-center">
-                            <div class="text-xs text-secondary flex flex-col items-center gap-0.5">
+                            <div class="text-xs text-outline flex flex-col items-center gap-0.5">
                                 <span class="material-symbols-outlined text-[16px]">local_gas_station</span>
-                                <span>Dizel</span>
+                                <span id="previewFuel">Yakıt</span>
                             </div>
-                            <div class="text-xs text-secondary flex flex-col items-center gap-0.5">
+                            <div class="text-xs text-outline flex flex-col items-center gap-0.5">
                                 <span class="material-symbols-outlined text-[16px]">settings</span>
-                                <span>Otomatik</span>
+                                <span id="previewTransmission">Vites</span>
                             </div>
-                            <div class="text-xs text-secondary flex flex-col items-center gap-0.5">
+                            <div class="text-xs text-outline flex flex-col items-center gap-0.5">
                                 <span class="material-symbols-outlined text-[16px]">airline_seat_recline_normal</span>
-                                <span>5 Kişilik</span>
+                                <span id="previewSeats">Koltuk</span>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between text-xs text-secondary">
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> İstanbul - Kadıköy</span>
-                            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">speed</span> 0 km</span>
+                        <div class="flex items-center justify-between text-xs text-outline gap-2">
+                            <span class="flex items-center gap-1 min-w-0"><span class="material-symbols-outlined text-[14px]">location_on</span><span id="previewBranch" class="truncate">Şube</span></span>
+                            <span class="flex items-center gap-1 shrink-0"><span class="material-symbols-outlined text-[14px]">speed</span><span id="previewKm">Km</span></span>
                         </div>
                     </div>
                 </div>
@@ -349,5 +351,98 @@
 
     </div>
 </form>
+
+<script>
+    const previewFields = {
+        model: document.getElementById("CarModelId"),
+        category: document.getElementById("CategoryId"),
+        branch: document.getElementById("BranchId"),
+        year: document.getElementById("Year"),
+        plate: document.getElementById("PlateNumber"),
+        price: document.getElementById("DailyPrice"),
+        fuel: document.getElementById("FuelType"),
+        transmission: document.getElementById("Transmission"),
+        seats: document.getElementById("SeatCount"),
+        km: document.getElementById("Kilometer"),
+        image: document.getElementById("ImageUrl")
+    };
+
+    const preview = {
+        model: document.getElementById("previewModel"),
+        category: document.getElementById("previewCategory"),
+        branch: document.getElementById("previewBranch"),
+        year: document.getElementById("previewYear"),
+        plate: document.getElementById("previewPlate"),
+        price: document.getElementById("previewPrice"),
+        fuel: document.getElementById("previewFuel"),
+        transmission: document.getElementById("previewTransmission"),
+        seats: document.getElementById("previewSeats"),
+        km: document.getElementById("previewKm"),
+        image: document.getElementById("previewImage"),
+        placeholder: document.getElementById("previewPlaceholder")
+    };
+
+    function selectedText(select) {
+        if (!select || select.selectedIndex < 0) return "";
+        const option = select.options[select.selectedIndex];
+        return option.value ? option.text.trim() : "";
+    }
+
+    function setText(element, value, emptyText, filledClass) {
+        const hasValue = Boolean(value);
+        element.textContent = hasValue ? value : emptyText;
+        element.classList.toggle("text-outline", !hasValue);
+        element.classList.toggle(filledClass, hasValue);
+    }
+
+    function setBadge(element, value) {
+        element.textContent = value;
+        element.classList.toggle("hidden", !value);
+    }
+
+    function syncPreview() {
+        setText(preview.model, selectedText(previewFields.model), "Marka / Model", "text-on-surface");
+        setText(preview.plate, previewFields.plate.value.trim(), "Plaka", "text-secondary");
+        setText(preview.fuel, previewFields.fuel.value, "Yakıt", "text-secondary");
+        setText(preview.transmission, previewFields.transmission.value, "Vites", "text-secondary");
+        setText(preview.seats, previewFields.seats.value ? previewFields.seats.value + " Kişilik" : "", "Koltuk", "text-secondary");
+        setText(preview.branch, selectedText(previewFields.branch), "Şube", "text-secondary");
+        setText(preview.km, previewFields.km.value ? Number(previewFields.km.value).toLocaleString("tr-TR") + " km" : "", "Km", "text-secondary");
+
+        const price = previewFields.price.value;
+        setText(preview.price, price ? Number(price).toLocaleString("tr-TR") + " ₺" : "", "—", "text-primary");
+        setBadge(preview.category, selectedText(previewFields.category));
+        setBadge(preview.year, previewFields.year.value ? previewFields.year.value + " Model" : "");
+
+        const url = previewFields.image.value.trim();
+        if (!url) {
+            preview.image.removeAttribute("src");
+            preview.image.classList.add("hidden");
+            preview.placeholder.classList.remove("hidden");
+            return;
+        }
+
+        preview.image.src = url;
+    }
+
+    preview.image.addEventListener("load", () => {
+        if (!previewFields.image.value.trim()) return;
+        preview.image.classList.remove("hidden");
+        preview.placeholder.classList.add("hidden");
+    });
+
+    preview.image.addEventListener("error", () => {
+        preview.image.classList.add("hidden");
+        preview.placeholder.classList.remove("hidden");
+    });
+
+    Object.values(previewFields).forEach(field => {
+        field.addEventListener("input", syncPreview);
+        field.addEventListener("change", syncPreview);
+    });
+
+    document.querySelector("form").addEventListener("reset", () => setTimeout(syncPreview, 0));
+    syncPreview();
+</script>
 
 

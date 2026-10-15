@@ -1,72 +1,58 @@
-@model List<Rentaly.EntityLayer.Entities.Car>
-
+@model List<Car>
 @{
     ViewData["Title"] = "CarList";
     Layout = "~/Views/AdminLayout/Index.cshtml";
+    var brands = Model.Select(x => x.CarModel.Brand.BrandName).Distinct().OrderBy(x => x).ToList();
+    var categories = Model.Select(x => x.Category.CategoryName).Distinct().OrderBy(x => x).ToList();
+    var branches = Model.Select(x => x.Branch.BranchName).Distinct().OrderBy(x => x).ToList();
 }
+
 @section PageHeader {
     @await Html.PartialAsync("_PageHeaderPartial", ("Araçlar", "Filodaki tüm araçların anlık durum ve envanter listesi", "Araçlar", "/Admin/Car/CreateCar/", "Yeni Araç Ekle", false, ""))
 }
 
 <div class="card bg-surface-container-lowest rounded-xl shadow-sm flex flex-col overflow-hidden">
-    <!-- Card Header: Search & Multi-Filters Toolbar -->
     <div class="p-space-md bg-surface-container-lowest flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-gutter-sm">
-        <!-- Live Quick Search -->
         <div class="relative flex-1 min-w-[260px]">
             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
-            <input class="w-full pl-9 pr-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface placeholder:text-outline outline-none focus:bg-surface-container transition-colors" placeholder="Plaka, Marka veya Model ara..." type="text">
+            <input id="carSearch" class="w-full pl-9 pr-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface placeholder:text-outline outline-none focus:bg-surface-container transition-colors" placeholder="Plaka, marka veya model ara..." type="text">
         </div>
-        <!-- Filter Dropdown Selectors -->
         <div class="flex items-center flex-wrap gap-space-xs">
-            <!-- Marka Filtresi -->
-            <select class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
+            <select id="brandFilter" class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
                 <option value="">Tüm Markalar</option>
-                <option value="renault">Renault</option>
-                <option value="volkswagen">Volkswagen</option>
-                <option value="peugeot">Peugeot</option>
-                <option value="bmw">BMW</option>
-                <option value="ford">Ford</option>
-                <option value="tesla">Tesla</option>
+                @foreach (var brand in brands)
+                {
+                    <option value="@brand">@brand</option>
+                }
             </select>
-            <!-- Kategori Filtresi -->
-            <select class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
+            <select id="categoryFilter" class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
                 <option value="">Tüm Kategoriler</option>
-                <option value="ekonomi">Ekonomi</option>
-                <option value="konfor">Konfor</option>
-                <option value="suv">SUV &amp; Crossover</option>
-                <option value="luks">Lüks &amp; Premium</option>
-                <option value="ticari">Ticari / Minivan</option>
-                <option value="elektrikli">Elektrikli</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category">@category</option>
+                }
             </select>
-            <!-- Şube Filtresi -->
-            <select class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
+            <select id="branchFilter" class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
                 <option value="">Tüm Şubeler</option>
-                <option value="kadikoy">İstanbul - Kadıköy</option>
-                <option value="havalimani">İstanbul - Havalimanı</option>
-                <option value="levent">İstanbul - Levent</option>
-                <option value="cankaya">Ankara - Çankaya</option>
-                <option value="adnanmenderes">İzmir - Adnan Menderes</option>
-                <option value="nilufer">Bursa - Nilüfer</option>
+                @foreach (var branch in branches)
+                {
+                    <option value="@branch">@branch</option>
+                }
             </select>
-            <!-- Durum Filtresi -->
-            <select class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
+            <select id="statusFilter" class="px-space-md py-space-xs bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface font-medium outline-none focus:bg-surface-container transition-colors cursor-pointer">
                 <option value="">Tüm Durumlar</option>
                 <option value="musait">Müsait</option>
-                <option value="kirada">Kirada</option>
-                <option value="rezerve">Rezerve</option>
-                <option value="bakimda">Bakımda</option>
+                <option value="kirada">Kiralamada</option>
+                <option value="pasif">Pasif</option>
             </select>
         </div>
     </div>
-    <!-- Table Section -->
+
     <div class="w-full overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-surface-container-low text-secondary uppercase font-table-header text-table-header">
-                    <th class="py-3 px-3 w-10 text-center" scope="col">
-                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
-                    </th>
-                    <th class="py-3 px-3" scope="col">Araç Bilgisi &amp; Görsel</th>
+                    <th class="py-3 px-3" scope="col">Araç</th>
                     <th class="py-3 px-3" scope="col">Plaka</th>
                     <th class="py-3 px-3" scope="col">Marka / Model</th>
                     <th class="py-3 px-3" scope="col">Kategori</th>
@@ -76,301 +62,121 @@
                     <th class="py-3 px-3 text-right" scope="col">İşlemler</th>
                 </tr>
             </thead>
-            <tbody class="divide-y-0 text-on-surface font-table-cell text-table-cell">
-                <!-- Row 1: Renault Megane -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors">
-                    <td class="py-3 px-3 text-center">
-                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
-                    </td>
-                    <td class="py-3 px-3">
-                        <div class="flex items-center gap-space-sm">
-                            <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" data-alt="Modern silver metallic Renault Megane sedan parked inside a brightly lit clean studio with soft shadows, 4k automobile photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9V1AqidMV_rfMluW_LrOIFzUHRUASXVxD4KOs3BIIEATSfGy6UmWtREe7sxiUpSgWAUoP7MUz1DJmn9sxV7_p8PONaO08pezuCQibfCoKp-1c5cdWeUI4N4NfI9iRNhy74Aij-qHCdErW2Ma77cSv-Kv4SPjEy0mW739TiDC7p1dNWV5ta5qvAMJSo5GnAdkVJwfT59xQcrAUCun06Ieot-LXvdTfLL4m1fL3HXxVIeXhjcjrEV3GaQ">
-                            <div class="flex flex-col min-w-0">
-                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Renault Megane Sedan</span>
-                                <span class="text-secondary text-[11px] truncate">1.5 dCi • Otomatik • Dizel</span>
+            <tbody id="carTableBody" class="divide-y-0 text-on-surface font-table-cell text-table-cell">
+                @foreach (var item in Model)
+                {
+                    var brandName = item.CarModel.Brand.BrandName;
+                    var modelName = item.CarModel.ModelName;
+                    var status = !item.IsActive ? "pasif" : item.IsAvailable ? "musait" : "kirada";
+
+                    <tr class="car-row hover:bg-surface-container-low/60 transition-colors"
+                        data-search="@($"{item.PlateNumber} {brandName} {modelName}")"
+                        data-brand="@brandName"
+                        data-category="@item.Category.CategoryName"
+                        data-branch="@item.Branch.BranchName"
+                        data-status="@status">
+                        <td class="py-3 px-3">
+                            <div class="flex items-center gap-space-sm">
+                                @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                {
+                                    <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" src="@item.ImageUrl" alt="@brandName @modelName" />
+                                }
+                                else
+                                {
+                                    <div class="w-12 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0">
+                                        <span class="material-symbols-outlined text-[20px]">directions_car</span>
+                                    </div>
+                                }
+                                <div class="flex flex-col min-w-0">
+                                    <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">@brandName @modelName</span>
+                                    <span class="text-secondary text-[11px] truncate">@item.Year • @item.FuelType • @item.Transmission</span>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-3">
-                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">34 ABC 789</span>
-                    </td>
-                    <td class="py-3 px-3 text-on-surface-variant font-medium">Renault / Megane</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
-                            <span class="material-symbols-outlined text-[14px]">local_gas_station</span> Ekonomi
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-secondary">İstanbul - Kadıköy</td>
-                    <td class="py-3 px-3 font-semibold text-on-surface">1.850 ₺</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-badge text-label-badge font-semibold">
-                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Müsait
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Row 2: Volkswagen Passat -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors">
-                    <td class="py-3 px-3 text-center">
-                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
-                    </td>
-                    <td class="py-3 px-3">
-                        <div class="flex items-center gap-space-sm">
-                            <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" data-alt="Deep blue executive Volkswagen Passat saloon luxury car in corporate urban driveway with crisp reflections and soft evening light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxNgVvfYROxvJgP0NkGky5oXl85IBrvHVSnGH4Zu8aQ2HUlWBKG-HGDjDH0H_DK86KNmviveo85jzMuiQcjIZeYnWoduCSwFn78uIxA9HCZZCO8A8A0nvEIGaUeXdUSOO9jhb4kW4EhdcPzMX5w2_HSRUMXm_zn0qbf1UlwiAOOStuZzPKo-Y2JYfEisP9qyoVmGHo4gyhgPqBZYKe3iN0scKIBc16QHDg7_jXV4iMOUAvgSLw7IYuDA">
-                            <div class="flex flex-col min-w-0">
-                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Volkswagen Passat</span>
-                                <span class="text-secondary text-[11px] truncate">1.5 TSI • DSG • Benzin</span>
+                        </td>
+                        <td class="py-3 px-3">
+                            <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">@item.PlateNumber</span>
+                        </td>
+                        <td class="py-3 px-3 text-on-surface-variant font-medium">@brandName / @modelName</td>
+                        <td class="py-3 px-3">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
+                                <span class="material-symbols-outlined text-[14px]">category</span> @item.Category.CategoryName
+                            </span>
+                        </td>
+                        <td class="py-3 px-3 text-secondary">@item.Branch.BranchName</td>
+                        <td class="py-3 px-3 font-semibold text-on-surface">@item.DailyPrice.ToString("N0") ₺</td>
+                        <td class="py-3 px-3">
+                            @if (!item.IsActive)
+                            {
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-highest text-secondary font-label-badge text-label-badge font-semibold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-outline"></span> Pasif
+                                </span>
+                            }
+                            else if (item.IsAvailable)
+                            {
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-badge text-label-badge font-semibold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Müsait
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-fixed font-label-badge text-label-badge font-semibold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Kiralamada
+                                </span>
+                            }
+                        </td>
+                        <td class="py-3 px-3 text-right">
+                            <div class="inline-flex items-center justify-end gap-1">
+                                <a href="/Admin/Car/UpdateCar/@item.CarId" class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </a>
+                                <form asp-area="Admin" asp-controller="Car" asp-action="DeleteCar" asp-route-id="@item.CarId" method="post" class="inline" onsubmit="return confirm('@item.PlateNumber plakalı aracı silmek istediğinize emin misiniz?');">
+                                    <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="submit">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    </button>
+                                </form>
                             </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-3">
-                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">34 XYZ 123</span>
-                    </td>
-                    <td class="py-3 px-3 text-on-surface-variant font-medium">Volkswagen / Passat</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
-                            <span class="material-symbols-outlined text-[14px]">airline_seat_recline_extra</span> Konfor
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-secondary">İstanbul - Havalimanı</td>
-                    <td class="py-3 px-3 font-semibold text-on-surface">2.900 ₺</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-fixed font-label-badge text-label-badge font-semibold">
-                            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Kirada
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Row 3: Peugeot 3008 -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors">
-                    <td class="py-3 px-3 text-center">
-                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
-                    </td>
-                    <td class="py-3 px-3">
-                        <div class="flex items-center gap-space-sm">
-                            <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" data-alt="Pearl white Peugeot 3008 SUV parked on asphalt road under soft overcast morning daylight, high detail automotive design shot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmRKB49TgFi2PsS2XT9xAfdk91nhuS51CrVB4sKA3MzPafQoAj0aCIybTigeIawpaoGX_c0qYNdc_5svWEabqP3FGqUHgA4A04x0LUoGPERO14u_u7787Xljo_ckIOW3lEdKji68ajrukyK4C6eu9VFaYsIjm-GnhplnLqpVnR-ibje5FbekWHKW2m05mDzpGEwBAdJ-BWHOPVQLtDDB-yNZLFIwlsO464IWlCbmNHnfx1meYyJhd5HQ">
-                            <div class="flex flex-col min-w-0">
-                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Peugeot 3008 Allure</span>
-                                <span class="text-secondary text-[11px] truncate">1.2 PureTech • EAT8 • Benzin</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-3">
-                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">06 ANK 456</span>
-                    </td>
-                    <td class="py-3 px-3 text-on-surface-variant font-medium">Peugeot / 3008</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
-                            <span class="material-symbols-outlined text-[14px]">terrain</span> SUV &amp; Crossover
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-secondary">Ankara - Çankaya</td>
-                    <td class="py-3 px-3 font-semibold text-on-surface">3.400 ₺</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-fixed font-label-badge text-label-badge font-semibold">
-                            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Kirada
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Row 4: BMW 320i -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors">
-                    <td class="py-3 px-3 text-center">
-                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
-                    </td>
-                    <td class="py-3 px-3">
-                        <div class="flex items-center gap-space-sm">
-                            <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" data-alt="Sporty metallic grey BMW 320i M Sport sedan parked against sleek modern architecture building with elegant glass panels, 4k resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdq1zi0Q_ZkuEmQLZvY9etH5YxSp99yJg8qWEUBRSaCF4eIPpjqhYdPAaerTLpTT1cNv1uF6mqmER-HWa19pz5_Bpv5QWG_-UO75E3IsPwIoXPACiJq6X-vD6S8SMZP4tQq3MoUTItOpSLkl9_PX2aGAMOaKEZ9wfD8RhmrfPDJJiRJXfInW65ODpayiWTk-cfOnSDwBkWTrs0KoUaGBF--FQw1paJDJ8SiltTyOHgi8RwFs49MaGOtg">
-                            <div class="flex flex-col min-w-0">
-                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">BMW 320i M Sport</span>
-                                <span class="text-secondary text-[11px] truncate">2.0 Turbo • Steptronic • Benzin</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-3">
-                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">35 IZM 999</span>
-                    </td>
-                    <td class="py-3 px-3 text-on-surface-variant font-medium">BMW / 3 Serisi</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
-                            <span class="material-symbols-outlined text-[14px]">diamond</span> Lüks &amp; Premium
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-secondary">İzmir - Adnan Menderes</td>
-                    <td class="py-3 px-3 font-semibold text-on-surface">5.200 ₺</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-badge text-label-badge font-semibold">
-                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Müsait
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Row 5: Ford Tourneo -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors">
-                    <td class="py-3 px-3 text-center">
-                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
-                    </td>
-                    <td class="py-3 px-3">
-                        <div class="flex items-center gap-space-sm">
-                            <div class="w-12 h-9 rounded-lg bg-surface-container flex items-center justify-center text-secondary shrink-0">
-                                <span class="material-symbols-outlined text-[20px]">airport_shuttle</span>
-                            </div>
-                            <div class="flex flex-col min-w-0">
-                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Ford Tourneo Courier</span>
-                                <span class="text-secondary text-[11px] truncate">1.5 TDCi • Manuel • Dizel</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-3">
-                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">16 BUR 321</span>
-                    </td>
-                    <td class="py-3 px-3 text-on-surface-variant font-medium">Ford / Tourneo</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
-                            <span class="material-symbols-outlined text-[14px]">local_shipping</span> Ticari / Minivan
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-secondary">Bursa - Nilüfer</td>
-                    <td class="py-3 px-3 font-semibold text-on-surface">1.600 ₺</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-error-container text-error font-label-badge text-label-badge font-semibold">
-                            <span class="w-1.5 h-1.5 rounded-full bg-error"></span> Bakımda
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Row 6: Tesla Model Y -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors">
-                    <td class="py-3 px-3 text-center">
-                        <input class="w-4 h-4 rounded text-primary-container bg-surface-container focus:ring-0 cursor-pointer" type="checkbox">
-                    </td>
-                    <td class="py-3 px-3">
-                        <div class="flex items-center gap-space-sm">
-                            <img class="w-12 h-9 rounded-lg object-cover bg-surface-container shrink-0" data-alt="Red multi-coat Tesla Model Y parked in a sleek charging station pavilion with dramatic cinematic highlights, 8k render." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkc2BUgohtXySug-Q-MSQ8fg_sKU_6ntzOWBDmxv4L6ohpv9CBFiqUX44-8_0b1H6wjFvQWAJp1I2BBK0aQBS1NCQ73x6KqX5aEOEi70Jf6EjD9rKPntsEbAJ4tKx_l85nlwkeXI0bZ8X2TRHuOcPg9YN2yjrSnrjDFjh7qi6VrQKJy7K4FGfZ4VOHLhdegB1_T1DknsbcnLe2QLVfPKHKbnEN-CvCFUjC5lgtr3wMAb8yUeXY6AP25w">
-                            <div class="flex flex-col min-w-0">
-                                <span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Tesla Model Y Long Range</span>
-                                <span class="text-secondary text-[11px] truncate">Dual Motor AWD • Elektrikli</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-3">
-                        <span class="inline-block px-2 py-0.5 rounded bg-surface-container-high font-mono text-[12px] font-bold text-on-surface tracking-wider">34 EV 2024</span>
-                    </td>
-                    <td class="py-3 px-3 text-on-surface-variant font-medium">Tesla / Model Y</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-badge text-label-badge">
-                            <span class="material-symbols-outlined text-[14px]">electric_car</span> Elektrikli
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-secondary">İstanbul - Levent</td>
-                    <td class="py-3 px-3 font-semibold text-on-surface">6.500 ₺</td>
-                    <td class="py-3 px-3">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-badge text-label-badge font-semibold">
-                            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Rezerve
-                        </span>
-                    </td>
-                    <td class="py-3 px-3 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
-    <!-- Card Footer: Pagination Controls & Record Info -->
+
     <div class="p-space-md bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-md">
-        <span class="font-body-sm text-body-sm text-secondary">
-            Toplam <strong class="text-on-surface font-semibold">148</strong> kayıttan <strong>1-6</strong> arası gösteriliyor
+        <span id="carCount" class="font-body-sm text-body-sm text-secondary">
+            Toplam <strong class="text-on-surface font-semibold">@Model.Count</strong> araç listeleniyor
         </span>
-        <div class="inline-flex items-center gap-1">
-            <button class="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-container-low text-outline opacity-50 cursor-not-allowed" disabled="" type="button">
-                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-            </button>
-            <button class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary-container text-on-primary font-body-sm text-body-sm font-semibold shadow-sm" type="button">
-                1
-            </button>
-            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-on-surface font-body-sm text-body-sm transition-colors" type="button">
-                2
-            </button>
-            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-on-surface font-body-sm text-body-sm transition-colors" type="button">
-                3
-            </button>
-            <span class="px-1 text-outline">...</span>
-            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-on-surface font-body-sm text-body-sm transition-colors" type="button">
-                25
-            </button>
-            <button class="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors" type="button">
-                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-            </button>
-        </div>
     </div>
 </div>
+
+<script>
+    const searchInput = document.getElementById("carSearch");
+    const brandFilter = document.getElementById("brandFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const branchFilter = document.getElementById("branchFilter");
+    const statusFilter = document.getElementById("statusFilter");
+    const rows = Array.from(document.querySelectorAll(".car-row"));
+    const count = document.getElementById("carCount");
+
+    function applyFilters() {
+        const query = searchInput.value.trim().toLocaleLowerCase("tr");
+        let visible = 0;
+        rows.forEach(row => {
+            const matchesSearch = row.dataset.search.toLocaleLowerCase("tr").includes(query);
+            const matchesBrand = !brandFilter.value || row.dataset.brand === brandFilter.value;
+            const matchesCategory = !categoryFilter.value || row.dataset.category === categoryFilter.value;
+            const matchesBranch = !branchFilter.value || row.dataset.branch === branchFilter.value;
+            const matchesStatus = !statusFilter.value || row.dataset.status === statusFilter.value;
+            const show = matchesSearch && matchesBrand && matchesCategory && matchesBranch && matchesStatus;
+            row.classList.toggle("hidden", !show);
+            if (show) visible++;
+        });
+        count.innerHTML = `Toplam <strong class="text-on-surface font-semibold">${visible}</strong> araç listeleniyor`;
+    }
+
+    [searchInput, brandFilter, categoryFilter, branchFilter, statusFilter].forEach(el => el.addEventListener("input", applyFilters));
+    brandFilter.addEventListener("change", applyFilters);
+    categoryFilter.addEventListener("change", applyFilters);
+    branchFilter.addEventListener("change", applyFilters);
+    statusFilter.addEventListener("change", applyFilters);
+</script>

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Rentaly.BusinessLayer.Abstract;
 using Rentaly.DataAccessLayer.Abstract;
 using Rentaly.DtoLayer.CarDtos;
@@ -37,6 +37,7 @@ namespace Rentaly.BusinessLayer.Concrete
                 BrandName = car.CarModel.Brand.BrandName,
                 ModelName = car.CarModel.ModelName,
                 CategoryName = car.Category.CategoryName,
+                PlateNumber = car.PlateNumber,
                 ImageUrl = car.ImageUrl,
                 Year = car.Year,
                 SeatCount = car.SeatCount,
@@ -64,12 +65,21 @@ namespace Rentaly.BusinessLayer.Concrete
         public async Task TInsertAsync(CreateCarDto createCarDto)
         {
             var car = _mapper.Map<Car>(createCarDto);
+            car.IsAvailable = true;
+            car.IsActive = true;
+            car.CreatedAt = DateTime.UtcNow;
+            car.Rating = 0;
+            car.ReservationCount = 0;
             await _carDal.InsertAsync(car);
         }
 
         public async Task TUpdateAsync(UpdateCarDto updateCarDto)
         {
+            var existing = await _carDal.GetByIdAsync(updateCarDto.CarId);
             var car = _mapper.Map<Car>(updateCarDto);
+            car.Rating = existing.Rating;
+            car.ReservationCount = existing.ReservationCount;
+            car.CreatedAt = existing.CreatedAt;
             await _carDal.UpdateAsync(car);
         }
 

@@ -1,0 +1,162 @@
+@model Rentaly.EntityLayer.Entities.Brand
+@{
+    ViewData["Title"] = "UpdateBrand";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", (
+        "Marka Bilgilerini Güncelle",
+        "Sistemde kayıtlı araç markasının adını ve görsel logosunu düzenleyebilirsiniz.",
+        "Markalar",
+        "",
+        "Listeye Dön",
+        true,
+        "/Admin/Brand/BrandList/"
+    ))
+}
+
+<form asp-area="Admin" asp-controller="Brand" asp-action="UpdateBrand" method="post" class="flex flex-col gap-space-lg w-full" id="brandEditForm">
+    <input type="hidden" asp-for="BrandId" />
+
+    <section class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm">
+        <div class="flex items-center justify-between pb-space-sm mb-space-md">
+            <div class="flex items-center gap-space-sm">
+                <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
+                    <span class="material-symbols-outlined text-[20px]">branding_watermark</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Temel Marka Bilgileri</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Sistem içi referans kodu ve resmi ticari unvan</p>
+                </div>
+            </div>
+            <span class="font-label-nav-header text-label-nav-header uppercase tracking-wider text-outline">BÖLÜM 01</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+            <div class="flex flex-col gap-1.5">
+                <label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center justify-between">
+                    <span>Sistem Kodu (Brand ID)</span>
+                    <span class="text-secondary font-normal font-label-badge text-[11px]">Değiştirilemez</span>
+                </label>
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">tag</span>
+                    <input class="w-full pl-9 pr-3 py-2.5 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-secondary cursor-not-allowed select-none focus:outline-none" readonly type="text" value="#BRD-@Model.BrandId.ToString("D3")" />
+                </div>
+                <span class="font-label-badge text-[11px] text-secondary">Birincil anahtar kimliği (PK: @Model.BrandId)</span>
+            </div>
+            <div class="flex flex-col gap-1.5">
+                <label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold flex items-center justify-between" asp-for="BrandName">
+                    <span>Marka Adı <span class="text-error">*</span></span>
+                    <span class="text-primary font-normal font-label-badge text-[11px]">Zorunlu Alan</span>
+                </label>
+                <div class="relative flex items-center">
+                    <span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">badge</span>
+                    <input asp-for="BrandName" class="w-full pl-9 pr-3 py-2.5 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container focus:ring-1 focus:ring-primary transition-colors" id="brandNameInput" required type="text" />
+                </div>
+                <div class="flex items-center gap-1 font-label-badge text-[11px] text-secondary">
+                    <span>URL Slug:</span>
+                    <code class="px-1.5 py-0.5 rounded bg-surface-container-highest text-primary font-mono text-[11px]">/filo/@Model.BrandName.ToLower().Replace(" ", "-")</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm">
+        <div class="flex items-center justify-between pb-space-sm mb-space-md">
+            <div class="flex items-center gap-space-sm">
+                <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
+                    <span class="material-symbols-outlined text-[20px]">image</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Marka Logosu &amp; Görsel Yönetimi</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Araç listeleme kartlarında ve filtre ikonlarında kullanılır</p>
+                </div>
+            </div>
+            <span class="font-label-nav-header text-label-nav-header uppercase tracking-wider text-outline">BÖLÜM 02</span>
+        </div>
+        <div class="flex flex-col md:flex-row items-start gap-space-lg">
+            <div class="flex flex-col items-center gap-2">
+                <div class="w-24 h-24 rounded-xl bg-surface-container-low flex items-center justify-center p-3 shadow-sm overflow-hidden">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" alt="@Model.BrandName" class="w-full h-full object-contain" />
+                    }
+                    else
+                    {
+                        <span class="material-symbols-outlined text-outline text-[40px]">military_tech</span>
+                    }
+                </div>
+                <span class="font-label-badge text-label-badge text-secondary">@Model.BrandName</span>
+            </div>
+            <div class="flex-1 w-full flex flex-col gap-space-md">
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-label-nav-item text-label-nav-item text-on-surface font-semibold" asp-for="ImageUrl">
+                        Görsel URL Bağlantısı (ImageUrl)
+                    </label>
+                    <div class="relative flex items-center">
+                        <span class="material-symbols-outlined absolute left-3 text-secondary text-[18px]">link</span>
+                        <input asp-for="ImageUrl" class="w-full pl-9 pr-3 py-2.5 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container focus:ring-1 focus:ring-primary transition-colors font-mono" id="imageUrlInput" type="url" />
+                    </div>
+                    <p class="font-label-badge text-[11px] text-secondary">
+                        Önerilen formatlar: SVG veya şeffaf PNG.
+                    </p>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <a class="w-fit px-3 py-1.5 rounded-lg bg-surface-container-low text-primary font-label-badge text-label-badge hover:bg-surface-container transition-colors flex items-center gap-1.5" href="@Model.ImageUrl" target="_blank">
+                        <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                        Orijinal Görseli Aç
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+
+    <section class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-space-sm mb-space-md gap-space-sm">
+            <div class="flex items-center gap-space-sm">
+                <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
+                    <span class="material-symbols-outlined text-[20px]">directions_car</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Bağlı Araç Modelleri</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">@Model.BrandName markasına kayıtlı modeller</p>
+                </div>
+            </div>
+            <span class="font-label-nav-header text-label-nav-header uppercase tracking-wider text-outline">BÖLÜM 03</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+            @if (Model.CarModels.Count == 0)
+            {
+                <p class="font-body-sm text-body-sm text-secondary sm:col-span-2 lg:col-span-4">Bu markaya bağlı model kaydı yok.</p>
+            }
+            @foreach (var carModel in Model.CarModels)
+            {
+                <div class="p-3.5 rounded-xl bg-surface-container-low flex flex-col gap-2">
+                    <span class="font-label-badge text-[11px] text-secondary font-mono">#MDL-@carModel.CarModelId.ToString("D3")</span>
+                    <h3 class="font-headline-md text-[15px] text-on-surface font-semibold leading-tight">@carModel.ModelName</h3>
+                    <span class="font-label-badge text-[11px] text-secondary">@Model.BrandName</span>
+                </div>
+            }
+        </div>
+    </section>
+
+    <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col sm:flex-row items-center justify-between gap-space-md">
+        <div class="flex items-center gap-space-sm text-secondary min-w-0">
+            <span class="material-symbols-outlined text-[20px] text-outline shrink-0">info</span>
+            <span class="font-body-sm text-body-sm text-secondary">
+                Marka adı ve logo kaydı listeye anında yansır. Bağlı modeller varsa marka silinemez.
+            </span>
+        </div>
+        <div class="flex items-center gap-space-sm w-full sm:w-auto justify-end shrink-0">
+            <a class="px-5 py-2.5 rounded-lg bg-surface-container-low text-on-surface font-label-nav-item text-label-nav-item hover:bg-surface-container transition-all flex items-center gap-1.5" href="/Admin/Brand/BrandList">
+                <span class="material-symbols-outlined text-[18px]">close</span>
+                Vazgeç
+            </a>
+            <button class="px-6 py-2.5 rounded-lg bg-primary-container text-on-primary font-label-nav-item text-label-nav-item font-semibold shadow-md hover:bg-primary transition-all flex items-center gap-2" type="submit">
+                <span class="material-symbols-outlined text-[18px]">save</span>
+                Değişiklikleri Kaydet
+            </button>
+        </div>
+    </div>
+</form>

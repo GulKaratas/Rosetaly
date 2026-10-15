@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Rentaly.DataAccessLayer.Abstract;
 using Rentaly.DataAccessLayer.Concrete;
 using System;
@@ -27,12 +27,12 @@ namespace Rentaly.DataAccessLayer.RepositoryDesignPattern
 
         }
 
-        public async Task<List<T>> GetListAsync()
+        public virtual async Task<List<T>> GetListAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
 
@@ -44,7 +44,7 @@ namespace Rentaly.DataAccessLayer.RepositoryDesignPattern
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(T entity)
+        public virtual async Task UpdateAsync(T entity)
         {
             _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();

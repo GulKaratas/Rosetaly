@@ -100,7 +100,7 @@
             <i class="fa fa-arrow-left"></i> Araç listesine dön
         </a>
 
-        @if (Model == null)
+        @if (Model == null || !Model.IsAvailable)
         {
             <div class="car-card p-5 text-center">
                 <i class="fa fa-car text-primary-custom fs-2 mb-3"></i>
@@ -114,18 +114,9 @@
                 <div class="col-lg-5">
                     <div class="car-card car-detail-card car-detail-photo h-100">
                         <div class="car-thumb">
-                            @if (Model.IsAvailable)
-                            {
-                                <span class="car-status-available">
-                                    <i class="fa fa-check"></i> Müsait
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="car-status-locked">
-                                    <i class="fa fa-lock"></i> Rezerve Edildi
-                                </span>
-                            }
+                            <span class="car-status-available">
+                                <i class="fa fa-check"></i> Müsait
+                            </span>
 
                             <img alt="@Model.DisplayName" class="img-fluid" src="@Model.DisplayImageUrl" />
                         </div>
@@ -213,22 +204,12 @@
                                     <strong>₺@Model.DepositAmount.ToString("N0")</strong>
                                 </div>
 
-                                @if (Model.IsAvailable)
-                                {
-                                    <button type="button"
-                                            class="btn btn-custom-primary w-100 mt-3"
-                                            id="bookDetailCar"
-                                            data-car="@Model.DisplayName"
-                                            data-price="₺@Model.DailyPrice.ToString("N0")">
-                                        <i class="fa fa-lock"></i> Rezerve Et
-                                    </button>
-                                }
-                                else
-                                {
-                                    <button type="button" class="btn btn-secondary w-100 mt-3" disabled>
-                                        <i class="fa fa-ban"></i> Uygun Değil
-                                    </button>
-                                }
+                                <a asp-controller="Rental"
+                                   asp-action="Index"
+                                   asp-route-id="@Model.CarId"
+                                   class="btn btn-custom-primary w-100 mt-3">
+                                    <i class="fa fa-lock"></i> Rezerve Et
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -237,20 +218,3 @@
         }
     </div>
 </section>
-
-<script>
-    (function () {
-        const button = document.getElementById('bookDetailCar');
-        if (!button) {
-            return;
-        }
-
-        button.addEventListener('click', function () {
-            if (typeof lockAndBookCar !== 'function') {
-                return;
-            }
-
-            lockAndBookCar(button.dataset.car || '', button.dataset.price || '');
-        });
-    })();
-</script>

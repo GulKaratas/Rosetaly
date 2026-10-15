@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Rentaly.BusinessLayer.Abstract;
-using Rentaly.DtoLayer.BranchDtos;
 using Rentaly.DtoLayer.CategoryDtos;
-using Rentaly.EntityLayer.Entities;
 
 namespace Rentaly.WebUI.Areas.Admin.Controllers
 {
@@ -25,16 +23,14 @@ namespace Rentaly.WebUI.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult CreateCategory()
         {
-            return View();
+            return View(new CreateCategoryDto());
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CreateCategoryDto category)
         {
-            
-                await _categoryService.TInsertAsync(category);
-                return RedirectToAction("CategoryList");
-          
+            await _categoryService.TInsertAsync(category);
+            return RedirectToAction("CategoryList");
         }
 
         [HttpPost]
@@ -48,7 +44,12 @@ namespace Rentaly.WebUI.Areas.Admin.Controllers
         public async Task<IActionResult> UpdateCategory(int id)
         {
             var category = await _categoryService.TGetByIdAsync(id);
-            return View(category);
+            var model = new UpdateCategoryDto
+            {
+                CategoryId = category.CategoryId,
+                CategoryName = category.CategoryName
+            };
+            return View(model);
         }
 
         [HttpPost]

@@ -1,0 +1,143 @@
+@model UpdateBranchDto
+@{
+    ViewData["Title"] = "Şube Güncelle";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", (
+        "Şube Bilgilerini Güncelle",
+        "Kayıtlı şubenin adı, şehri ve açık adresini düzenleyebilirsiniz.",
+        "Şubeler",
+        "",
+        "Listeye Dön",
+        true,
+        "/Admin/Branch/BranchList"
+    ))
+}
+
+<div class="w-full bg-surface-container-low rounded-xl p-space-md mb-space-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+    <div class="flex items-center gap-space-md">
+        <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-on-primary shrink-0 shadow-sm">
+            <span class="material-symbols-outlined text-[24px]">store</span>
+        </div>
+        <div>
+            <div class="flex items-center gap-space-xs">
+                <span class="font-headline-md text-headline-md text-on-surface">@Model.BranchName</span>
+                <span class="font-body-sm text-body-sm text-secondary">(Şube Kaydı)</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-space-md gap-y-1 font-body-sm text-body-sm text-secondary mt-0.5">
+                <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[15px] text-tertiary">badge</span> Şube ID: #BRN-@Model.BranchId.ToString("D4")
+                </span>
+                <span class="text-outline-variant">•</span>
+                <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[15px] text-primary">location_on</span> @Model.City
+                </span>
+                <span class="text-outline-variant">•</span>
+                <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[15px] text-on-surface-variant">pin_drop</span> @Model.Address
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-area="Admin" asp-controller="Branch" asp-action="UpdateBranch" method="post" class="flex flex-col w-full space-y-space-lg" id="editBranchForm">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="BranchId" />
+
+    <div class="w-full bg-surface-container-lowest rounded-xl shadow-sm p-space-lg">
+        <div class="flex items-center justify-between pb-space-md mb-space-lg border-b border-outline-variant">
+            <div class="flex items-center gap-space-sm">
+                <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">storefront</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Şube Kimliği</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Resmi ofis adı ve bulunduğu şehir.</p>
+                </div>
+            </div>
+            <span class="font-table-header text-table-header uppercase text-secondary bg-surface-container-low px-space-sm py-1 rounded">
+                Zorunlu Alanlar
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+            <div class="flex flex-col gap-space-xs">
+                <label class="font-table-header text-table-header text-secondary uppercase">Şube ID / Referans</label>
+                <div class="relative">
+                    <input class="w-full bg-surface-container-low rounded-lg px-space-md py-space-sm font-body-md text-body-md text-on-surface font-mono cursor-not-allowed focus:outline-none" value="#BRN-@Model.BranchId.ToString("D4")" readonly type="text" />
+                    <span class="material-symbols-outlined absolute right-space-md top-1/2 -translate-y-1/2 text-outline-variant text-[18px]">lock</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-space-xs">
+                <label class="font-table-header text-table-header text-on-surface font-semibold uppercase" asp-for="BranchName">
+                    Şube Adı <span class="text-error">*</span>
+                </label>
+                <div class="relative">
+                    <input asp-for="BranchName" class="w-full bg-surface-container-lowest rounded-lg px-space-md py-space-sm font-body-md text-body-md text-on-surface shadow-sm focus:outline-none focus:bg-surface-container-low transition-colors border border-outline-variant" required type="text" />
+                    <span class="material-symbols-outlined absolute right-space-md top-1/2 -translate-y-1/2 text-secondary text-[18px]">hub</span>
+                </div>
+                <span asp-validation-for="BranchName" class="text-error text-[11px]"></span>
+            </div>
+
+            <div class="flex flex-col gap-space-xs">
+                <label class="font-table-header text-table-header text-on-surface font-semibold uppercase" asp-for="City">
+                    Şehir <span class="text-error">*</span>
+                </label>
+                <div class="relative">
+                    <input asp-for="City" class="w-full bg-surface-container-lowest rounded-lg px-space-md py-space-sm font-body-md text-body-md text-on-surface shadow-sm focus:outline-none focus:bg-surface-container-low transition-colors border border-outline-variant" required type="text" />
+                    <span class="material-symbols-outlined absolute right-space-md top-1/2 -translate-y-1/2 text-secondary text-[18px]">location_on</span>
+                </div>
+                <span asp-validation-for="City" class="text-error text-[11px]"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full bg-surface-container-lowest rounded-xl shadow-sm p-space-lg">
+        <div class="flex items-center justify-between pb-space-md mb-space-lg border-b border-outline-variant">
+            <div class="flex items-center gap-space-sm">
+                <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">pin_drop</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Konum ve Açık Adres</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Teslimat ve fatura adresinde görünecek tam lokasyon.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-space-xs">
+            <label class="font-table-header text-table-header text-on-surface font-semibold uppercase" asp-for="Address">
+                Açık Adres <span class="text-error">*</span>
+            </label>
+            <div class="relative">
+                <textarea asp-for="Address" rows="3" class="w-full bg-surface-container-lowest rounded-lg px-space-md py-space-sm pr-12 font-body-md text-body-md text-on-surface shadow-sm focus:outline-none focus:bg-surface-container-low transition-colors border border-outline-variant resize-y" required></textarea>
+                <span class="material-symbols-outlined absolute right-space-md top-space-sm text-secondary text-[18px]">map</span>
+            </div>
+            <span asp-validation-for="Address" class="text-error text-[11px]"></span>
+        </div>
+    </div>
+
+    <div class="w-full bg-surface-container-lowest rounded-xl shadow-sm p-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md">
+        <div class="flex items-center gap-space-xs text-secondary font-body-sm text-body-sm">
+            <span class="material-symbols-outlined text-tertiary text-[20px]">check_circle</span>
+            <span>Şube güncellemeleri anında listeye ve bağlı araç kayıtlarına yansır.</span>
+        </div>
+        <div class="flex items-center gap-space-sm w-full sm:w-auto justify-end">
+            <a href="/Admin/Branch/BranchList" class="px-space-lg py-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-nav-item text-label-nav-item transition-colors text-center">
+                Vazgeç
+            </a>
+            <button type="submit" class="flex items-center justify-center gap-space-xs px-space-xl py-space-sm rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-nav-item text-label-nav-item shadow-sm transition-all">
+                <span class="material-symbols-outlined text-[20px]">save</span>
+                <span>Değişiklikleri Kaydet</span>
+            </button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

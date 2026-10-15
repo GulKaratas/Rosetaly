@@ -1,315 +1,123 @@
-﻿@using Rentaly.DtoLayer.BranchDtos
-@model List<ResultBranchDto>
+@model CreateBranchDto
 @{
-    ViewData["Title"] = "CreateBranch";
+    ViewData["Title"] = "Yeni Şube Ekle";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
+
 @section PageHeader {
-    @await Html.PartialAsync("_PageHeaderPartial", ("Yeni Şube Ekle", "Sisteme yeni bir hizmet noktası veya şube tanımlayın.", "Şubeler", "", "Listeye Dön", true, "/Admin/Branch/BranchList/"))
+    @await Html.PartialAsync("_PageHeaderPartial", (
+        "Yeni Şube Ekle",
+        "Sisteme yeni bir hizmet noktası veya şube tanımlayın.",
+        "Şubeler",
+        "",
+        "Listeye Dön",
+        true,
+        "/Admin/Branch/BranchList"
+    ))
 }
 
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
-    <!-- Left Column (8 cols): Main Form & Entity Info -->
-    <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-space-lg">
-        <!-- Card 1: Form Fields -->
-        <form class="bg-surface-container-lowest rounded-xl p-space-xl shadow-sm flex flex-col gap-space-lg relative overflow-hidden" id="branch-form" onsubmit="event.preventDefault(); showSuccessBanner();">
-            <div class="flex items-center justify-between pb-space-sm">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[24px]">storefront</span>
-                    </div>
-                    <div>
-                        <h2 class="font-headline-md text-headline-md text-on-surface">Şube Bilgileri &amp; Konum</h2>
-                        <p class="font-body-sm text-body-sm text-secondary">Operasyonel fiziksel şubenin çekirdek detaylarını belirleyin</p>
-                    </div>
-                </div>
-                <span class="text-label-badge font-label-badge text-secondary bg-surface-container-low px-2 py-1 rounded">Zorunlu Alanlar (*)</span>
-            </div>
-            <!-- Quick Fill Tags -->
-            <div class="flex flex-col gap-2 p-space-md bg-surface-container-low rounded-lg">
-                <div class="flex items-center gap-2 text-secondary">
-                    <span class="material-symbols-outlined text-[16px]">bolt</span>
-                    <span class="font-label-badge text-label-badge uppercase tracking-wider font-semibold">Hızlı Şablon Yerleşimi:</span>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button class="px-2.5 py-1 text-xs rounded-md bg-surface-container-lowest text-on-surface hover:bg-primary hover:text-on-primary transition-colors shadow-sm font-medium" onclick="fillQuickLocation('Kadıköy')" type="button">
-                        Kadıköy
-                    </button>
-                    <button class="px-2.5 py-1 text-xs rounded-md bg-surface-container-lowest text-on-surface hover:bg-primary hover:text-on-primary transition-colors shadow-sm font-medium" onclick="fillQuickLocation('Havalimanı İST')" type="button">
-                        Havalimanı İST
-                    </button>
-                    <button class="px-2.5 py-1 text-xs rounded-md bg-surface-container-lowest text-on-surface hover:bg-primary hover:text-on-primary transition-colors shadow-sm font-medium" onclick="fillQuickLocation('Ankara Kızılay')" type="button">
-                        Ankara Kızılay
-                    </button>
-                    <button class="px-2.5 py-1 text-xs rounded-md bg-surface-container-lowest text-on-surface hover:bg-primary hover:text-on-primary transition-colors shadow-sm font-medium" onclick="fillQuickLocation('İzmir Alsancak')" type="button">
-                        İzmir Alsancak
-                    </button>
-                    <button class="px-2.5 py-1 text-xs rounded-md bg-surface-container-lowest text-on-surface hover:bg-primary hover:text-on-primary transition-colors shadow-sm font-medium" onclick="fillQuickLocation('Antalya Havalimanı')" type="button">
-                        Antalya Havalimanı
-                    </button>
-                </div>
-            </div>
-            <!-- Form Elements -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
-                <!-- Branch Name Field -->
-                <div class="flex flex-col gap-1.5 md:col-span-2">
-                    <label class="font-label-nav-item text-label-nav-item font-semibold text-on-surface flex items-center justify-between" for="branch-name">
-                        <span>Şube Adı <span class="text-error">*</span></span>
-                        <span class="font-body-sm text-body-sm text-secondary font-normal" id="char-counter">0 / 70</span>
-                    </label>
-                    <div class="relative flex items-center">
-                        <span class="material-symbols-outlined absolute left-3.5 text-secondary text-[20px] pointer-events-none">hub</span>
-                        <input class="w-full pl-11 pr-4 py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container focus:ring-2 focus:ring-primary transition-all" id="branch-name" maxlength="70" name="BranchName" oninput="syncPreview();" placeholder="Örn: İstanbul Kadıköy Şubesi, Sabiha Gökçen Havalimanı" required="" type="text" />
-                    </div>
-                    <span class="font-body-sm text-body-sm text-secondary">Müşterilerin rezervasyon esnasında göreceği resmi ofis adı.</span>
-                </div>
-                <!-- City Dropdown Field -->
-                <div class="flex flex-col gap-1.5">
-                    <label class="font-label-nav-item text-label-nav-item font-semibold text-on-surface" for="city-select">
-                        Şehir <span class="text-error">*</span>
-                    </label>
-                    <div class="relative flex items-center">
-                        <span class="material-symbols-outlined absolute left-3.5 text-secondary text-[20px] pointer-events-none">location_on</span>
-                        <select class="w-full pl-11 pr-10 py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container focus:ring-2 focus:ring-primary appearance-none cursor-pointer transition-all" id="city-select" name="City" onchange="syncPreview();" required="">
-                            <option disabled="" selected="" value="">Bir Şehir Seçiniz</option>
-                            <option value="İstanbul">İstanbul</option>
-                            <option value="Ankara">Ankara</option>
-                            <option value="İzmir">İzmir</option>
-                            <option value="Antalya">Antalya</option>
-                            <option value="Bursa">Bursa</option>
-                            <option value="Muğla">Muğla</option>
-                            <option value="Trabzon">Trabzon</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute right-3 text-secondary text-[20px] pointer-events-none">expand_more</span>
-                    </div>
-                    <span class="font-body-sm text-body-sm text-secondary">Filo bölge dağılımı bu şehre göre endekslenir.</span>
-                </div>
-                <!-- Branch Type Indicator -->
-                <div class="flex flex-col gap-1.5">
-                    <label class="font-label-nav-item text-label-nav-item font-semibold text-on-surface">
-                        İstasyon Türü
-                    </label>
-                    <div class="relative flex items-center">
-                        <span class="material-symbols-outlined absolute left-3.5 text-secondary text-[20px] pointer-events-none">flight_takeoff</span>
-                        <select class="w-full pl-11 pr-10 py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container focus:ring-2 focus:ring-primary appearance-none cursor-pointer transition-all" id="branch-type" onchange="syncPreview();">
-                            <option value="Ofis">Şehir İçi Merkez Şube</option>
-                            <option value="Havalimanı">Havalimanı Terminal Ofisi</option>
-                            <option value="VIP İstasyon">Özel VIP Teslimat Noktası</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute right-3 text-secondary text-[20px] pointer-events-none">expand_more</span>
-                    </div>
-                    <span class="font-body-sm text-body-sm text-secondary">Havalimanı seçimlerinde operasyonel ek servis uygulanabilir.</span>
-                </div>
-                <!-- Address Textarea -->
-                <div class="flex flex-col gap-1.5 md:col-span-2">
-                    <label class="font-label-nav-item text-label-nav-item font-semibold text-on-surface" for="branch-address">
-                        Açık Adres <span class="text-error">*</span>
-                    </label>
-                    <div class="relative">
-                        <textarea class="w-full p-3.5 pl-11 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container focus:ring-2 focus:ring-primary transition-all resize-y min-h-[96px]" id="branch-address" name="Address" oninput="syncPreview();" placeholder="Örn: Caddebostan Mah. Bağdat Cad. No: 142/A Kadıköy / İstanbul" required="" rows="3"></textarea>
-                        <span class="material-symbols-outlined absolute left-3.5 top-3.5 text-secondary text-[20px] pointer-events-none">pin_drop</span>
-                    </div>
-                    <span class="font-body-sm text-body-sm text-secondary">Sözleşme, fatura dökümü ve harita yönlendirmelerinde gösterilecek tam lokasyon metni.</span>
-                </div>
-            </div>
-            <!-- Action Buttons -->
-            <div class="flex items-center justify-end gap-space-md pt-space-md border-t-0">
-                <a class="px-space-lg py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-nav-item text-label-nav-item font-medium transition-all" href="/Branches">
-                    Vazgeç
-                </a>
-                <button class="inline-flex items-center gap-2 px-space-xl py-2.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-nav-item text-label-nav-item font-semibold shadow-sm transition-all" type="submit">
-                    <span class="material-symbols-outlined text-[20px]">add_task</span>
-                    <span>Şubeyi Kaydet</span>
-                </button>
-            </div>
-            <!-- Toast / Success feedback simulated container -->
-            <div class="hidden absolute inset-0 bg-surface-container-lowest/95 backdrop-blur-sm z-20 flex-col items-center justify-center p-space-xl text-center" id="save-alert">
-                <div class="w-14 h-14 rounded-full bg-tertiary-container text-on-tertiary flex items-center justify-center mb-space-md shadow-md">
-                    <span class="material-symbols-outlined text-[32px]">check_circle</span>
-                </div>
-                <h3 class="font-headline-lg text-headline-lg text-on-surface font-bold">Şube Başarıyla Oluşturuldu</h3>
-                <p class="font-body-md text-body-md text-secondary max-w-md mt-1 mb-space-lg">Yeni şubeniz sisteme kaydedildi ve tüm araç atama listelerine bağlandı.</p>
-                <div class="flex items-center gap-space-md">
-                    <button class="px-space-md py-2 rounded-lg bg-surface-container text-on-surface font-label-nav-item text-label-nav-item font-medium" onclick="closeSuccessBanner()" type="button">Yeni Ekle</button>
-                    <a class="px-space-lg py-2 rounded-lg bg-primary text-on-primary font-label-nav-item text-label-nav-item font-semibold shadow-sm" href="/Branches">Şubeler Listesine Git</a>
-                </div>
-            </div>
-        </form>
-        <!-- Card 2: Entity Bilgilendirme (Relational Architecture) -->
-        <div class="bg-surface-container-lowest rounded-xl p-space-xl shadow-sm flex flex-col gap-space-md">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[20px]">account_tree</span>
+<form asp-area="Admin" asp-controller="Branch" asp-action="CreateBranch" method="post" class="flex flex-col w-full space-y-space-lg" id="createBranchForm">
+    @Html.AntiForgeryToken()
+
+    <div class="w-full bg-surface-container-lowest rounded-xl shadow-sm p-space-lg">
+        <div class="flex items-center justify-between pb-space-md mb-space-lg border-b border-outline-variant">
+            <div class="flex items-center gap-space-sm">
+                <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">storefront</span>
                 </div>
                 <div>
-                    <h3 class="font-headline-md text-headline-md text-on-surface">İlişkisel Veritabanı Bilgilendirmesi</h3>
-                    <span class="font-body-sm text-body-sm text-secondary">Branch → Cars (1:N One-to-Many Bütünlüğü)</span>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Şube Kimliği</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Müşterilerin rezervasyonda göreceği resmi ofis adı ve şehir.</p>
                 </div>
             </div>
-            <div class="p-space-md rounded-lg bg-surface-container-low flex flex-col md:flex-row items-center gap-space-lg">
-                <div class="flex items-center gap-3 w-full md:w-auto">
-                    <div class="p-3 bg-surface-container-lowest rounded-lg shadow-sm flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary text-[20px]">store</span>
-                        <div class="flex flex-col">
-                            <span class="font-label-badge text-label-badge font-bold text-on-surface">Branch Entity</span>
-                            <span class="font-body-sm text-body-sm text-secondary">1 Tekil Şube</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center text-primary px-2">
-                        <span class="material-symbols-outlined text-[24px]">trending_flat</span>
-                    </div>
-                    <div class="p-3 bg-surface-container-lowest rounded-lg shadow-sm flex items-center gap-2">
-                        <span class="material-symbols-outlined text-tertiary text-[20px]">directions_car</span>
-                        <div class="flex flex-col">
-                            <span class="font-label-badge text-label-badge font-bold text-on-surface">Cars Collection</span>
-                            <span class="font-body-sm text-body-sm text-secondary">N Sayıda Araç</span>
-                        </div>
-                    </div>
+            <span class="font-table-header text-table-header uppercase text-secondary bg-surface-container-low px-space-sm py-1 rounded">
+                Zorunlu Alanlar
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+            <div class="flex flex-col gap-space-xs">
+                <label class="font-table-header text-table-header text-on-surface font-semibold uppercase" asp-for="BranchName">
+                    Şube Adı <span class="text-error">*</span>
+                </label>
+                <div class="relative">
+                    <input asp-for="BranchName" class="w-full bg-surface-container-lowest rounded-lg px-space-md py-space-sm font-body-md text-body-md text-on-surface shadow-sm focus:outline-none focus:bg-surface-container-low transition-colors border border-outline-variant" required type="text" placeholder="Örn: İstanbul Kadıköy Şubesi" />
+                    <span class="material-symbols-outlined absolute right-space-md top-1/2 -translate-y-1/2 text-secondary text-[18px]">hub</span>
                 </div>
-                <div class="text-secondary font-body-sm text-body-sm flex-1">
-                    Bu şube veritabanına eklendiğinde, araç ekleme ve güncelleme ekranlarında bulunan
-                    <span class="font-semibold text-on-surface">"Bağlı Bulunacağı Şube"</span>
-                    seçim alanına gerçek zamanlı olarak eklenecek ve filo envanterine anında tahsis edilebilir olacaktır.
-                </div>
+                <span asp-validation-for="BranchName" class="text-error text-[11px]"></span>
             </div>
-            <div class="flex items-center gap-2 text-secondary font-body-sm text-body-sm">
-                <span class="material-symbols-outlined text-[18px] text-tertiary">check</span>
-                <span>Rezervasyon çakışmalarını önlemek amacıyla şube silme işlemleri yalnızca ilişkili aktif araç kalmadığında onaylanır.</span>
+
+            <div class="flex flex-col gap-space-xs">
+                <label class="font-table-header text-table-header text-on-surface font-semibold uppercase" asp-for="City">
+                    Şehir <span class="text-error">*</span>
+                </label>
+                <div class="relative">
+                    <input asp-for="City" class="w-full bg-surface-container-lowest rounded-lg px-space-md py-space-sm font-body-md text-body-md text-on-surface shadow-sm focus:outline-none focus:bg-surface-container-low transition-colors border border-outline-variant" required type="text" placeholder="Örn: İstanbul" />
+                    <span class="material-symbols-outlined absolute right-space-md top-1/2 -translate-y-1/2 text-secondary text-[18px]">location_on</span>
+                </div>
+                <span asp-validation-for="City" class="text-error text-[11px]"></span>
             </div>
         </div>
     </div>
-    <!-- Right Column (4 cols): Live Preview & Operational Guidelines -->
-    <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-space-lg">
-        <!-- Live Preview Card -->
-        <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary text-[20px]">visibility</span>
-                    <span class="font-headline-md text-headline-md text-on-surface">Canlı Önizleme</span>
+
+    <div class="w-full bg-surface-container-lowest rounded-xl shadow-sm p-space-lg">
+        <div class="flex items-center justify-between pb-space-md mb-space-lg border-b border-outline-variant">
+            <div class="flex items-center gap-space-sm">
+                <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">pin_drop</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary text-label-badge font-label-badge font-semibold">
-                    Canlı Simülasyon
-                </span>
+                <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Konum ve Açık Adres</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Sözleşme, fatura ve yönlendirmede kullanılacak tam adres.</p>
+                </div>
             </div>
-            <p class="font-body-sm text-body-sm text-secondary">
-                Girilen verilerin sistem genelindeki şube kartında ve tabloda nasıl görüneceği:
+        </div>
+
+        <div class="flex flex-col gap-space-xs">
+            <label class="font-table-header text-table-header text-on-surface font-semibold uppercase" asp-for="Address">
+                Açık Adres <span class="text-error">*</span>
+            </label>
+            <div class="relative">
+                <textarea asp-for="Address" rows="3" class="w-full bg-surface-container-lowest rounded-lg px-space-md py-space-sm pr-12 font-body-md text-body-md text-on-surface shadow-sm focus:outline-none focus:bg-surface-container-low transition-colors border border-outline-variant resize-y" required placeholder="Mahalle, cadde, no ve ilçe"></textarea>
+                <span class="material-symbols-outlined absolute right-space-md top-space-sm text-secondary text-[18px]">map</span>
+            </div>
+            <span asp-validation-for="Address" class="text-error text-[11px]"></span>
+        </div>
+    </div>
+
+    <div class="bg-surface-container rounded-xl p-space-md flex items-start gap-space-md">
+        <div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+            <span class="material-symbols-outlined text-[22px]">account_tree</span>
+        </div>
+        <div class="flex flex-col gap-space-xs">
+            <div class="flex items-center gap-space-xs">
+                <h3 class="font-headline-md text-headline-md text-on-surface">Şube ve Araç İlişkisi</h3>
+                <span class="px-2 py-0.5 rounded-full bg-surface-container-lowest font-table-header text-table-header text-primary font-semibold">1 : N</span>
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Kaydedilen şube, araç ekleme ekranındaki <span class="font-semibold text-on-surface">bağlı şube</span> listesine eklenir.
+                Filo kayıtları bu şube üzerinden tutulur.
             </p>
-            <!-- Simulated Branch Card View -->
-            <div class="p-space-md rounded-xl bg-surface-container-low shadow-inner flex flex-col gap-space-md">
-                <div class="flex items-start justify-between gap-2">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-10 h-10 rounded-lg bg-primary text-on-primary flex items-center justify-center shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]" id="preview-type-icon">storefront</span>
-                        </div>
-                        <div class="flex flex-col min-w-0">
-                            <h4 class="font-headline-md text-headline-md text-on-surface truncate max-w-[180px]" id="preview-name">
-                                İstanbul Kadıköy Şubesi
-                            </h4>
-                            <div class="flex items-center gap-1.5 text-secondary font-body-sm text-body-sm">
-                                <span class="material-symbols-outlined text-[14px]">pin_drop</span>
-                                <span id="preview-city">İstanbul</span>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-tertiary font-label-badge text-label-badge font-semibold shadow-xs" id="preview-badge">
-                        Aktif Şube
-                    </span>
-                </div>
-                <!-- Branch Location Image / Static Visual -->
-                <div class="relative rounded-lg overflow-hidden h-28 bg-surface-container">
-                    <div class="w-full h-full bg-cover bg-center" data-location="Istanbul, Turkey" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdDhmBy-EeSAGlI8CX_z2aHeFQZOzt7i6ieHAE7aTtbn9i2LE3_cI8Smi7WRBA0zgnRK89c7yv5S4_jU034Dv0D7KsvPDS6xD2m6XdbFMURSbYXnljkpMTFYjWVlLZ1VW56U1EEMgWV1A9Rsk6UB8Q2kawAqeYunypoHgAoghsk10i9sEdzvK2bU3dVC7PGqmt7tCIKo430qX-oweT63FAqY4leJTxyAAg62aZb_kPwlM6uCB9wm3eKw')"></div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-transparent flex items-end p-2.5">
-                        <span class="text-inverse-on-surface font-label-badge text-label-badge flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[14px]">location_searching</span>
-                            GPS / Harita Entegrasyonu Hazır
-                        </span>
-                    </div>
-                </div>
-                <div class="flex flex-col gap-1">
-                    <span class="font-label-nav-header text-label-nav-header uppercase text-secondary">Ofis Adresi:</span>
-                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2" id="preview-address">
-                        Caddebostan Mah. Bağdat Cad. No: 142/A Kadıköy / İstanbul
-                    </p>
-                </div>
-                <!-- Metrics Footer in preview -->
-                <div class="grid grid-cols-2 gap-2 pt-2 border-t-0">
-                    <div class="p-2 bg-surface-container-lowest rounded-md flex items-center gap-2 shadow-xs">
-                        <span class="material-symbols-outlined text-primary text-[18px]">directions_car</span>
-                        <div class="flex flex-col">
-                            <span class="text-on-surface font-headline-md text-headline-md leading-none">0</span>
-                            <span class="text-secondary font-label-badge text-label-badge">Atanmış Araç</span>
-                        </div>
-                    </div>
-                    <div class="p-2 bg-surface-container-lowest rounded-md flex items-center gap-2 shadow-xs">
-                        <span class="material-symbols-outlined text-tertiary text-[18px]">check_circle</span>
-                        <div class="flex flex-col">
-                            <span class="text-on-surface font-headline-md text-headline-md leading-none">%100</span>
-                            <span class="text-secondary font-label-badge text-label-badge">Kapasite Hazır</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Table Row Preview Simulation -->
-            <div class="flex flex-col gap-1.5 pt-2">
-                <span class="font-label-nav-header text-label-nav-header uppercase text-secondary">Tablo Satırı Önizlemesi</span>
-                <div class="p-2.5 bg-surface-container-low rounded-lg shadow-xs flex items-center justify-between text-body-sm font-body-sm">
-                    <div class="flex items-center gap-2 min-w-0">
-                        <span class="material-symbols-outlined text-secondary text-[16px]">domain</span>
-                        <span class="font-medium text-on-surface truncate max-w-[120px]" id="preview-table-name">İstanbul Kadıköy</span>
-                        <span class="text-secondary text-xs bg-surface-container px-1.5 py-0.5 rounded" id="preview-table-city">İstanbul</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-tertiary text-[11px] font-semibold">0 Araç</span>
-                        <span class="material-symbols-outlined text-secondary text-[16px]">more_vert</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Guidelines Card (Şube İpuçları) -->
-        <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
-            <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary text-[20px]">lightbulb</span>
-                <h3 class="font-headline-md text-headline-md text-on-surface">Şube Tanım İpuçları</h3>
-            </div>
-            <div class="space-y-space-md">
-                <div class="flex items-start gap-3">
-                    <div class="w-6 h-6 rounded-full bg-surface-container-high text-primary flex items-center justify-center shrink-0 mt-0.5 font-label-badge text-label-badge font-bold">
-                        1
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-label-nav-item text-label-nav-item font-semibold text-on-surface">Lokasyon Standardı</span>
-                        <p class="font-body-sm text-body-sm text-secondary">
-                            Şube isimlerini her zaman <code>[Şehir] [Semt / Bölge] [Ofisi/Şubesi]</code> yapısında tutun. Örneğin: <i>İzmir Adnan Menderes Şubesi</i>.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <div class="w-6 h-6 rounded-full bg-surface-container-high text-primary flex items-center justify-center shrink-0 mt-0.5 font-label-badge text-label-badge font-bold">
-                        2
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-label-nav-item text-label-nav-item font-semibold text-on-surface">Teslimat Noktası &amp; Havalimanı</span>
-                        <p class="font-body-sm text-body-sm text-secondary">
-                            Havalimanı iç ve dış hatlar terminallerinde ayrı kontuarlarınız varsa, adres alanında terminal kapı numarasını muhakkak belirtin.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <div class="w-6 h-6 rounded-full bg-surface-container-high text-primary flex items-center justify-center shrink-0 mt-0.5 font-label-badge text-label-badge font-bold">
-                        3
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-label-nav-item text-label-nav-item font-semibold text-on-surface">İlişkisel Bütünlük</span>
-                        <p class="font-body-sm text-body-sm text-secondary">
-                            Araçların şubeler arası transferleri ve kilometre bakımları seçilen bu merkez üzerinden kaydedilerek filo doluluk oranına yansır.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="p-3 bg-surface-container rounded-lg flex items-center gap-2 text-secondary font-body-sm text-body-sm">
-                <span class="material-symbols-outlined text-[18px]">verified_user</span>
-                <span>Tüm şube koordinatları otomatik coğrafi harita servisine entegre edilir.</span>
-            </div>
         </div>
     </div>
-</div>
+
+    <div class="w-full bg-surface-container-lowest rounded-xl shadow-sm p-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md">
+        <div class="flex items-center gap-space-xs text-secondary font-body-sm text-body-sm">
+            <span class="material-symbols-outlined text-tertiary text-[20px]">check_circle</span>
+            <span>Yeni şube kaydı anında veritabanına işlenecektir.</span>
+        </div>
+        <div class="flex items-center gap-space-sm w-full sm:w-auto justify-end">
+            <a href="/Admin/Branch/BranchList" class="px-space-lg py-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-nav-item text-label-nav-item transition-colors text-center">
+                Vazgeç
+            </a>
+            <button type="submit" class="flex items-center justify-center gap-space-xs px-space-xl py-space-sm rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-nav-item text-label-nav-item shadow-sm transition-all">
+                <span class="material-symbols-outlined text-[20px]">add_task</span>
+                <span>Şubeyi Kaydet</span>
+            </button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,11 +1,11 @@
 ﻿
 <div class="container" id="section-filter">
-        <div class="search-floating-card">
+        <form class="search-floating-card" method="get" asp-controller="Car" asp-action="CarList">
             <div class="row g-3 align-items-end">
                 <div class="col-lg-3 col-md-6">
                     <div class="filter-field">
                         <label><i class="fa fa-map-marker-alt text-primary-custom me-1"></i> Alış &amp; Bırakış Lokasyonu</label>
-                        <select class="form-select" id="filterLocation">
+                        <select class="form-select" id="filterLocation" name="branchId">
                             <option value="">Lokasyon Seçiniz</option>
                             @foreach (var item in ViewBag.Branches){
                                 <option value="@item.BranchId">@item.BranchName</option>
@@ -18,20 +18,20 @@
                 <div class="col-lg-2 col-md-6">
                     <div class="filter-field">
                         <label><i class="fa fa-calendar text-primary-custom me-1"></i> Alış Tarihi &amp; Saati</label>
-                        <input id="pickupDate" type="datetime-local" value="2025-05-10T10:00" />
+                        <input id="pickupDate" name="pickup" type="datetime-local" value="@DateTime.Today.AddHours(10).ToString("yyyy-MM-ddTHH:mm")" />
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6">
                     <div class="filter-field">
                         <label><i class="fa fa-calendar-check text-primary-custom me-1"></i> İade Tarihi &amp; Saati</label>
-                        <input id="returnDate" type="datetime-local" value="2025-05-15T18:00" />
+                        <input id="returnDate" name="returnAt" type="datetime-local" value="@DateTime.Today.AddDays(1).AddHours(18).ToString("yyyy-MM-ddTHH:mm")" />
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="filter-field">
                         <label><i class="fa fa-car-side text-primary-custom me-1"></i> Araç Tipi / Segment</label>
-                        <select class="form-select" id="filterCategory">
-                            <option value="all">Tüm Araç Tipini Seçiniz</option>
+                        <select class="form-select" id="filterCategory" name="categoryId">
+                            <option value="">Tüm Araç Tipini Seçiniz</option>
                             @foreach (var item in ViewBag.Categories){
                                 <option value="@item.CategoryId">@item.CategoryName</option>
                              }
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-12">
-                    <button class="btn btn-custom-primary w-100" id="btnFilterCars" type="button">
+                    <button class="btn btn-custom-primary w-100" type="submit">
                         <i class="fa fa-search"></i> Müsait Bul
                     </button>
                 </div>
@@ -56,5 +56,5 @@
                     <i class="fa fa-camera-retro me-1"></i> Hızlı İşlem: Kimlik OCR ile Bilgileri Doldur →
                 </div>
             </div>
-        </div>
+        </form>
     </div>

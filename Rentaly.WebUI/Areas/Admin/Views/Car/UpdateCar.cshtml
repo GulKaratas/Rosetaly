@@ -1,0 +1,250 @@
+@model UpdateCarDto
+@{
+    ViewData["Title"] = "UpdateCar";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    var summary = (GetCarByIdDto)ViewBag.Summary;
+    var yearStart = Math.Min(2015, Model.Year);
+}
+
+@section PageHeader {
+    @await Html.PartialAsync("_PageHeaderPartial", ("Araç Bilgilerini Güncelle", summary.BrandName + " " + summary.ModelName + " · " + Model.PlateNumber, "Araçlar", "", "Listeye Dön", true, "/Admin/Car/CarList/"))
+}
+
+<form asp-area="Admin" asp-controller="Car" asp-action="UpdateCar" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <input type="hidden" asp-for="CarId" />
+
+    <div class="lg:col-span-2 flex flex-col gap-6">
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-6 flex flex-col gap-5">
+            <div class="flex items-center justify-between pb-3 bg-surface-container-low/40 -mx-6 -mt-6 p-6 rounded-t-xl">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-[20px]">badge</span>
+                    </div>
+                    <div>
+                        <h2 class="font-headline-md text-headline-md text-on-surface font-semibold">1. Ruhsat ve Kimlik</h2>
+                        <p class="font-body-sm text-body-sm text-secondary">Plaka, şasi, yıl ve kilometre.</p>
+                    </div>
+                </div>
+                <span class="text-outline font-table-header text-table-header tracking-wider uppercase">#CAR-@Model.CarId</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="PlateNumber">Plaka <span class="text-error">*</span></label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary-container text-on-primary">TR</span>
+                        <input asp-for="PlateNumber" class="w-full pl-12 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" required />
+                    </div>
+                    <span asp-validation-for="PlateNumber" class="text-error text-xs"></span>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold flex items-center justify-between" asp-for="VIN">
+                        <span>Şasi No / VIN</span>
+                        <span class="text-outline text-[11px] font-normal">17 hane, isteğe bağlı</span>
+                    </label>
+                    <input asp-for="VIN" maxlength="17" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" />
+                    <span asp-validation-for="VIN" class="text-error text-xs"></span>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="Year">Model Yılı <span class="text-error">*</span></label>
+                    <select asp-for="Year" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" required>
+                        @for (int y = DateTime.Now.Year + 1; y >= yearStart; y--)
+                        {
+                            <option value="@y">@y</option>
+                        }
+                    </select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="Kilometer">Kilometre <span class="text-error">*</span></label>
+                    <div class="relative">
+                        <input asp-for="Kilometer" type="number" min="0" class="w-full pl-4 pr-12 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" required />
+                        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-outline">km</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-6 flex flex-col gap-5">
+            <div class="flex items-center gap-2.5 pb-3 bg-surface-container-low/40 -mx-6 -mt-6 p-6 rounded-t-xl">
+                <div class="w-8 h-8 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container">
+                    <span class="material-symbols-outlined text-[20px]">hub</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface font-semibold">2. Model, Kategori ve Şube</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Araçın bağlı olduğu katalog ve lokasyon.</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="CarModelId">Marka / Model <span class="text-error">*</span></label>
+                    <select asp-for="CarModelId" asp-items="ViewBag.CarModels" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" required></select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="CategoryId">Kategori <span class="text-error">*</span></label>
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" required></select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="BranchId">Şube <span class="text-error">*</span></label>
+                    <select asp-for="BranchId" asp-items="ViewBag.Branches" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" required></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-6 flex flex-col gap-5">
+            <div class="flex items-center gap-2.5 pb-3 bg-surface-container-low/40 -mx-6 -mt-6 p-6 rounded-t-xl">
+                <div class="w-8 h-8 rounded-lg bg-surface-variant flex items-center justify-center text-primary-container">
+                    <span class="material-symbols-outlined text-[20px]">tune</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface font-semibold">3. Teknik Özellikler</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Yakıt, vites ve kapasite.</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="FuelType">Yakıt <span class="text-error">*</span></label>
+                    <select asp-for="FuelType" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" required>
+                        @if (Model.FuelType is not ("Benzin" or "Dizel" or "Hibrit" or "Elektrik"))
+                        {
+                            <option value="@Model.FuelType">@Model.FuelType</option>
+                        }
+                        <option value="Benzin">Benzin</option>
+                        <option value="Dizel">Dizel</option>
+                        <option value="Hibrit">Hibrit</option>
+                        <option value="Elektrik">Elektrik</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="Transmission">Vites <span class="text-error">*</span></label>
+                    <select asp-for="Transmission" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" required>
+                        @if (Model.Transmission is not ("Otomatik" or "Manuel" or "Yarı Otomatik"))
+                        {
+                            <option value="@Model.Transmission">@Model.Transmission</option>
+                        }
+                        <option value="Otomatik">Otomatik</option>
+                        <option value="Manuel">Manuel</option>
+                        <option value="Yarı Otomatik">Yarı Otomatik</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="SeatCount">Koltuk <span class="text-error">*</span></label>
+                    <input asp-for="SeatCount" type="number" min="1" max="15" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" required />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="LuggageCount">Bagaj (valiz) <span class="text-error">*</span></label>
+                    <input asp-for="LuggageCount" type="number" min="0" max="10" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" required />
+                </div>
+                <div class="flex flex-col gap-1.5 md:col-span-2">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="PerformanceInfo">Motor / Performans</label>
+                    <input asp-for="PerformanceInfo" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" />
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-6 flex flex-col gap-5">
+            <div class="flex items-center gap-2.5 pb-3 bg-surface-container-low/40 -mx-6 -mt-6 p-6 rounded-t-xl">
+                <div class="w-8 h-8 rounded-lg bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+                    <span class="material-symbols-outlined text-[20px]">payments</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface font-semibold">4. Fiyat ve Durum</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Günlük ücret, depozito ve filo durumu.</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="DailyPrice">Günlük Fiyat <span class="text-error">*</span></label>
+                    <div class="relative">
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-primary">₺</span>
+                        <input asp-for="DailyPrice" type="number" step="0.01" min="0" class="w-full pl-9 pr-16 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface font-semibold outline-none focus:border-primary focus:bg-surface-container-lowest" required />
+                        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-outline">/ gün</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="font-table-header text-table-header text-on-surface font-semibold" asp-for="DepositAmount">Depozito <span class="text-error">*</span></label>
+                    <div class="relative">
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-secondary">₺</span>
+                        <input asp-for="DepositAmount" type="number" step="0.01" min="0" class="w-full pl-9 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface font-semibold outline-none focus:border-primary focus:bg-surface-container-lowest" required />
+                    </div>
+                </div>
+                <label class="flex items-center justify-between gap-3 px-4 py-3 rounded-lg bg-surface-container-low border border-outline-variant">
+                    <span class="font-body-sm text-body-sm text-on-surface font-semibold">Müsait</span>
+                    <input asp-for="IsAvailable" class="w-4 h-4 accent-primary" />
+                </label>
+                <label class="flex items-center justify-between gap-3 px-4 py-3 rounded-lg bg-surface-container-low border border-outline-variant">
+                    <span class="font-body-sm text-body-sm text-on-surface font-semibold">Aktif</span>
+                    <input asp-for="IsActive" class="w-4 h-4 accent-primary" />
+                </label>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-6 flex flex-col gap-5">
+            <div class="flex items-center gap-2.5 pb-3 bg-surface-container-low/40 -mx-6 -mt-6 p-6 rounded-t-xl">
+                <div class="w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">image</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface font-semibold">5. Görsel</h2>
+                    <p class="font-body-sm text-body-sm text-secondary">Liste ve vitrinde kullanılan bağlantı.</p>
+                </div>
+            </div>
+            <input asp-for="ImageUrl" type="url" placeholder="https://" class="w-full px-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg text-on-surface outline-none focus:border-primary focus:bg-surface-container-lowest" />
+            <span asp-validation-for="ImageUrl" class="text-error text-xs"></span>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-4 md:p-5 flex flex-col sm:flex-row items-center justify-end gap-3">
+            <a class="w-full sm:w-auto px-5 py-2.5 bg-surface-container-low hover:bg-surface-container text-on-surface rounded-lg font-label-nav-item text-label-nav-item text-center" href="/Admin/Car/CarList">Vazgeç</a>
+            <button class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary-container text-on-primary rounded-lg font-label-nav-item text-label-nav-item shadow-sm hover:opacity-95" type="submit">
+                <span class="material-symbols-outlined text-[18px]">save</span>
+                Değişiklikleri Kaydet
+            </button>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-6">
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@summary.DisplayName" class="w-full h-44 object-cover bg-surface-container" />
+            }
+            else
+            {
+                <div class="h-44 bg-surface-container flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[48px]">directions_car</span>
+                </div>
+            }
+            <div class="p-5 flex flex-col gap-4">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface font-semibold">@summary.BrandName @summary.ModelName</h3>
+                        <span class="font-mono text-body-sm text-secondary">@Model.PlateNumber</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-primary font-bold text-lg">@Model.DailyPrice.ToString("N0") ₺</span>
+                        <span class="text-[11px] text-outline block">/ gün</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 py-3 border-y border-outline-variant text-center">
+                    <div class="text-xs text-secondary flex flex-col items-center gap-0.5">
+                        <span class="material-symbols-outlined text-[16px]">local_gas_station</span>
+                        <span>@Model.FuelType</span>
+                    </div>
+                    <div class="text-xs text-secondary flex flex-col items-center gap-0.5">
+                        <span class="material-symbols-outlined text-[16px]">settings</span>
+                        <span>@Model.Transmission</span>
+                    </div>
+                    <div class="text-xs text-secondary flex flex-col items-center gap-0.5">
+                        <span class="material-symbols-outlined text-[16px]">airline_seat_recline_normal</span>
+                        <span>@Model.SeatCount Kişilik</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 text-body-sm text-secondary">
+                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">category</span> @summary.CategoryName</span>
+                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">location_on</span> @summary.BranchName</span>
+                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">speed</span> @Model.Kilometer.ToString("N0") km</span>
+                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">star</span> @summary.Rating.ToString("0.0") · @summary.ReservationCount rezervasyon</span>
+                    <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-outline">calendar_today</span> Kayıt @summary.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

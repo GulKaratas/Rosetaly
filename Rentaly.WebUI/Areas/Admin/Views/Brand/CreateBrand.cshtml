@@ -1,4 +1,4 @@
-﻿@model List<Rentaly.EntityLayer.Entities.Brand>
+@model Rentaly.EntityLayer.Entities.Brand
 @{
     ViewData["Title"] = "CreateBrand";
     Layout = "~/Views/AdminLayout/Index.cshtml";
@@ -12,7 +12,7 @@
 <!-- SOL / ORTA: Form ve Bilgilendirme Alanı (8 Kolon) -->
 <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-space-lg">
 <!-- Kart 1: Marka Tanımlama Formu -->
-<form class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md lg:p-space-lg flex flex-col gap-space-lg" id="brandForm" onsubmit="event.preventDefault();">
+<form asp-area="Admin" asp-controller="Brand" asp-action="CreateBrand" method="post" class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md lg:p-space-lg flex flex-col gap-space-lg" id="brandForm">
 <!-- Form Header -->
 <div class="flex items-center justify-between pb-space-sm">
 <div class="flex items-center gap-space-sm">
@@ -38,7 +38,7 @@
 </label>
 <div class="relative flex items-center">
 <span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">branding_watermark</span>
-<input class="w-full pl-11 pr-space-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline outline-none focus:bg-surface-container focus:ring-2 focus:ring-primary/20 transition-all" id="brandNameInput" placeholder="Örn: Renault, BMW, Mercedes-Benz, Tesla, Audi" required="" type="text"/>
+<input asp-for="BrandName" class="w-full pl-11 pr-space-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline outline-none focus:bg-surface-container focus:ring-2 focus:ring-primary/20 transition-all" id="brandNameInput" oninput="syncBrandPreview()" placeholder="Örn: Renault, BMW, Mercedes-Benz, Tesla, Audi" required="" type="text"/>
 </div>
 <p class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
 <span class="material-symbols-outlined text-[15px] text-outline">info</span>
@@ -53,7 +53,7 @@
 </label>
 <div class="relative flex items-center">
 <span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px] pointer-events-none">link</span>
-<input class="w-full pl-11 pr-space-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline outline-none focus:bg-surface-container focus:ring-2 focus:ring-primary/20 transition-all" id="brandLogoInput" placeholder="https://cdn.rentadmin.com/brands/bmw-logo.svg" type="url"/>
+<input asp-for="ImageUrl" class="w-full pl-11 pr-space-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline outline-none focus:bg-surface-container focus:ring-2 focus:ring-primary/20 transition-all" id="brandLogoInput" oninput="syncBrandPreview()" placeholder="https://cdn.rentadmin.com/brands/bmw-logo.svg" type="url"/>
 </div>
 <p class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
 <span class="material-symbols-outlined text-[15px] text-outline">image</span>
@@ -94,10 +94,10 @@
 <span>ile işaretli alanlar zorunludur</span>
 </div>
 <div class="flex items-center gap-space-sm w-full sm:w-auto justify-end">
-<button class="px-space-md py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-nav-item text-label-nav-item transition-colors" onclick="resetForm()" type="button">
+<a href="/Admin/Brand/BrandList" class="px-space-md py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-nav-item text-label-nav-item transition-colors">
               Vazgeç
-            </button>
-<button class="inline-flex items-center justify-center gap-space-xs px-space-lg py-2.5 bg-primary-container text-on-primary rounded-lg font-label-nav-item text-label-nav-item shadow-sm hover:opacity-95 active:scale-[0.98] transition-all" onclick="saveBrandMock()" type="submit">
+            </a>
+<button class="inline-flex items-center justify-center gap-space-xs px-space-lg py-2.5 bg-primary-container text-on-primary rounded-lg font-label-nav-item text-label-nav-item shadow-sm hover:opacity-95 active:scale-[0.98] transition-all" type="submit">
 <span class="material-symbols-outlined text-[20px]">check</span>
 <span>Markayı Kaydet</span>
 </button>
@@ -215,13 +215,34 @@
 </div>
 </div>
 </div>
-<!-- Bildirim Toast (Gizli / Dinamik) -->
-<div class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 bg-inverse-surface text-inverse-on-surface px-space-md py-space-sm rounded-xl shadow-xl" id="toastNotification">
-<div class="w-8 h-8 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-[18px]">done_all</span>
-</div>
-<div class="flex flex-col pr-space-sm">
-<span class="font-label-nav-item text-label-nav-item font-semibold text-inverse-on-surface" id="toastTitle">Kayıt Başarılı</span>
-<span class="font-body-sm text-body-sm text-secondary-fixed-dim" id="toastMsg">Marka başarıyla veritabanına eklendi.</span>
-</div>
-</div>
+<script>
+    function setQuickBrand(name, url) {
+        document.getElementById('brandNameInput').value = name;
+        document.getElementById('brandLogoInput').value = url;
+        syncBrandPreview();
+    }
+
+    function syncBrandPreview() {
+        const name = document.getElementById('brandNameInput').value.trim();
+        const url = document.getElementById('brandLogoInput').value.trim();
+        const label = name || 'Marka Belirtilmedi';
+        document.getElementById('previewBrandName').textContent = label;
+        document.getElementById('previewTableBrandName').textContent = name || 'Marka Adı';
+
+        const showLogo = (imgId, iconId) => {
+            const img = document.getElementById(imgId);
+            const icon = document.getElementById(iconId);
+            if (url) {
+                img.src = url;
+                img.classList.remove('hidden');
+                icon.classList.add('hidden');
+            } else {
+                img.classList.add('hidden');
+                icon.classList.remove('hidden');
+            }
+        };
+
+        showLogo('previewLogoImg', 'previewDefaultIcon');
+        showLogo('previewMiniLogoImg', 'previewMiniDefaultIcon');
+    }
+</script>

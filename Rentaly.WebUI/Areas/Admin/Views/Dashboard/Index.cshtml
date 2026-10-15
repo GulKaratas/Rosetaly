@@ -1,0 +1,66 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+<style id="contrast-enhancements">
+  
+    .elevated-card {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05) !important;
+        border-radius: 0.75rem !important;
+        transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+    }
+
+        .elevated-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04) !important;
+        }
+
+    .sub-card, .bg-surface-container-low {
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    table thead tr {
+        background-color: #f8fafc !important;
+        border-bottom: 2px solid #cbd5e1 !important;
+    }
+
+    table tbody tr {
+        border-bottom: 1px solid #f1f5f9 !important;
+    }
+
+        table tbody tr:hover {
+            background-color: #f8fafc !important;
+        }
+</style>
+<div class="flex flex-col w-full gap-y-4 mt-0">
+                    <!-- ========================================== -->
+                    <!-- 1. YAPAY ZEKA OPERASYON CO-PILOT (AI HUB)   -->
+                    <!-- ========================================== -->
+    <partial name="_DashboardAiHubPartial" model="Model" />
+
+                   
+                    <!-- ========================================== -->
+                    <!-- 2. KPI METRİK KARTLARI (Tüm Metrikler)     -->
+                    <!-- ========================================== -->
+    <!-- 2. KPI METRİK KARTLARI (Tüm Metrikler) -->
+    <partial name="_DashboardCardsPartial" model="Model" />
+                    
+                    <!-- ========================================== -->
+                    <!-- 3. BUGÜNÜN OPERASYONU (2 Sütunlu Hızlı Takip) -->
+                    <!-- ========================================== -->
+    <partial name="_DashboardTodayOperationsPartial" model="Model" />
+  
+
+                    <!-- ========================================== -->
+                    <!-- 4. VERİ TABLOLARI (2 Ayrılmış Kart)        -->
+                    <!-- ========================================== -->
+    <partial name="_DashboardDataTablesPartial" model="Model" />
+                    
+                </div>
+           
+
+
+

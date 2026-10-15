@@ -1,0 +1,146 @@
+﻿@model DashboardViewModel
+@{
+    var tr = new System.Globalization.CultureInfo("tr-TR");
+    var now = DateTime.Now;
+}
+
+<section class="elevated-card p-5" style="border-top: 4px solid #4f46e5 !important;">
+    <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 flex items-center justify-center text-white shadow-md">
+                <span class="material-symbols-outlined text-[22px]">auto_awesome</span>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="font-headline-md text-headline-md font-bold text-slate-900 tracking-tight">Yapay Zeka Operasyon Co-Pilot</h1>
+                    <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 font-label-badge text-label-badge font-semibold border border-indigo-200 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></span> CANLI AKILLI MOTOR
+                    </span>
+                </div>
+                <p class="font-body-sm text-body-sm text-slate-500">Filo çakışma analitiği, anlık onay tavsiyeleri ve sabah operasyon brifingi</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="font-label-badge text-label-badge text-slate-500">Son Tarama: <span class="font-mono font-medium text-slate-700">@now.ToString("HH:mm:ss")</span></span>
+            <a href="/Admin/Dashboard/Index" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-label-badge text-label-badge flex items-center gap-1.5 transition-colors border border-indigo-200">
+                <span class="material-symbols-outlined text-[16px]">refresh</span> Yeniden Tara
+            </a>
+        </div>
+    </div>
+
+    <div class="mt-4 p-3.5 rounded-xl bg-gradient-to-r from-blue-50 via-indigo-50/70 to-slate-50 border border-blue-200 flex items-start gap-3 shadow-xs">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+            <span class="material-symbols-outlined text-[20px]">waving_hand</span>
+        </div>
+        <div class="flex-1">
+            <span class="font-label-nav-header uppercase tracking-wider text-blue-900 font-bold block text-[11px]">GÜNLÜK SABAH OPERASYON BRİFİNGİ</span>
+            <p class="font-body-md text-body-md text-slate-800 font-medium leading-relaxed mt-0.5">
+                “Günaydın Operasyon Ekibi! Bugün sistemde <strong class="text-blue-700 font-bold">@Model.TodayPickups.Count araç teslimi (alış)</strong>, <strong class="text-emerald-700 font-bold">@Model.TodayReturns.Count araç iadesi</strong> gerçekleşecek ve onayınızı bekleyen <strong class="text-amber-700 font-bold">@Model.PendingRentalCount yeni rezervasyon talebi</strong> bulunuyor.”
+            </p>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="flex items-center justify-between mb-2.5">
+            <span class="font-label-nav-header uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-indigo-600">psychology</span>
+                AKILLI ONAY ÖNERİSİ &amp; ÇAKIŞMA KONTROL MOTORU
+            </span>
+            <span class="font-label-badge text-label-badge text-slate-500">@Model.PendingAnalyses.Count Kritik Öneri Bekliyor</span>
+        </div>
+
+        @if (!Model.PendingAnalyses.Any())
+        {
+            <p class="text-sm text-slate-500">Onay bekleyen talep yok.</p>
+        }
+        else
+        {
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+                @foreach (var item in Model.PendingAnalyses)
+                {
+                    var soon = item.PickupDate <= now.AddHours(24);
+                    var sameMonth = item.PickupDate.Month == item.ReturnDate.Month && item.PickupDate.Year == item.ReturnDate.Year;
+                    var range = sameMonth
+                        ? $"{item.PickupDate.Day} - {item.ReturnDate.Day} {item.PickupDate.ToString("MMMM", tr)}"
+                        : $"{item.PickupDate.ToString("dd MMMM", tr)} - {item.ReturnDate.ToString("dd MMMM", tr)}";
+                    var pickupLabel = item.PickupDate.Date == now.Date
+                        ? $"Bugün {item.PickupDate:HH:mm}"
+                        : item.PickupDate.Date == now.Date.AddDays(1)
+                            ? $"Yarın {item.PickupDate:HH:mm}"
+                            : item.PickupDate.ToString("dd MMMM HH:mm", tr);
+
+                    if (item.HasConflict)
+                    {
+                        <div class="p-4 rounded-xl bg-red-50/70 border border-red-200 flex flex-col justify-between transition-all hover:border-red-300">
+                            <div>
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-100 text-red-800 font-label-badge text-label-badge font-bold border border-red-200">
+                                        <span class="material-symbols-outlined text-[15px]">block</span> ÇAKIŞMA TESPİT EDİLDİ - ONAYLAMA!
+                                    </span>
+                                    <span class="font-mono text-xs text-red-700 font-bold">Talep #RNT-@item.RentalId.ToString("D4")</span>
+                                </div>
+                                <div class="font-body-md text-body-md text-slate-900 leading-snug">
+                                    <span class="font-bold">@item.CarName</span>
+                                    @if (!string.IsNullOrWhiteSpace(item.PlateNumber))
+                                    {
+                                        <span> • <span class="font-mono font-semibold px-1 py-0.5 bg-white rounded border border-slate-200 text-xs">@item.PlateNumber</span></span>
+                                    }
+                                    <span> (@range):</span>
+                                    <p class="text-red-950 font-normal mt-1.5 text-sm">
+                                        Seçilen araç aynı tarihlerde @(item.ConflictingStatus == "Bekliyor" ? "bekleyen talep" : "onaylı kiralama") <strong class="text-red-700 font-mono">#RNT-@((item.ConflictingRentalId ?? 0).ToString("D4"))</strong> ile çakışıyor! <strong>ONAYLAMA</strong>
+                                        @if (!string.IsNullOrWhiteSpace(item.AlternativePlate))
+                                        {
+                                            <span>(Alternatif müsait araç: <span class="font-mono font-bold text-slate-900 bg-red-100 px-1 rounded">@item.AlternativePlate</span> öneriliyor).</span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-3.5 pt-3 border-t border-red-200/80 flex items-center justify-between gap-2">
+                                <span class="text-xs text-red-700 font-medium">Risk Seviyesi: Yüksek (Mükerrer Rezervasyon)</span>
+                                <a href="/Admin/Rental/RentalList" class="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-label-badge text-label-badge transition-colors shadow-xs flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[16px]">close</span> Talebi Reddet / İncele
+                                </a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 flex flex-col justify-between transition-all hover:border-emerald-300">
+                            <div>
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-label-badge text-label-badge font-bold border border-emerald-200">
+                                        <span class="material-symbols-outlined text-[15px]">check_circle</span> @(soon ? "ÇAKIŞMA YOK - ÖNCE BUNU ONAYLA" : "ÇAKIŞMA YOK")
+                                    </span>
+                                    <span class="font-mono text-xs text-emerald-700 font-bold">Talep #RNT-@item.RentalId.ToString("D4")</span>
+                                </div>
+                                <div class="font-body-md text-body-md text-slate-900 leading-snug">
+                                    <span class="font-bold">@item.CarName</span>
+                                    @if (!string.IsNullOrWhiteSpace(item.PlateNumber))
+                                    {
+                                        <span> • <span class="font-mono font-semibold px-1 py-0.5 bg-white rounded border border-slate-200 text-xs">@item.PlateNumber</span></span>
+                                    }
+                                    <span> (Alış: <strong>@pickupLabel</strong>):</span>
+                                    <p class="text-emerald-950 font-normal mt-1.5 text-sm">
+                                        Araç üzerinde hiçbir takvim çakışması yoktur@(soon ? ", alış tarihi çok yakın. " : ". ")
+                                        @if (soon)
+                                        {
+                                            <strong>ÖNCE BUNU ONAYLA.</strong>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-3.5 pt-3 border-t border-emerald-200/80 flex items-center justify-between gap-2">
+                                <span class="text-xs text-emerald-700 font-medium">@(soon ? "Öncelik: Kritik (Teslimata <24 Saat)" : "Öncelik: Normal")</span>
+                                <form method="post" asp-area="Admin" asp-controller="Rental" asp-action="ApproveRental" asp-route-id="@item.RentalId">
+                                    <button type="submit" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-label-badge text-label-badge transition-colors shadow-xs flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[16px]">task_alt</span> Hemen Onayla
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        }
+    </div>
+</section>

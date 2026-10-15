@@ -9,5 +9,7 @@ namespace Rentaly.WebUI.Models
         public List<string> Categories { get; set; } = new();
         public List<int> SeatCounts { get; set; } = new();
         public List<string> FuelTypes { get; set; } = new();
+        public DateTime? Pickup { get; set; }
+        public DateTime? ReturnDate { get; set; }
     }
 }

@@ -41,6 +41,16 @@ namespace Rentaly.BusinessLayer.Concrete
             return _mapper.Map<List<ResultRentalDto>>(rental);
         }
 
+        public Task<bool> THasApprovedOverlapAsync(int carId, DateTime pickup, DateTime returnDate, int excludeRentalId = 0)
+        {
+            return _rentalDal.HasApprovedOverlapAsync(carId, pickup, returnDate, excludeRentalId);
+        }
+
+        public Task<List<int>> TGetApprovedOverlapCarIdsAsync(DateTime pickup, DateTime returnDate)
+        {
+            return _rentalDal.GetApprovedOverlapCarIdsAsync(pickup, returnDate);
+        }
+
         public async Task TInsertAsync(CreateRentalDto createRentalDto)
         {
             var rental = _mapper.Map<Rental>(createRentalDto);

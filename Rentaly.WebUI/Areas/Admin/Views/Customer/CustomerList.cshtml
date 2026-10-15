@@ -117,16 +117,17 @@
                             </td>
                             <td class="py-3.5 px-4 text-right">
                                 <div class="inline-flex items-center gap-1">
-                                    <a href="/Rentals?customerId=@item.CustomerId" class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Kiralama Geçmişi">
-                                        <span class="material-symbols-outlined text-[18px]">key</span>
-                                    </a>
-                                    <a href="/Customers/EditCustomer/@item.CustomerId" class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Düzenle">
-                                        <span class="material-symbols-outlined text-[18px]">edit</span>
-                                    </a>
-                                    <a href="/Customers/DeleteCustomer/@item.CustomerId" onclick="return confirm('@item.Name @item.Surname müşterisini silmek istediğinize emin misiniz?');" class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/30 transition-colors" title="Sil">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
-                                    </a>
-                                </div>
+   
+    <a href="/Admin/Customer/UpdateCustomer/@item.CustomerId" class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Düzenle">
+        <span class="material-symbols-outlined text-[18px]">edit</span>
+    </a>
+
+    <form asp-area="Admin" asp-controller="Customer" asp-action="DeleteCustomer" asp-route-id="@item.CustomerId" method="post" class="inline" onsubmit="return confirm('@item.Name @item.Surname müşterisini silmek istediğinize emin misiniz?');">
+        <button type="submit" class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/30 transition-colors" title="Sil">
+            <span class="material-symbols-outlined text-[18px]">delete</span>
+        </button>
+    </form>
+</div>
                             </td>
                         </tr>
                     }

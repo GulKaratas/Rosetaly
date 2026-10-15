@@ -11,19 +11,39 @@ namespace Rentaly.WebUI.Controllers
         private readonly ICarService _carService;
         private readonly IBrandService _brandService;
         private readonly ICategoryService _categoryService;
+        private readonly IRentalService _rentalService;
         private readonly IMapper _mapper;
 
-        public CarController(ICarService carService, IBrandService brandService, ICategoryService categoryService, IMapper mapper)
+        public CarController(
+            ICarService carService,
+            IBrandService brandService,
+            ICategoryService categoryService,
+            IRentalService rentalService,
+            IMapper mapper)
         {
             _carService = carService;
             _brandService = brandService;
             _categoryService = categoryService;
+            _rentalService = rentalService;
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> CarList()
+        public async Task<IActionResult> CarList(DateTime? pickup, DateTime? returnAt, int? categoryId, int? branchId)
         {
             var carValues = await _carService.TGetAllCarsWithCategoryAsync();
+            carValues = carValues.Where(car => car.IsAvailable && car.IsActive).ToList();
+
+            if (categoryId is > 0)
+            {
+                carValues = carValues.Where(car => car.CategoryId == categoryId).ToList();
+            }
+
+            if (pickup.HasValue && returnAt.HasValue && returnAt > pickup)
+            {
+                var busyCarIds = await _rentalService.TGetApprovedOverlapCarIdsAsync(pickup.Value, returnAt.Value);
+                carValues = carValues.Where(car => !busyCarIds.Contains(car.CarId)).ToList();
+            }
+
             var cars = _mapper.Map<List<ResultCarDto>>(carValues);
 
             var brands = await _brandService.TGetListAsync();
@@ -40,7 +60,9 @@ namespace Rentaly.WebUI.Controllers
                     .Distinct()
                     .OrderBy(x => x)
                     .ToList(),
-                FuelTypes = DistinctNames(cars.Select(x => x.FuelType))
+                FuelTypes = DistinctNames(cars.Select(x => x.FuelType)),
+                Pickup = pickup,
+                ReturnDate = returnAt
             };
 
             return View(model);

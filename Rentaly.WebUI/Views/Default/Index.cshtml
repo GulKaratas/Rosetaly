@@ -86,6 +86,7 @@
     @await Component.InvokeAsync("_DefaultBrandComponentPartial")
     
     <!-- 3. PROCESS / İŞLEYİŞ -->
+
     <section class="section-padding bg-dark bg-opacity-50" id="section-process">
         <div class="container">
             <div class="text-center section-title-wrap">
@@ -151,37 +152,88 @@
  
 </div>
 <div aria-hidden="true" aria-labelledby="ocrModalLabel" class="modal fade" id="ocrModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content modal-content-custom">
             <div class="modal-header border-secondary border-opacity-25 pb-3">
                 <div class="d-flex align-items-center gap-2">
                     <i class="fa fa-camera-retro text-primary-custom fs-4"></i>
                     <div>
                         <h5 class="modal-title fw-bold" id="ocrModalLabel">Yapay Zeka ile Kimlik &amp; Ehliyet Tarama</h5>
-                        <small class="text-muted">Kamera veya dosya yüklemesi ile rezervasyon formunu anında doldurun.</small>
+                        <small class="text-muted">Kiralama bilgilerinizi seçin, ardından kimlik ve ehliyet fotoğrafınızı yükleyin.</small>
                     </div>
                 </div>
                 <button aria-label="Close" class="btn-close btn-close-white" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body p-4">
+                <div class="rounded-4 p-3 p-md-4 mb-4" style="background:#11141a;border:1px solid rgba(255,255,255,.08)">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="fa fa-calendar-check text-primary-custom"></i>
+                        <div>
+                            <h6 class="fw-bold text-white mb-0">Araç ve Kiralama Tarihleri</h6>
+                            <small class="text-muted">Kiralama süresine göre tahmini tutarı görüntüleyin.</small>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-lg-4">
+                            <label class="form-label text-muted small" for="modalCarSelect">Araç</label>
+                            <select class="form-select bg-dark border-secondary text-white" id="modalCarSelect">
+                                <option value="">Araç seçiniz</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 col-lg-2">
+                            <label class="form-label text-muted small" for="modalPickupDate">Alış tarihi</label>
+                            <input class="form-control bg-dark border-secondary text-white" id="modalPickupDate" type="date" />
+                        </div>
+                        <div class="col-sm-6 col-lg-2">
+                            <label class="form-label text-muted small" for="modalPickupTime">Alış saati</label>
+                            <input class="form-control bg-dark border-secondary text-white" id="modalPickupTime" type="time" value="10:00" />
+                        </div>
+                        <div class="col-sm-6 col-lg-2">
+                            <label class="form-label text-muted small" for="modalReturnDate">İade tarihi</label>
+                            <input class="form-control bg-dark border-secondary text-white" id="modalReturnDate" type="date" />
+                        </div>
+                        <div class="col-sm-6 col-lg-2">
+                            <label class="form-label text-muted small" for="modalReturnTime">İade saati</label>
+                            <input class="form-control bg-dark border-secondary text-white" id="modalReturnTime" type="time" value="10:00" />
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-3 p-3 rounded-3" style="background:rgba(255,255,255,.035)">
+                        <div class="d-flex flex-wrap gap-4">
+                            <div><small class="text-muted d-block">Günlük ücret</small><strong class="text-white" id="modalDailyPrice">—</strong></div>
+                            <div><small class="text-muted d-block">Kiralama süresi</small><strong class="text-white" id="modalRentalDays">—</strong></div>
+                        </div>
+                        <div class="text-end"><small class="text-muted d-block">Tahmini kiralama tutarı</small><strong class="text-primary-custom fs-5" id="modalEstimatedTotal">—</strong></div>
+                    </div>
+                    <small class="text-muted d-block mt-2">Gösterilen tutar ön bilgilendirme amaçlıdır; kesin ücret rezervasyon sırasında hesaplanır.</small>
+                </div>
+
                 <div class="row g-4">
                     <!-- Yükleme / Kamera Alanı -->
+                    <!-- Yükleme / Kamera Alanı -->
                     <div class="col-md-6">
-                        <div class="ocr-dropzone mb-3" onclick="simulateOcrScan()">
+                        <!-- Dosya Seçme / Sürükleme Alanı -->
+                        <div class="ocr-dropzone mb-3" onclick="document.getElementById('idCardFileInput').click();">
                             <i class="fa fa-cloud-arrow-up text-primary-custom fs-1 mb-2"></i>
                             <h6 class="fw-bold">Kimlik / Ehliyet Fotoğrafı Yükle</h6>
                             <p class="text-muted small mb-3">Masaüstünden sürükleyin veya dosya seçin</p>
                             <span class="btn btn-outline-light btn-sm">Dosya Seç</span>
+                            <!-- Gizli Dosya Inputu -->
+                            <input type="file" id="idCardFileInput" accept="image/*" style="display: none;" onchange="handleImageUpload(this)" />
                         </div>
+
                         <div class="text-center mb-2">
                             <span class="text-muted small">— VEYA —</span>
                         </div>
-                        <button class="btn btn-dark border-secondary w-100 py-2 d-flex align-items-center justify-content-center gap-2" onclick="simulateOcrScan()">
+
+                        <!-- Kamera ile Çekme (Mobil uyumlu file capture) -->
+                        <label class="btn btn-dark border-secondary w-100 py-2 d-flex align-items-center justify-content-center gap-2 mb-0" style="cursor: pointer;">
                             <i class="fa fa-camera text-primary-custom"></i>
-                            <span>Kamerayı Aç ve Kimliği Okut</span>
-                        </button>
+                            <span>Kamerayı Aç ve Fotoğraf Çek</span>
+                            <input type="file" accept="image/*" capture="environment" style="display: none;" onchange="handleImageUpload(this)" />
+                        </label>
+
                         <div class="mt-3 p-2 rounded small text-center text-primary-custom" id="ocrStatusMsg" style="display:none; background: rgba(30,203,21,0.1);">
-                            <i class="fa fa-spinner fa-spin me-1"></i> Kimlik bilgileri yapay zeka ile taranıyor...
+                            <i class="fa fa-spinner fa-spin me-1"></i> Yapay zeka kimliği analiz ediyor ve metinleri çıkarıyor...
                         </div>
                     </div>
                     <!-- Otomatik Doldurulan Rezervasyon Formu -->
@@ -212,10 +264,6 @@
                                     <input class="form-control bg-dark border-secondary text-white" id="ocrPhone" placeholder="0532 000 00 00" type="tel" />
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label text-muted small mb-1">Seçilen Kilitli Araç</label>
-                                <input class="form-control bg-dark border-secondary text-primary-custom fw-bold" id="ocrSelectedCar" readonly="" type="text" value="Jeep Renegade Limited" />
-                            </div>
                             <button class="btn btn-custom-primary w-100" type="submit">
                                 <i class="fa fa-check"></i> Bilgileri Onayla &amp; Kiralama Tamamla
                             </button>
@@ -226,6 +274,65 @@
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const carSelect = document.getElementById("modalCarSelect");
+        if (!carSelect) return;
+
+        const pickupDate = document.getElementById("modalPickupDate");
+        const pickupTime = document.getElementById("modalPickupTime");
+        const returnDate = document.getElementById("modalReturnDate");
+        const returnTime = document.getElementById("modalReturnTime");
+        const dailyPrice = document.getElementById("modalDailyPrice");
+        const rentalDays = document.getElementById("modalRentalDays");
+        const estimatedTotal = document.getElementById("modalEstimatedTotal");
+        const selectedCar = document.getElementById("ocrSelectedCar");
+        const money = value => "₺" + Math.round(value).toLocaleString("tr-TR");
+
+        document.querySelectorAll("#carsListContainer .car-slide").forEach(slide => {
+            const name = slide.querySelector(".car-bodyz h4")?.textContent.trim();
+            const id = slide.dataset.carId;
+            const price = slide.dataset.dailyPrice;
+            if (!name || !id || !price) return;
+
+            const option = document.createElement("option");
+            option.value = id;
+            option.dataset.dailyPrice = price;
+            option.textContent = `${name} — ${money(Number(price))} / gün`;
+            carSelect.appendChild(option);
+        });
+
+        function updateEstimate() {
+            const option = carSelect.selectedOptions[0];
+            const price = Number(option?.dataset.dailyPrice || 0);
+            dailyPrice.textContent = price ? `${money(price)} / gün` : "—";
+            selectedCar.value = option?.value ? option.textContent.split(" — ")[0] : "";
+
+            if (!price || !pickupDate.value || !returnDate.value) {
+                rentalDays.textContent = "—";
+                estimatedTotal.textContent = "—";
+                return;
+            }
+
+            const start = new Date(`${pickupDate.value}T${pickupTime.value || "00:00"}`);
+            const end = new Date(`${returnDate.value}T${returnTime.value || "00:00"}`);
+            const days = Math.max(1, Math.ceil((end - start) / 86400000));
+            if (end <= start) {
+                rentalDays.textContent = "Tarihleri kontrol edin";
+                estimatedTotal.textContent = "—";
+                return;
+            }
+
+            rentalDays.textContent = `${days} gün`;
+            estimatedTotal.textContent = money(days * price);
+        }
+
+        [carSelect, pickupDate, pickupTime, returnDate, returnTime].forEach(input => input.addEventListener("change", updateEstimate));
+        pickupDate.addEventListener("change", () => { returnDate.min = pickupDate.value; });
+        updateEstimate();
+    })();
+</script>
 
 <!-- 10. CALL TO ACTION / HIZLI DESTEK -->
 <section class="py-5" id="section-call-to-action" style="background: linear-gradient(135deg, #11151c 0%, #17202b 100%); border-top: 1px solid var(--border-color);">

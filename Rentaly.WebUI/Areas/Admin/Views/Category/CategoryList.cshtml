@@ -1,416 +1,102 @@
-@using Rentaly.DtoLayer.CategoryDtos
 @model List<ResultCategoryDto>
-
 @{
     ViewData["Title"] = "CategoryList";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
+
 @section PageHeader {
     @await Html.PartialAsync("_PageHeaderPartial", ("Kategoriler", "Araç kategorilerinin yönetim listesi", "Kategoriler", "/Admin/Category/CreateCategory/", "Yeni Kategori Ekle", false, ""))
 }
+
 <div class="bg-surface-container-lowest rounded-xl shadow-sm flex flex-col overflow-hidden">
-    <!-- Card Header / Filter Toolbar -->
     <div class="p-space-md bg-surface-container-lowest flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
-        <!-- Search Input -->
         <div class="relative flex-1 max-w-md">
             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
-            <input class="w-full pl-9 pr-space-md py-space-xs bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline outline-none focus:bg-surface-container transition-colors" placeholder="Kategori adı ara..." type="text">
+            <input class="w-full pl-9 pr-space-md py-space-xs bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline outline-none focus:bg-surface-container transition-colors" placeholder="Kategori adı ara..." type="text" />
         </div>
-        <!-- Filter Select Controls & Actions -->
         <div class="flex items-center gap-space-sm flex-wrap">
-            <!-- Status Filter -->
-            <div class="relative">
-                <select class="appearance-none bg-surface-container-low text-on-surface font-body-sm text-body-sm py-space-xs pl-space-md pr-8 rounded-lg outline-none cursor-pointer focus:bg-surface-container transition-colors">
-                    <option value="all">Durum: Tümü</option>
-                    <option value="active">Durum: Aktif</option>
-                    <option value="passive">Durum: Pasif</option>
-                </select>
-                <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-[18px] pointer-events-none">expand_more</span>
-            </div>
-            <!-- Sort Filter -->
             <div class="relative">
                 <select class="appearance-none bg-surface-container-low text-on-surface font-body-sm text-body-sm py-space-xs pl-space-md pr-8 rounded-lg outline-none cursor-pointer focus:bg-surface-container transition-colors">
                     <option value="sort-asc">Sıralama: A - Z</option>
                     <option value="sort-desc">Sıralama: Z - A</option>
-                    <option value="order-no">Sıralama: Sıra No</option>
                     <option value="date-new">Sıralama: En Yeni</option>
                 </select>
                 <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-[18px] pointer-events-none">swap_vert</span>
             </div>
-            <!-- Bulk Actions Dropdown -->
-            <div class="relative">
-                <button class="inline-flex items-center gap-1.5 px-space-md py-space-xs bg-surface-container-low hover:bg-surface-container text-secondary font-body-sm text-body-sm rounded-lg transition-colors" type="button">
-                    <span class="material-symbols-outlined text-[18px]">checklist</span>
-                    <span class="">Toplu İşlemler</span>
-                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
-                </button>
-            </div>
-            <!-- Filter Reset Action -->
             <button class="w-9 h-9 flex items-center justify-center bg-surface-container-low hover:bg-surface-container text-secondary rounded-lg transition-colors" title="Filtreleri Temizle" type="button">
                 <span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
             </button>
         </div>
     </div>
-    <!-- Table View Wrapper -->
+
     <div class="w-full overflow-x-auto">
         <table class="w-full text-left font-body-md text-body-md">
             <thead>
                 <tr class="bg-surface-container-low font-table-header text-table-header text-secondary uppercase tracking-wider">
                     <th class="py-3 px-4 w-12 text-center" scope="col">
-                        <input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary" type="checkbox">
+                        <input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary" type="checkbox" />
                     </th>
                     <th class="py-3 px-4" scope="col">ID</th>
-                    <th class="py-3 px-4" scope="col">Kategori Adı &amp; İkon</th>
-                    <th class="py-3 px-4" scope="col">Açıklama</th>
-                    <th class="py-3 px-4" scope="col">Bağlı Model/Araç</th>
-                    <th class="py-3 px-4 text-center" scope="col">Sıra No</th>
+                    <th class="py-3 px-4" scope="col">Kategori Adı</th>
                     <th class="py-3 px-4" scope="col">Durum</th>
                     <th class="py-3 px-4 text-right" scope="col">İşlemler</th>
                 </tr>
             </thead>
-            <tbody class="divide-y-0">
-                <!-- Row 1 -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors group">
-                    <td class="py-3 px-4 text-center">
-                        <input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary" type="checkbox">
-                    </td>
-                    <td class="py-3 px-4 font-mono text-body-sm font-semibold text-secondary">#CAT-01</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-space-sm">
-                            <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                                <span class="material-symbols-outlined text-[20px]">commute</span>
+            <tbody class="divide-y divide-outline-variant">
+                @foreach (var item in Model)
+                {
+                    <tr class="hover:bg-surface-container-low/60 transition-colors group">
+                        <td class="py-3 px-4 text-center">
+                            <input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary" type="checkbox" />
+                        </td>
+                        <td class="py-3 px-4 font-mono text-body-sm font-semibold text-secondary">#CAT-@item.CategoryId.ToString("D2")</td>
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-space-sm">
+                                <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+                                    <span class="material-symbols-outlined text-[20px]">category</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="font-headline-md text-body-md font-semibold text-on-surface">@item.CategoryName</span>
+                                    <span class="font-body-sm text-[11px] text-outline">CAT-@item.CategoryId.ToString("D4")</span>
+                                </div>
                             </div>
-                            <div class="flex flex-col">
-                                <span class="font-headline-md text-body-md font-semibold text-on-surface">Ekonomi (Sedan/Hatchback)</span>
-                                <span class="font-body-sm text-[11px] text-outline">B &amp; C Segment Aile Tipi</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-secondary max-w-xs truncate">Yakıt tasarruflu şehir içi araçlar</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1 font-semibold text-on-surface">
-                                <span class="material-symbols-outlined text-[16px] text-secondary">directions_car</span> 42 Araç
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed">
+                                <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                Aktif
                             </span>
-                            <div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden hidden sm:block">
-                                <div class="w-[85%] h-full bg-primary-container rounded-full"></div>
+                        </td>
+                        <td class="py-3 px-4 text-right">
+                            <div class="inline-flex items-center justify-end gap-1">
+                                <a class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" href="/Admin/Category/UpdateCategory/@item.CategoryId" title="Düzenle">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </a>
+                                <form asp-area="Admin" asp-controller="Category" asp-action="DeleteCategory" asp-route-id="@item.CategoryId" method="post" class="inline" onsubmit="return confirm('@item.CategoryName kategorisini silmek istediğinize emin misiniz?');">
+                                    <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors" title="Sil" type="submit">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    </button>
+                                </form>
                             </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-center">
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-container text-body-sm font-medium text-on-surface">1</span>
-                    </td>
-                    <td class="py-3 px-4">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed">
-                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-                            Aktif
-                        </span>
-                    </td>
-                    <td class="py-3 px-4 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Row 2 -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors group">
-                    <td class="py-3 px-4 text-center">
-                        <input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary" type="checkbox">
-                    </td>
-                    <td class="py-3 px-4 font-mono text-body-sm font-semibold text-secondary">#CAT-02</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-space-sm">
-                            <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                                <span class="material-symbols-outlined text-[20px]">airline_seat_recline_extra</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="font-headline-md text-body-md font-semibold text-on-surface">Konfor (Orta Segment)</span>
-                                <span class="font-body-sm text-[11px] text-outline">D Segment Premium Sedan</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-secondary max-w-xs truncate">İş seyahatleri ve aileler için ideal</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1 font-semibold text-on-surface">
-                                <span class="material-symbols-outlined text-[16px] text-secondary">directions_car</span> 38 Araç
-                            </span>
-                            <div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden hidden sm:block">
-                                <div class="w-[70%] h-full bg-primary-container rounded-full"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-center">
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-container text-body-sm font-medium text-on-surface">2</span>
-                    </td>
-                    <td class="py-3 px-4">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed">
-                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-                            Aktif
-                        </span>
-                    </td>
-                    <td class="py-3 px-4 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Row 3 -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors group">
-                    <td class="py-3 px-4 text-center">
-                        <input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary" type="checkbox">
-                    </td>
-                    <td class="py-3 px-4 font-mono text-body-sm font-semibold text-secondary">#CAT-03</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-space-sm">
-                            <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                                <span class="material-symbols-outlined text-[20px]">terrain</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="font-headline-md text-body-md font-semibold text-on-surface">SUV &amp; Crossover</span>
-                                <span class="font-body-sm text-[11px] text-outline">4x4 &amp; Yüksek Şasi</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-secondary max-w-xs truncate">Yüksek sürüş konforu ve geniş bagaj</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1 font-semibold text-on-surface">
-                                <span class="material-symbols-outlined text-[16px] text-secondary">directions_car</span> 29 Araç
-                            </span>
-                            <div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden hidden sm:block">
-                                <div class="w-[55%] h-full bg-primary-container rounded-full"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-center">
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-container text-body-sm font-medium text-on-surface">3</span>
-                    </td>
-                    <td class="py-3 px-4">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed">
-                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-                            Aktif
-                        </span>
-                    </td>
-                    <td class="py-3 px-4 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Row 4 -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors group">
-                    <td class="py-3 px-4 text-center">
-                        <input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary" type="checkbox">
-                    </td>
-                    <td class="py-3 px-4 font-mono text-body-sm font-semibold text-secondary">#CAT-04</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-space-sm">
-                            <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                                <span class="material-symbols-outlined text-[20px]">diamond</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="font-headline-md text-body-md font-semibold text-on-surface">Lüks &amp; Premium</span>
-                                <span class="font-body-sm text-[11px] text-outline">Executive &amp; VIP Sınıf</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-secondary max-w-xs truncate">Üst segment prestijli araçlar</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1 font-semibold text-on-surface">
-                                <span class="material-symbols-outlined text-[16px] text-secondary">directions_car</span> 16 Araç
-                            </span>
-                            <div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden hidden sm:block">
-                                <div class="w-[30%] h-full bg-primary-container rounded-full"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-center">
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-container text-body-sm font-medium text-on-surface">4</span>
-                    </td>
-                    <td class="py-3 px-4">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed">
-                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-                            Aktif
-                        </span>
-                    </td>
-                    <td class="py-3 px-4 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Row 5 -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors group">
-                    <td class="py-3 px-4 text-center">
-                        <input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary" type="checkbox">
-                    </td>
-                    <td class="py-3 px-4 font-mono text-body-sm font-semibold text-secondary">#CAT-05</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-space-sm">
-                            <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                                <span class="material-symbols-outlined text-[20px]">local_shipping</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="font-headline-md text-body-md font-semibold text-on-surface">Ticari / Minivan</span>
-                                <span class="font-body-sm text-[11px] text-outline">Panelvan &amp; 8+1 Yolcu</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-secondary max-w-xs truncate">Yük ve toplu yolcu taşımacılığı</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1 font-semibold text-on-surface">
-                                <span class="material-symbols-outlined text-[16px] text-secondary">directions_car</span> 18 Araç
-                            </span>
-                            <div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden hidden sm:block">
-                                <div class="w-[35%] h-full bg-primary-container rounded-full"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-center">
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-container text-body-sm font-medium text-on-surface">5</span>
-                    </td>
-                    <td class="py-3 px-4">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-tertiary-fixed text-on-tertiary-fixed">
-                            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-                            Aktif
-                        </span>
-                    </td>
-                    <td class="py-3 px-4 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Row 6 -->
-                <tr class="hover:bg-surface-container-low/60 transition-colors group">
-                    <td class="py-3 px-4 text-center">
-                        <input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer accent-primary" type="checkbox">
-                    </td>
-                    <td class="py-3 px-4 font-mono text-body-sm font-semibold text-secondary">#CAT-06</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-space-sm">
-                            <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-                                <span class="material-symbols-outlined text-[20px]">electric_car</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="font-headline-md text-body-md font-semibold text-on-surface">%100 Elektrikli &amp; Hibrit</span>
-                                <span class="font-body-sm text-[11px] text-outline">Sıfır Emisyon &amp; EV</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-secondary max-w-xs truncate">Çevre dostu yeni nesil filo araçları</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1 font-semibold text-on-surface">
-                                <span class="material-symbols-outlined text-[16px] text-secondary">directions_car</span> 5 Araç
-                            </span>
-                            <div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden hidden sm:block">
-                                <div class="w-[12%] h-full bg-primary-container rounded-full"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 text-center">
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-container text-body-sm font-medium text-on-surface">6</span>
-                    </td>
-                    <td class="py-3 px-4">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-label-badge text-label-badge bg-error-container text-on-error-container">
-                            <span class="w-1.5 h-1.5 rounded-full bg-error"></span>
-                            Pasif
-                        </span>
-                    </td>
-                    <td class="py-3 px-4 text-right">
-                        <div class="inline-flex items-center justify-end gap-1">
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Detay" type="button">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" title="Düzenle" type="button">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg flex items-center justify-center text-error hover:bg-error-container hover:text-on-error-container transition-colors" title="Sil" type="button">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
-    <!-- Card Footer / Pagination Bar -->
+
     <div class="p-space-md bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-md">
-        <!-- Left: Summary Counter -->
-        <div class="flex items-center gap-space-md">
-            <span class="font-body-sm text-body-sm text-secondary">
-                Toplam <strong class="text-on-surface">12</strong> kayıttan <strong class="text-on-surface">1-6</strong> arası gösteriliyor
-            </span>
-            <div class="hidden md:flex items-center gap-2">
-                <span class="font-body-sm text-body-sm text-outline">Sayfa başına:</span>
-                <select class="appearance-none bg-surface-container-low text-on-surface font-body-sm text-body-sm py-1 px-2.5 rounded-lg outline-none cursor-pointer focus:bg-surface-container transition-colors">
-                    <option selected="" value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                </select>
-            </div>
-        </div>
-        <!-- Right: Pagination Buttons -->
+        <span class="font-body-sm text-body-sm text-secondary">
+            Toplam <strong class="text-on-surface">@Model.Count</strong> kayıttan <strong class="text-on-surface">1-@Model.Count</strong> arası gösteriliyor
+        </span>
         <div class="flex items-center gap-1">
-            <button class="px-space-sm py-1 rounded-lg text-secondary opacity-50 cursor-not-allowed flex items-center gap-1 font-body-sm text-body-sm" disabled="" type="button">
+            <button class="px-space-sm py-1 rounded-lg text-secondary opacity-50 cursor-not-allowed flex items-center gap-1 font-body-sm text-body-sm" disabled type="button">
                 <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-                <span class="">Önceki</span>
+                <span>Önceki</span>
             </button>
-            <button class="w-8 h-8 rounded-lg bg-primary-container text-on-primary font-body-sm text-body-sm font-semibold flex items-center justify-center shadow-sm" type="button">
-                1
-            </button>
-            <button class="w-8 h-8 rounded-lg text-secondary hover:bg-surface-container font-body-sm text-body-sm flex items-center justify-center transition-colors" type="button">
-                2
-            </button>
-            <button class="w-8 h-8 rounded-lg text-secondary hover:bg-surface-container font-body-sm text-body-sm flex items-center justify-center transition-colors" type="button">
-                3
-            </button>
+            <button class="w-8 h-8 rounded-lg bg-primary-container text-on-primary font-body-sm text-body-sm font-semibold flex items-center justify-center shadow-sm" type="button">1</button>
             <button class="px-space-sm py-1 rounded-lg text-on-surface hover:bg-surface-container transition-colors flex items-center gap-1 font-body-sm text-body-sm" type="button">
-                <span class="">Sonraki</span>
+                <span>Sonraki</span>
                 <span class="material-symbols-outlined text-[18px]">chevron_right</span>
             </button>
         </div>

@@ -185,14 +185,20 @@
             <div>
                 <span class="section-subtitle">Filo</span>
                 <h2 class="section-title mb-0">Araç Listesi</h2>
-                <p class="text-white-50 mt-2 mb-0">Müsait araçları inceleyin ve günlük fiyatla rezervasyon yapın.</p>
+                <p class="text-white-50 mt-2 mb-0">
+                    @if (Model.Pickup.HasValue && Model.ReturnDate.HasValue)
+                    {
+                        @: @Model.Pickup.Value.ToString("dd.MM.yyyy HH:mm") – @Model.ReturnDate.Value.ToString("dd.MM.yyyy HH:mm") aralığında müsait araçlar.
+                    }
+                    else
+                    {
+                        @: Müsait araçları inceleyin ve günlük fiyatla rezervasyon yapın.
+                    }
+                </p>
             </div>
             <div class="d-flex gap-2">
                 <span class="badge bg-success bg-opacity-25 text-success p-2">
-                    @Model.Cars.Count(x => x.IsAvailable) Müsait
-                </span>
-                <span class="badge bg-danger bg-opacity-25 text-danger p-2">
-                    @Model.Cars.Count(x => !x.IsAvailable) Dolu / Kilitli
+                    @Model.Cars.Count Müsait
                 </span>
             </div>
         </div>
@@ -201,8 +207,17 @@
         {
             <div class="car-card p-5 text-center">
                 <i class="fa fa-car text-primary-custom fs-2 mb-3"></i>
-                <h4 class="mb-2">Listelenecek araç yok</h4>
-                <p class="mb-0">Filoya araç eklendiğinde burada görünecek.</p>
+                <h4 class="mb-2">Müsait araç yok</h4>
+                <p class="mb-0">
+                    @if (Model.Pickup.HasValue && Model.ReturnDate.HasValue)
+                    {
+                        @:Seçilen tarih aralığında müsait araç bulunamadı.
+                    }
+                    else
+                    {
+                        @:Filoya araç eklendiğinde burada görünecek.
+                    }
+                </p>
             </div>
         }
         else
@@ -306,18 +321,9 @@
                                     <div class="car-thumb">
                                         <span class="car-badge">@car.CategoryName</span>
 
-                                        @if (car.IsAvailable)
-                                        {
-                                            <span class="car-status-available">
-                                                <i class="fa fa-check"></i> Müsait
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="car-status-locked">
-                                                <i class="fa fa-lock"></i> Rezerve Edildi
-                                            </span>
-                                        }
+                                        <span class="car-status-available">
+                                            <i class="fa fa-check"></i> Müsait
+                                        </span>
 
                                         <a asp-controller="Car"
                                            asp-action="CarsDetails"
@@ -363,20 +369,12 @@
                                                 <span>/ Günlük</span>
                                             </div>
 
-                                            @if (car.IsAvailable)
-                                            {
-                                                <button type="button"
-                                                        class="btn btn-custom-primary btn-sm px-3"
-                                                        onclick="lockAndBookCar('@car.BrandName @car.ModelName', '₺@car.DailyPrice.ToString("N0")')">
-                                                    <i class="fa fa-lock"></i> Rezerve Et
-                                                </button>
-                                            }
-                                            else
-                                            {
-                                                <button type="button" class="btn btn-secondary btn-sm px-3" disabled>
-                                                    <i class="fa fa-ban"></i> Uygun Değil
-                                                </button>
-                                            }
+                                            <a asp-controller="Rental"
+                                               asp-action="Index"
+                                               asp-route-id="@car.CarId"
+                                               class="btn btn-custom-primary btn-sm px-3">
+                                                <i class="fa fa-lock"></i> Rezerve Et
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

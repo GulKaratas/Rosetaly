@@ -1,0 +1,151 @@
+﻿@model DashboardViewModel
+
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg">
+    <!-- Kolon 1: Bugün Alış Yapılacak Onaylı Kiralamalar -->
+    <div class="elevated-card p-5" style="border-top: 3px solid #2563eb !important;">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">key</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md font-bold text-slate-900 tracking-tight">Bugün Alış Yapılacak Onaylı Kiralamalar</h2>
+                    <p class="font-body-sm text-body-sm text-slate-500">Müşteriye teslim edilecek araçlar ve hazırlık durumları</p>
+                </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 font-bold font-mono text-xs border border-blue-200">
+                @Model.TodayPickups.Count Teslimat
+            </span>
+        </div>
+
+        <div class="space-y-3 mt-4">
+            @if (Model.TodayPickups != null && Model.TodayPickups.Any())
+            {
+                @foreach (var item in Model.TodayPickups)
+                {
+                    <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-3 hover:bg-white hover:border-blue-300 transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-white border border-slate-200 flex flex-col items-center justify-center">
+                                <span class="font-bold text-xs text-blue-700 font-mono">@item.PickupDate.ToString("HH:mm")</span>
+                                <span class="text-[10px] text-slate-500">SAAT</span>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-mono font-bold text-xs px-1.5 py-0.5 rounded bg-slate-200 text-slate-800">
+                                        Araç #@item.CarId
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                                    <span class="flex items-center gap-1 text-slate-700 font-medium">
+                                        <span class="material-symbols-outlined text-[14px]">person</span> Müşteri #@item.CustomerId
+                                    </span>
+                                    <span>•</span>
+                                    <span class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">storefront</span> Şube #@item.PickupBranchId
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mr-1.5"></span>@item.Status
+                            </span>
+                            <button class="px-2.5 py-1 rounded bg-blue-600 text-white font-medium text-xs hover:bg-blue-700 transition-colors shadow-xs">
+                                Teslim Et
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="p-4 text-center text-sm text-slate-400">
+                    Bugün için planlanan alış operasyonu bulunmamaktadır.
+                </div>
+            }
+        </div>
+
+        @if (Model.TodayPickups != null && Model.TodayPickups.Count > 4)
+        {
+            <div class="mt-3 text-right">
+                <a class="text-xs text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1" href="/Admin/Rental/RentalList/">
+                    Tüm Teslimatları Görüntüle <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </a>
+            </div>
+        }
+    </div>
+
+    <!-- Kolon 2: Bugün İade Gelecek Onaylı Kiralamalar -->
+    <div class="elevated-card p-5" style="border-top: 3px solid #059669 !important;">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">assignment_returned</span>
+                </div>
+                <div>
+                    <h2 class="font-headline-md text-headline-md font-bold text-slate-900 tracking-tight">Bugün İade Gelecek Onaylı Kiralamalar</h2>
+                    <p class="font-body-sm text-body-sm text-slate-500">Geri teslim alınacak araçlar ve iade kontrol durumu</p>
+                </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold font-mono text-xs border border-emerald-200">
+                @Model.TodayReturns.Count İade
+            </span>
+        </div>
+
+        <div class="space-y-3 mt-4">
+            @if (Model.TodayReturns != null && Model.TodayReturns.Any())
+            {
+                @foreach (var item in Model.TodayReturns)
+                {
+                    <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-3 hover:bg-white hover:border-emerald-300 transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-white border border-slate-200 flex flex-col items-center justify-center">
+                                <span class="font-bold text-xs text-emerald-700 font-mono">@item.ReturnDate.ToString("HH:mm")</span>
+                                <span class="text-[10px] text-slate-500">SAAT</span>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-mono font-bold text-xs px-1.5 py-0.5 rounded bg-slate-200 text-slate-800">
+                                        Araç #@item.CarId
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                                    <span class="flex items-center gap-1 text-slate-700 font-medium">
+                                        <span class="material-symbols-outlined text-[14px]">person</span> Müşteri #@item.CustomerId
+                                    </span>
+                                    <span>•</span>
+                                    <span class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">storefront</span> Şube #@item.ReturnBranchId
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mr-1.5"></span>@item.Status
+                            </span>
+                            <button class="px-2.5 py-1 rounded bg-emerald-600 text-white font-medium text-xs hover:bg-emerald-700 transition-colors shadow-xs">
+                                Teslim Al
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="p-4 text-center text-sm text-slate-400">
+                    Bugün için planlanan iade operasyonu bulunmamaktadır.
+                </div>
+            }
+        </div>
+
+        @if (Model.TodayReturns != null && Model.TodayReturns.Count > 4)
+        {
+            <div class="mt-3 text-right">
+                <a class="text-xs text-emerald-700 hover:text-emerald-900 font-semibold inline-flex items-center gap-1" href="/Admin/Rental/RentalList/">
+                    Tüm İadeleri Görüntüle <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </a>
+            </div>
+        }
+    </div>
+</section>

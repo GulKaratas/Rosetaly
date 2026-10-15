@@ -9,8 +9,21 @@
     @await Html.PartialAsync("_PageHeaderPartial", ("Kiralamalar", "Sistemdeki tüm araç kiralama rezervasyonları ve durum yönetimi", "Kiralamalar", "/Admin/Rental/CreateRental/", "Yeni Kiralama Ekle", false, ""))
 }
 
+@if (TempData["Error"] is string errorMessage)
+{
+    <div class="rounded-lg border border-error/30 bg-error-container/20 px-4 py-3 text-sm text-error">@errorMessage</div>
+}
+@if (TempData["Warning"] is string warningMessage)
+{
+    <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">@warningMessage</div>
+}
+@if (TempData["Success"] is string successMessage)
+{
+    <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">@successMessage</div>
+}
+
 <!-- Ana Yönetim Kartı & Tablo (Üst kutular kaldırılmış, doğrudan filtre ve tablo odaklı) -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col min-w-0 max-w-full">
     
     <!-- Filtreleme ve Arama Çubuğu -->
     <div class="p-4 sm:p-5 border-b border-outline-variant bg-surface-container-lowest flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -23,26 +36,17 @@
         <div class="flex items-center gap-3 flex-wrap">
             <select class="px-3.5 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary">
                 <option value="">Tüm Kiralama Durumları</option>
-                <option value="Aktif">Aktif / Devam Edenler</option>
-                <option value="Rezervasyon">Rezervasyon</option>
-                <option value="Tamamlandı">Tamamlananlar</option>
-                <option value="İptal">İptal Edilenler</option>
+           
             </select>
 
             <select class="px-3.5 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary">
                 <option value="">Tüm Şubeler</option>
-                <option value="1">Merkez Şube (Kadıköy)</option>
-                <option value="2">İstanbul Havalimanı Şube</option>
-                <option value="3">Sabiha Gökçen Şube</option>
-                <option value="4">Ankara Çankaya Şube</option>
-                <option value="5">İzmir Adnan Menderes Şube</option>
+                
             </select>
 
             <select class="px-3.5 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-sm text-on-surface focus:outline-none focus:border-primary">
                 <option value="id-desc">Son Eklenenler</option>
-                <option value="date-asc">Alış Tarihine Göre (Yakın-Uzak)</option>
-                <option value="price-desc">Tutara Göre (Yüksek-Düşük)</option>
-                <option value="price-asc">Tutara Göre (Düşük-Yüksek)</option>
+                
             </select>
 
             <button type="button" class="p-2 rounded-lg border border-outline-variant text-secondary hover:text-on-surface hover:bg-surface-container-low transition-colors" title="Filtreleri Sıfırla">
@@ -53,7 +57,7 @@
 
     <!-- Veri Tablosu -->
     <div class="overflow-x-auto w-full">
-        <table class="w-full text-left border-collapse">
+        <table class="w-full table-fixed text-left border-collapse">
             <thead>
                 <tr class="bg-surface-container-low border-b border-outline-variant text-secondary text-[12px] uppercase tracking-wider font-semibold">
                     <th class="py-3.5 px-4 w-12 text-center">
@@ -66,7 +70,7 @@
                     <th class="py-3.5 px-4 min-w-[180px]">TARİH & SÜRE</th>
                     <th class="py-3.5 px-4">TOPLAM TUTAR</th>
                     <th class="py-3.5 px-4">DURUM</th>
-                    <th class="py-3.5 px-4 text-right">İŞLEMLER</th>
+                    <th class="py-3 px-2 text-right sticky right-0 bg-surface-container-low z-10 w-[76px]">İŞLEM</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-outline-variant text-sm">
@@ -144,7 +148,7 @@
                                 <span class="text-[10px] text-outline">KDV Dahil</span>
                             </td>
                             <td class="py-3.5 px-4">
-                                @if (item.Status == "Aktif" || item.Status == "Devam Ediyor")
+                                @if (item.Status == "Aktif" || item.Status == "Devam Ediyor" || item.Status == "Onaylı")
                                 {
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
@@ -173,17 +177,14 @@
                                     </span>
                                 }
                             </td>
-                            <td class="py-3.5 px-4 text-right">
-                                <div class="inline-flex items-center gap-1">
-                                    <a href="/Rentals/Contract/@item.RentalId" class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Sözleşmeyi Gör / Yazdır">
-                                        <span class="material-symbols-outlined text-[18px]">description</span>
-                                    </a>
-                                    <a href="/Rentals/EditRental/@item.RentalId" class="p-1.5 rounded-lg text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Düzenle">
-                                        <span class="material-symbols-outlined text-[18px]">edit</span>
-                                    </a>
-                                    <a href="/Rentals/CancelRental/@item.RentalId" onclick="return confirm('Kiralama sözleşmesini iptal etmek istediğinize emin misiniz?');" class="p-1.5 rounded-lg text-secondary hover:text-error hover:bg-error-container/30 transition-colors" title="İptal Et">
-                                        <span class="material-symbols-outlined text-[18px]">cancel</span>
-                                    </a>
+                            <td class="py-2 px-2 text-right sticky right-0 bg-surface-container-lowest z-10">
+                                <div class="flex flex-col items-stretch gap-1">
+                                    <form method="post" asp-area="Admin" asp-controller="Rental" asp-action="ApproveRental" asp-route-id="@item.RentalId">
+                                        <button type="submit" class="w-full px-2 py-1 rounded-md bg-primary text-on-primary text-[11px] font-semibold leading-none hover:opacity-90">Onayla</button>
+                                    </form>
+                                    <form method="post" asp-area="Admin" asp-controller="Rental" asp-action="DeleteRental" asp-route-id="@item.RentalId" onsubmit="return confirm('Bu kiralama kaydı silinsin mi?');">
+                                        <button type="submit" class="w-full px-2 py-1 rounded-md text-error text-[11px] font-semibold leading-none hover:bg-error-container/30">Sil</button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

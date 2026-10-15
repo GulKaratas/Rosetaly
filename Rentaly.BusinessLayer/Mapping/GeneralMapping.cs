@@ -42,7 +42,8 @@ namespace Rentaly.BusinessLayer.Mapping
             CreateMap<Car, GetCarByIdDto>()
            .ForMember(d => d.BrandName, o => o.MapFrom(s => s.CarModel.Brand.BrandName))
            .ForMember(d => d.ModelName, o => o.MapFrom(s => s.CarModel.ModelName))
-           .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.CategoryName));
+           .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.CategoryName))
+           .ForMember(d => d.BranchName, o => o.MapFrom(s => s.Branch.BranchName));
 
             CreateMap<Car, CreateCarDto>().ReverseMap();
             CreateMap<Car, UpdateCarDto>().ReverseMap();

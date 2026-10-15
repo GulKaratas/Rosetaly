@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Rentaly.EntityLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -26,12 +26,8 @@ namespace Rentaly.BusinessLayer.ValidationRules
 
             // Sadece harf içermesi
             RuleFor(x => x.BrandName)
-                .Matches(@"^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$")
+                .Matches(@"^[a-zA-ZğüşıöçĞÜŞİÖÇ\s\-]+$")
                 .WithMessage("Marka adı sadece harf içermelidir");
-
-            // Image Url boş olamaz
-            RuleFor(x => x.ImageUrl)
-                .NotNull().WithMessage("Marka görseli null olamaz");
 
           
 

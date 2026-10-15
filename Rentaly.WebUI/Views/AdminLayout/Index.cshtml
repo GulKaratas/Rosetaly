@@ -4,142 +4,267 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="web_dashboard" name="shell-type">
+
+    <!-- Sayfa çizilmeden önce sidebar durumunu uygular (titremeyi önler) -->
+    <script>
+        try {
+            if (localStorage.getItem('sidebar-closed') === '1') {
+                document.documentElement.classList.add('sidebar-closed');
+            }
+        } catch (e) { }
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+
     <style>
-            @@layer base {
-                html, body {
-                    margin: 0;
-                    padding: 0;
-                }
-
-                body {
-                    overscroll-behavior: none;
-                }
-
-                main > :first-child {
-                    margin-top: 0 !important;
-                }
-
-                main > :last-child {
-                    margin-bottom: 0 !important;
-                }
+        @@layer base {
+            html, body {
+                margin: 0;
+                padding: 0;
             }
 
-            ::-webkit-scrollbar {
-                display: none;
-        }</style>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed": "#002113", "secondary": "#565e74", "on-primary-fixed-variant": "#003ea8", "primary-container": "#2563eb", "primary-fixed-dim": "#b4c5ff", "on-error": "#ffffff", "surface-container-highest": "#d3e4fe", "tertiary-fixed-dim": "#4edea3", "on-primary-fixed": "#00174b", "on-surface": "#0b1c30", "background": "#f8f9ff", "secondary-fixed-dim": "#bec6e0", "secondary-container": "#dae2fd", "surface": "#f8f9ff", "on-secondary-container": "#5c647a", "surface-bright": "#f8f9ff", "on-secondary-fixed": "#131b2e", "on-primary-container": "#eeefff", "on-tertiary": "#ffffff", "on-error-container": "#93000a", "tertiary": "#006242", "on-secondary-fixed-variant": "#3f465c", "primary": "#004ac6", "surface-container-low": "#eff4ff", "surface-dim": "#cbdbf5", "tertiary-fixed": "#6ffbbe", "primary-fixed": "#dbe1ff", "on-primary": "#ffffff", "surface-container-lowest": "#ffffff", "inverse-primary": "#b4c5ff", "surface-container": "#e5eeff", "on-tertiary-fixed-variant": "#005236", "surface-container-high": "#dce9ff", "on-secondary": "#ffffff", "secondary-fixed": "#dae2fd", "error-container": "#ffdad6", "surface-variant": "#d3e4fe", "outline": "#737686", "outline-variant": "#c3c6d7", "tertiary-container": "#007d55", "inverse-surface": "#213145", "inverse-on-surface": "#eaf1ff", "error": "#ba1a1a", "on-background": "#0b1c30", "surface-tint": "#0053db", "on-surface-variant": "#434655", "on-tertiary-container": "#bdffdb" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "2rem", "margin-mobile": "1rem", "gutter": "1.5rem", "space-xl": "2rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-md": "1rem", "space-lg": "1.5rem", "gutter-sm": "0.75rem" }, "fontFamily": { "body-md": ["Inter"], "headline-lg": ["Inter"], "body-sm": ["Inter"], "label-nav-header": ["Inter"], "label-nav-item": ["Inter"], "table-cell": ["Inter"], "table-header": ["Inter"], "headline-xl": ["Inter"], "headline-md": ["Inter"], "body-lg": ["Inter"], "label-badge": ["Inter"] }, "fontSize": { "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "label-nav-header": ["11px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }], "label-nav-item": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "table-cell": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "table-header": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-xl": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "label-badge": ["12px", { "lineHeight": "16px", "fontWeight": "600" }] } } } };</script>
-    </head>
-    <body class="bg-background font-body-md text-body-md text-on-surface antialiased">
-<aside class="fixed left-0 top-0 h-full w-64 bg-inverse-surface z-50 flex flex-col">
-    <!-- Logo ve Başlık -->
-    <div class="h-16 px-space-lg flex items-center gap-space-sm">
-        <div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
-            <span class="material-symbols-outlined text-[20px]">directions_car</span>
-        </div>
-        <div class="flex flex-col">
-            <span class="font-headline-md text-headline-md text-inverse-on-surface tracking-tight font-bold">RentAdmin</span>
-            <span class="font-table-header text-table-header text-secondary-fixed-dim uppercase tracking-wider text-[10px]">Filo Yönetimi</span>
-        </div>
-    </div>
+            body {
+                overscroll-behavior: none;
+            }
 
-    <!-- Menü Linkleri -->
-    <div class="flex-1 overflow-y-auto px-space-sm py-space-sm">
-        <nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-variant/20 text-inverse-on-surface font-semibold rounded-lg">
-            
-            <!-- GENEL -->
-            <div class="px-space-sm pt-space-sm pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">GENEL</div>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="dashboard" href="/Admin/Dashboard/Index">
-                <span class="material-symbols-outlined text-[20px]">grid_view</span>
-                <span>Dashboard</span>
-            </a>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="kiralamalar" href="/Admin/Rental/RentalList">
-                <span class="material-symbols-outlined text-[20px]">vpn_key</span>
-                <span>Kiralamalar</span>
-            </a>
+            main > :first-child {
+                margin-top: 0 !important;
+            }
 
-            <!-- FİLO -->
-            <div class="px-space-sm pt-space-md pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">FİLO</div>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="araclar" href="/Admin/Car/CarList">
+            main > :last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ---------- Sidebar açılıp kapanma ---------- */
+        #sidebar {
+            transition: transform 0.3s ease;
+        }
+
+        #appShell,
+        #topbar {
+            transition: padding-left 0.3s ease, left 0.3s ease;
+        }
+
+        #sidebarBackdrop {
+            display: none;
+        }
+
+        /* Masaüstü: sidebar sabit açık, istenirse kapanır */
+        @@media (min-width: 1024px) {
+            #appShell {
+                padding-left: 16rem;
+            }
+
+            #topbar {
+                left: 16rem;
+            }
+
+            html.sidebar-closed #sidebar {
+                transform: translateX(-100%);
+            }
+
+            html.sidebar-closed #appShell {
+                padding-left: 0;
+            }
+
+            html.sidebar-closed #topbar {
+                left: 0;
+            }
+        }
+        }
+    </style>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed": "#002113", "secondary": "#565e74", "on-primary-fixed-variant": "#003ea8", "primary-container": "#2563eb", "primary-fixed-dim": "#b4c5ff", "on-error": "#ffffff", "surface-container-highest": "#d3e4fe", "tertiary-fixed-dim": "#4edea3", "on-primary-fixed": "#00174b", "on-surface": "#0b1c30", "background": "#f8f9ff", "secondary-fixed-dim": "#bec6e0", "secondary-container": "#dae2fd", "surface": "#f8f9ff", "on-secondary-container": "#5c647a", "surface-bright": "#f8f9ff", "on-secondary-fixed": "#131b2e", "on-primary-container": "#eeefff", "on-tertiary": "#ffffff", "on-error-container": "#93000a", "tertiary": "#006242", "on-secondary-fixed-variant": "#3f465c", "primary": "#004ac6", "surface-container-low": "#eff4ff", "surface-dim": "#cbdbf5", "tertiary-fixed": "#6ffbbe", "primary-fixed": "#dbe1ff", "on-primary": "#ffffff", "surface-container-lowest": "#ffffff", "inverse-primary": "#b4c5ff", "surface-container": "#e5eeff", "on-tertiary-fixed-variant": "#005236", "surface-container-high": "#dce9ff", "on-secondary": "#ffffff", "secondary-fixed": "#dae2fd", "error-container": "#ffdad6", "surface-variant": "#d3e4fe", "outline": "#737686", "outline-variant": "#c3c6d7", "tertiary-container": "#007d55", "inverse-surface": "#213145", "inverse-on-surface": "#eaf1ff", "error": "#ba1a1a", "on-background": "#0b1c30", "surface-tint": "#0053db", "on-surface-variant": "#434655", "on-tertiary-container": "#bdffdb" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "2rem", "margin-mobile": "1rem", "gutter": "1.5rem", "space-xl": "2rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-md": "1rem", "space-lg": "1.5rem", "gutter-sm": "0.75rem" }, "fontFamily": { "body-md": ["Inter"], "headline-lg": ["Inter"], "body-sm": ["Inter"], "label-nav-header": ["Inter"], "label-nav-item": ["Inter"], "table-cell": ["Inter"], "table-header": ["Inter"], "headline-xl": ["Inter"], "headline-md": ["Inter"], "body-lg": ["Inter"], "label-badge": ["Inter"] }, "fontSize": { "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "label-nav-header": ["11px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }], "label-nav-item": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "table-cell": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "table-header": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-xl": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "label-badge": ["12px", { "lineHeight": "16px", "fontWeight": "600" }] } } } };</script>
+</head>
+
+<body class="bg-background font-body-md text-body-md text-on-surface antialiased">
+
+    <!-- Mobilde sidebar açıkken arkadaki karartma -->
+    <div id="sidebarBackdrop" class="fixed inset-0 z-[45] bg-black/40"></div>
+
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-inverse-surface z-50 flex flex-col">
+        <!-- Logo ve Başlık -->
+        <div class="h-16 px-space-lg flex items-center gap-space-sm">
+            <div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
                 <span class="material-symbols-outlined text-[20px]">directions_car</span>
-                <span>Araçlar</span>
-            </a>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="arac-modelleri" href="/Admin/CarModel/CarModelList">
-                <span class="material-symbols-outlined text-[20px]">inventory_2</span>
-                <span>Araç Modelleri</span>
-            </a>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="markalar" href="/Admin/Brand/BrandList">
-                <span class="material-symbols-outlined text-[20px]">military_tech</span>
-                <span>Markalar</span>
-            </a>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="kategoriler" href="/Admin/Category/CategoryList">
-                <span class="material-symbols-outlined text-[20px]">layers</span>
-                <span>Kategoriler</span>
-            </a>
+            </div>
+            <div class="flex flex-col">
+                <span class="font-headline-md text-headline-md text-inverse-on-surface tracking-tight font-bold">RentAdmin</span>
+                <span class="font-table-header text-table-header text-secondary-fixed-dim uppercase tracking-wider text-[10px]">Filo Yönetimi</span>
+            </div>
+        </div>
 
-            <!-- OPERASYON -->
-            <div class="px-space-sm pt-space-md pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">OPERASYON</div>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="subeler" href="/Admin/Branch/BranchList">
-                <span class="material-symbols-outlined text-[20px]">location_city</span>
-                <span>Şubeler</span>
-            </a>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="musteriler" href="/Admin/Customer/CustomerList">
-                <span class="material-symbols-outlined text-[20px]">group</span>
-                <span>Müşteriler</span>
-            </a>
+        <!-- Menü Linkleri -->
+        <div class="flex-1 overflow-y-auto px-space-sm py-space-sm">
+            <nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-variant/20 text-inverse-on-surface font-semibold rounded-lg">
 
-            <!-- SİTE İÇERİĞİ -->
-            <div class="px-space-sm pt-space-md pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">SİTE İÇERİĞİ</div>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="hakkimizda" href="/Admin/About/AboutList">
-                <span class="material-symbols-outlined text-[20px]">explore</span>
-                <span>Hakkımızda</span>
-            </a>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="ozellikler" href="/Admin/Feature/FeatureList">
-                <span class="material-symbols-outlined text-[20px]">bolt</span>
-                <span>Özellikler</span>
-            </a>
-            
-            <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="yorumlar" href="/Admin/Testimonial/TestimonialList">
-                <span class="material-symbols-outlined text-[20px]">chat_bubble</span>
-                <span>Yorumlar</span>
-            </a>
+                <!-- GENEL -->
+                <div class="px-space-sm pt-space-sm pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">GENEL</div>
 
-        </nav>
-    </div>
-</aside>
-            <div class="pl-64">
-            <header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40"><div class="h-16 w-full px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md flex-1 max-w-lg"><div class="relative w-full"></div></div><div class="flex items-center gap-space-md">
-                
-               <button class="relative w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-sm pl-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="hidden md:flex flex-col text-left"><span class="font-label-nav-item text-label-nav-item text-on-surface font-semibold">Admin Yönetici</span><span class="font-table-header text-table-header text-outline text-[11px]">Süper Admin</span></div><span class="material-symbols-outlined text-outline text-[18px]">expand_more</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen">
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="dashboard" href="/Admin/Dashboard/Index">
+                    <span class="material-symbols-outlined text-[20px]">grid_view</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="kiralamalar" href="/Admin/Rental/RentalList">
+                    <span class="material-symbols-outlined text-[20px]">vpn_key</span>
+                    <span>Kiralamalar</span>
+                </a>
+
+                <!-- FİLO -->
+                <div class="px-space-sm pt-space-md pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">FİLO</div>
+
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="araclar" href="/Admin/Car/CarList">
+                    <span class="material-symbols-outlined text-[20px]">directions_car</span>
+                    <span>Araçlar</span>
+                </a>
+
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="arac-modelleri" href="/Admin/CarModel/CarModelList">
+                    <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                    <span>Araç Modelleri</span>
+                </a>
+
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="markalar" href="/Admin/Brand/BrandList">
+                    <span class="material-symbols-outlined text-[20px]">military_tech</span>
+                    <span>Markalar</span>
+                </a>
+
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="kategoriler" href="/Admin/Category/CategoryList">
+                    <span class="material-symbols-outlined text-[20px]">layers</span>
+                    <span>Kategoriler</span>
+                </a>
+
+                <!-- OPERASYON -->
+                <div class="px-space-sm pt-space-md pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">OPERASYON</div>
+
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="subeler" href="/Admin/Branch/BranchList">
+                    <span class="material-symbols-outlined text-[20px]">location_city</span>
+                    <span>Şubeler</span>
+                </a>
+
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="musteriler" href="/Admin/Customer/CustomerList">
+                    <span class="material-symbols-outlined text-[20px]">group</span>
+                    <span>Müşteriler</span>
+                </a>
+
+                <!-- SİTE İÇERİĞİ -->
+                <div class="px-space-sm pt-space-md pb-space-xs font-label-nav-header text-label-nav-header text-secondary-fixed-dim tracking-wider uppercase">SİTE İÇERİĞİ</div>
+
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="hakkimizda" href="/Admin/About/AboutList">
+                    <span class="material-symbols-outlined text-[20px]">explore</span>
+                    <span>Hakkımızda</span>
+                </a>
+
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="ozellikler" href="/Admin/Feature/FeatureList">
+                    <span class="material-symbols-outlined text-[20px]">bolt</span>
+                    <span>Özellikler</span>
+                </a>
+
+                <a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-secondary-fixed-dim hover:bg-surface-variant/10 hover:text-inverse-on-surface transition-colors font-label-nav-item text-label-nav-item" data-path="yorumlar" href="/Admin/Testimonial/TestimonialList">
+                    <span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+                    <span>Yorumlar</span>
+                </a>
+
+            </nav>
+        </div>
+    </aside>
+
+    <div id="appShell">
+        <header id="topbar" class="fixed top-0 right-0 h-16 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40">
+            <div class="h-16 w-full px-space-lg flex items-center justify-between">
+
+                <!-- Sol: Menü aç/kapat butonu -->
+                <div class="flex items-center gap-space-md flex-1 max-w-lg">
+                    <button id="sidebarToggle" type="button" aria-label="Menüyü aç/kapat" aria-controls="sidebar" aria-expanded="true"
+                            class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+                        <span class="material-symbols-outlined text-[22px]">menu</span>
+                    </button>
+                </div>
+
+                <!-- Sağ: Bildirim ve kullanıcı -->
+                <div class="flex items-center gap-space-md">
+                    <button class="relative w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">
+                        <span class="material-symbols-outlined text-[20px]">notifications</span>
+                        <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error"></span>
+                    </button>
+
+                    <div class="flex items-center gap-space-sm pl-space-xs">
+                        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                            <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+                        </div>
+                        <div class="hidden md:flex flex-col text-left">
+                            <span class="font-label-nav-item text-label-nav-item text-on-surface font-semibold">Admin Yönetici</span>
+                            <span class="font-table-header text-table-header text-outline text-[11px]">Süper Admin</span>
+                        </div>
+                        <span class="material-symbols-outlined text-outline text-[18px]">expand_more</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="w-full pt-16 bg-surface min-h-screen">
             <div class="flex flex-col w-full">
-                <!-- Content Area Wrapper matching enterprise 2rem grid system -->
                 <div class="p-margin flex flex-col gap-space-lg">
-                    <!-- Breadcrumb & Top Bar -->
                     <div class="flex flex-col gap-space-xs">
-                        
-                        <!-- Page Header: Title, Description & Action Buttons -->
                         @await RenderSectionAsync("PageHeader", required: false)
                     </div>
-                    <!-- KPI Summary Cards Grid -->
-                    <!-- Main Data Table Container matching Kategoriler table layout & tokens -->
-                     @RenderBody()
-</div>
+
+                    @RenderBody()
+                </div>
             </div>
         </main>
     </div>
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        (() => {
+            const root = document.documentElement;
+            const toggleButton = document.getElementById('sidebarToggle');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            const desktopQuery = window.matchMedia('(min-width: 1024px)');
+
+            function isOpen() {
+                return desktopQuery.matches
+                    ? !root.classList.contains('sidebar-closed')
+                    : root.classList.contains('sidebar-open');
+            }
+
+            function syncButton() {
+                toggleButton.setAttribute('aria-expanded', String(isOpen()));
+            }
+
+            function toggleSidebar() {
+                if (desktopQuery.matches) {
+                    const closed = root.classList.toggle('sidebar-closed');
+                    try { localStorage.setItem('sidebar-closed', closed ? '1' : '0'); } catch (e) { }
+                } else {
+                    root.classList.toggle('sidebar-open');
+                }
+                syncButton();
+            }
+
+            function closeMobileSidebar() {
+                root.classList.remove('sidebar-open');
+                syncButton();
+            }
+
+            toggleButton.addEventListener('click', toggleSidebar);
+            backdrop.addEventListener('click', closeMobileSidebar);
+
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape') closeMobileSidebar();
+            });
+            syncButton();
+        })();
+    </script>
 </body>
 </html>

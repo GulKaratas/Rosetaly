@@ -17,5 +17,7 @@ namespace Rentaly.BusinessLayer.Abstract
         Task TUpdateAsync(UpdateRentalDto updateRentalDto);
         Task TDeleteAsync(int id);
         Task<int> TGetCountAsync();
+        Task<bool> THasApprovedOverlapAsync(int carId, DateTime pickup, DateTime returnDate, int excludeRentalId = 0);
+        Task<List<int>> TGetApprovedOverlapCarIdsAsync(DateTime pickup, DateTime returnDate);
     }
 }

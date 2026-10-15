@@ -13,7 +13,8 @@ namespace Rentaly.DtoLayer.CarDtos
         public int BrandId { get; set; }
         public string BrandName { get; set; } 
         public string ModelName { get; set; } 
-        public string CategoryName { get; set; } 
+        public string CategoryName { get; set; }
+        public string PlateNumber { get; set; }
 
         public string? ImageUrl { get; set; }
         public int Year { get; set; }
