@@ -123,9 +123,9 @@ Proje; arayüz, iş kuralları, veri erişimi, entity ve DTO sorumluluklarını 
 <br><br>
 <img src="Images/24.png" width="80%" />
 <br><br>
-<img src="Images/31.png" width="80%" />
+<img src="Images/31.jpeg" width="80%" />
 <br><br>
-<img src="Images/32.png" width="80%" />
+<img src="Images/32.jpeg" width="80%" />
 <br><br>
 <img src="Images/25.png" width="80%" />
 <br><br>
